@@ -1,0 +1,6 @@
+{
+  "name": "Батаарын өлгий | Cradle of Tarbosaurus Bataar",
+  "description": "Монголын үлэг гүрвэлийн өлгий нутаг, Тарбозавр Батаар олон улсын палеонтологийн өв, палео-аялал жуулчлалын нэгдсэн портал",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

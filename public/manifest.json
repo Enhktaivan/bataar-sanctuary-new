@@ -1,0 +1,26 @@
+{
+  "name": "Батаарын өлгий | Cradle of Tarbosaurus Bataar",
+  "short_name": "Батаарын Өлгий",
+  "description": "Монголын үлэг гүрвэлийн өлгий нутаг, Тарбозавр Батаар олон улсын палеонтологийн өв, палео-аялал жуулчлалын нэгдсэн систем",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c0a09",
+  "theme_color": "#d97706",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "travel", "entertainment"],
+  "screenshots": []
+}
