@@ -14,20 +14,12 @@ import {
   Database,
   RefreshCw,
   Phone,
-  Globe,
   Download,
-  Clock,
   Compass,
   CheckCircle2,
-  Plus,
-  Share2,
-  ChevronDown,
-  Info,
   MapPin,
   Wifi,
-  Sun,
-  Coffee,
-  AlertTriangle
+  Sun
 } from "lucide-react";
 import { GoogleGenAI } from "@google/genai";
 
@@ -91,16 +83,16 @@ const DEFAULT_INQUIRIES: TouristInquiry[] = [
 const INITIAL_WELCOME: ChatMessage = {
   id: "msg-0",
   sender: "assistant",
-  text: `✨ **Welcome to Bataar Sanctuary (Батаарын Өлгий)!** 
-I am your 24/7 AI Concierge & Expedition Coordinator.
+  text: `✨ **Welcome to Bataar Sanctuary (Батаарын Өлгий)** 
+*Aurelia Luxury Desert Retreat & Paleontological Expedition Base*
 
-How may I assist your Gobi desert journey today?
-• 🏠 **Accommodations & Rates** (Deluxe $110, Standard $65, Family $160)
-• 📍 **Logistics & 4x4 Transfers** from Dalanzadgad / Ulaanbaatar
-• 🛰️ **Amenities:** 24/7 Starlink satellite Wi-Fi, 100% solar power & restaurant
-• 🦖 **Field Expeditions:** Khermen Tsav canyons & dinosaur fossil beds
+I am your 24/7 AI Sanctuary Concierge. How may I orchestrate your Gobi journey?
+• 🏠 **Suites & Private Lodges:** Deluxe ($110), Standard ($65), Family Suite ($160)
+• 📍 **Expedition Logistics & 4x4 Chauffeur Transfers** from Dalanzadgad / UB
+• 🛰️ **Off-Grid Comforts:** Starlink satellite Wi-Fi, 100% solar green energy & organic dining
+• 🦖 **Sacred Cretaceous Strata:** Guided missions to Khermen Tsav & Nemegt Basin
 
-*Feel free to write in English, 한국어, 中文, 日本語, Deutsch, Français, or Монгол хэл!*`,
+*Feel welcome to converse in English, 한국어, 中文, 日本語, Deutsch, Français, or Монгол хэл.*`,
   timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
 };
 
@@ -111,7 +103,7 @@ export const AIAssistantWidget: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  // Inquiries state (synced with localStorage)
+  // Inquiries state
   const [inquiries, setInquiries] = useState<TouristInquiry[]>(() => {
     try {
       const saved = localStorage.getItem("bataar_crm_inquiries");
@@ -170,87 +162,67 @@ export const AIAssistantWidget: React.FC = () => {
     setShowSettings(false);
   };
 
-  // Smart Offline Knowledge Base Responder
   const generateLocalResponse = (query: string): string => {
     const q = query.toLowerCase();
 
-    // Rates & Rooms
     if (q.includes("price") || q.includes("rate") || q.includes("cost") || q.includes("room") || q.includes("үнэ") || q.includes("өрөө") || q.includes("хоног") || q.includes("가격") || q.includes("房") || q.includes("preis")) {
-      return `🏠 **Bataar Sanctuary Accommodations & Rates:**
+      return `🏛️ **Bataar Sanctuary • Aurelia Suites & Lodges:**
 
-1. **Deluxe Wooden Lodge (Eco-Room):**
-   • **$110 USD / night** (Includes gourmet double breakfast)
-   • Interior natural pine wood, cozy queen bed, heating & AC, private en-suite bathroom with 24/7 hot shower, large panoramic window, Starlink Wi-Fi.
+1. **Deluxe Wooden Lodge (Eco-Sanctuary):**
+   • **$110 USD / night** (Includes artisan breakfast)
+   • Siberian pine interior, queen bed, climate control, private en-suite bathroom with 24/7 hot mineral shower, Starlink broadband, desert horizon picture window.
 
 2. **Standard Twin Room:**
    • **$65 USD / night**
-   • 2 single beds, desert sunrise window, rustic wooden finish, private en-suite bathroom.
+   • 2 single beds, private bathroom, natural wood warmth, panoramic desert views.
 
 3. **Family 2-Bedroom Suite:**
    • **$160 USD / night**
-   • 2 private bedrooms (Master queen + Twin second bedroom), spacious bathroom, accommodates 4-6 guests.
+   • 2 private bedrooms (Master queen + Twin bedroom), spacious bathroom, accommodates 4-6 guests.
 
-Click the **"Booking"** tab above to reserve your stay directly!`;
+Click **"Reserve Stay"** in the navigation bar to book your dates directly.`;
     }
 
-    // Location & Transfers
     if (q.includes("location") || q.includes("where") || q.includes("how to get") || q.includes("reach") || q.includes("хаана") || q.includes("байршил") || q.includes("зам") || q.includes("위치") || q.includes("怎么去") || q.includes("wo ist")) {
-      return `📍 **Camp Location & Travel Logistics:**
+      return `📍 **Sanctuary Location & Chauffeur Logistics:**
 
-• **Sanctuary Location:** Tost Tosonbumba Nature Reserve, Gurvantes Soum, South Gobi Province, Mongolia (43.2081° N, 101.0543° E).
+• **Sanctuary Location:** Tost Tosonbumba Nature Reserve, Gurvantes Soum, South Gobi, Mongolia (43.2081° N, 101.0543° E).
 • **Distance from Ulaanbaatar:** ~850 km.
-• **Recommended Route:**
+• **Curated Route:**
   1. Domestic flight from Ulaanbaatar to **Dalanzadgad** (1 hour).
-  2. Scenic 4x4 expedition drive (390 km) via Bayanzag Flaming Cliffs and Khongor Sand Dunes to Bataar Sanctuary in Gurvantes.
-• **4x4 Private Transfers:** We provide rugged Toyota Land Cruiser transfers with experienced Gobi desert drivers.
-
-Our team can arrange transfers directly upon your booking!`;
+  2. Scenic 4x4 expedition drive (390 km) past Bayanzag Flaming Cliffs and Khongor Sand Dunes to Bataar Sanctuary.
+• **Private 4x4 Transfers:** Dedicated Toyota Land Cruisers with veteran desert drivers can be arranged with your reservation.`;
     }
 
-    // Amenities (Wi-Fi, Solar, Water, Food)
     if (q.includes("wifi") || q.includes("wi-fi") || q.includes("internet") || q.includes("solar") || q.includes("water") || q.includes("food") || q.includes("restaurant") || q.includes("хоол") || q.includes("интернет") || q.includes("вакуум") || q.includes("와이파이") || q.includes("网络")) {
-      return `🌿 **Eco-Luxury Desert Amenities:**
+      return `🌿 **Aurelia Eco-Sanctuary Amenities:**
 
-• 🛰️ **Starlink Satellite High-Speed Wi-Fi:** Reliable high-speed broadband throughout the camp, even in the heart of the Gobi desert.
-• ☀️ **100% Green Off-Grid Solar Energy:** Silent 24/7 continuous electric power with lithium battery storage.
-• 💧 **Deep Well Mineral Purified Water:** Fresh, high-grade tested drinking water and continuous hot showers.
-• 🍲 **Gourmet Gobi Oasis Restaurant:** Organic pasture-raised Mongolian mutton/beef, homemade milk delicacies, plus full European and vegetarian/vegan menus, fresh brewed espresso coffee.
-• 🔭 **Astronomy Stargazing Platform:** High-powered optical telescope for observing Saturn's rings, Jupiter, and the pristine Milky Way under zero light pollution!`;
+• 🛰️ **Starlink Satellite High-Speed Broadband:** Continuous high-speed internet throughout all lodges and dining pavilions.
+• ☀️ **100% Off-Grid Solar Power:** Silent 24/7 sustainable green energy with lithium storage.
+• 💧 **Deep Well Mineral Purified Water:** Laboratory-tested fresh drinking water & continuous high-pressure hot showers.
+• 🍲 **Gobi Oasis Gourmet Dining:** Organic pasture-raised Mongolian beef/lamb, artisanal dairy, plus full vegetarian/vegan menus & fresh brewed espresso.
+• 🔭 **Deep-Sky Astronomy Platform:** High-powered optical telescope for Saturn's rings, Jupiter, and the Milky Way under pristine zero-light-pollution skies.`;
     }
 
-    // Dinosaurs & Expeditions
     if (q.includes("dino") || q.includes("fossil") || q.includes("khermen") || q.includes("nemegt") || q.includes("цав") || q.includes("үлэг гүрвэл") || q.includes("малтлага") || q.includes("공룡") || q.includes("恐龙") || q.includes("expedition")) {
-      return `🦖 **Paleontological Expeditions & Fossil Sites:**
+      return `🦖 **Paleontological Expeditions:**
 
-Bataar Sanctuary is the premier gateway to:
-• **Khermen Tsav (The Grand Canyon of the Gobi):** Majestic red canyon cathedrals where thousands of Cretaceous skeletons including Tarbosaurus Bataar and Deinocheirus were uncovered.
-• **Nemegt Basin & Bugiin Tsav:** World-famous dragon bone beds dating back 70 million years.
-• **Field Paleontology Experience:** Hands-on virtual laboratory and guided field walks led by certified paleontological interpreters.
-• **Snow Leopard Telemetry:** Join our conservationists on ridge excursions monitoring endangered snow leopards with automated trail cameras.`;
+Bataar Sanctuary is the premier departure base for:
+• **Khermen Tsav (The Grand Canyon of the Gobi):** World-renowned Cretaceous cathedral formations where legendary skeletons of Tarbosaurus bataar and Deinocheirus were unearthed.
+• **Nemegt Basin & Bugiin Tsav:** Legendary 70-million-year-old fossil dragon beds.
+• **Virtual Field Lab:** Interactive paleontological tools and guided interpretive walks.
+• **Snow Leopard Telemetry:** Ridge excursions monitoring endangered snow leopards in the Tost Mountains.`;
     }
 
-    // Contact
-    if (q.includes("contact") || q.includes("phone") || q.includes("email") || q.includes("холбоо") || q.includes("утас") || q.includes("전화") || q.includes("联系")) {
-      return `📞 **Official Contact Information:**
-
-• **Phone / WhatsApp:** 
-  +976 7201 0099
-  +976 8822 3584
-  +976 9953 0099
-  +976 9972 3336
-• **Email:** btvmentogoo@gmail.com / info@bataarsanctuary.com
-• **Address:** Tost Tosonbumba Nature Reserve, Gurvantes Soum, South Gobi, Mongolia.`;
-    }
-
-    return `Thank you for reaching out to **Bataar Sanctuary**!
+    return `Welcome to **Bataar Sanctuary**!
 
 We offer world-class eco-lodge accommodations ($65–$160/night), 100% solar power, Starlink satellite Wi-Fi, and guided paleontology expeditions across Khermen Tsav.
 
-You can ask me about:
+How may I assist your upcoming retreat?
 1. Room options and booking dates
 2. 4x4 transfer logistics from Dalanzadgad or UB
 3. Stargazing, dining, and camp facilities
-4. Or switch to the **"Booking"** tab to reserve your dates!`;
+4. Or switch to the **"Reserve"** tab to submit an inquiry!`;
   };
 
   const handleSendMessage = async () => {
@@ -274,16 +246,11 @@ You can ask me about:
 
       if (geminiApiKey.trim()) {
         const ai = new GoogleGenAI({ apiKey: geminiApiKey.trim() });
-        const systemInstruction = `You are the chief concierge and scientific expedition coordinator at "Bataar Sanctuary (Батаарын Өлгий)", an authentic luxury eco-lodge and paleontology basecamp located in Tost Tosonbumba Nature Reserve, Gurvantes Soum, South Gobi, Mongolia.
-Camp details:
-- Deluxe Room: $110/night (breakfast included, pine wood, private bath, AC, picture window, Starlink).
-- Standard Room: $65/night (2 single beds, private bath).
-- Family Suite: $160/night (2 bedrooms, 4-6 guests, private shower).
-- 100% off-grid solar energy, pure deep well water, Starlink Wi-Fi, organic restaurant, high-powered astronomy telescope for stargazing.
-- Expeditions: Khermen Tsav canyons, Nemegt basin, dinosaur fossil grounds, snow leopard tracking.
-- Distance from UB: 850 km (or 1hr flight to Dalanzadgad + 390km 4x4 scenic drive).
-- Contact: +976 7201 0099, +976 8822 3584. Email: btvmentogoo@gmail.com.
-Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT language used by the guest.`;
+        const systemInstruction = `You are the chief concierge at "Bataar Sanctuary (Батаарын Өлгий)", an Aurelia-style ultra-luxury eco-retreat and paleontology basecamp in the South Gobi, Mongolia.
+Atmosphere: Quiet luxury, Aman/Aurelia resort elegance, deeply hospitable, poetic yet accurate.
+Lodges: Deluxe ($110/night, breakfast, pine wood, private bath, Starlink), Standard ($65/night), Family Suite ($160/night).
+Expeditions: Khermen Tsav, Nemegt Basin, snow leopard tracking. 100% solar power, Starlink Wi-Fi, organic dining. Contact: +976 7201 0099, btvmentogoo@gmail.com.
+Respond in the exact language used by the guest.`;
 
         const response = await ai.models.generateContent({
           model: "gemini-3.8-flash",
@@ -293,7 +260,7 @@ Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT la
 
         replyText = response.text || generateLocalResponse(userText);
       } else {
-        await new Promise((r) => setTimeout(r, 600));
+        await new Promise((r) => setTimeout(r, 550));
         replyText = generateLocalResponse(userText);
       }
 
@@ -306,7 +273,7 @@ Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT la
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           action: {
             type: "book",
-            label: "📅 Book This Stay"
+            label: "📅 Reserve This Suite"
           }
         }
       ]);
@@ -320,7 +287,7 @@ Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT la
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           action: {
             type: "book",
-            label: "📅 Book This Stay"
+            label: "📅 Reserve This Suite"
           }
         }
       ]);
@@ -329,7 +296,6 @@ Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT la
     }
   };
 
-  // Direct Booking Handler with Email Dispatch to btvmentogoo@gmail.com
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!bookingForm.name || !bookingForm.email) return;
@@ -351,10 +317,9 @@ Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT la
       language: "Detected"
     };
 
-    // 1. Save to local CRM
     setInquiries((prev) => [newInquiry, ...prev]);
 
-    // 2. Dispatch real email notification to btvmentogoo@gmail.com via FormSubmit AJAX
+    // Send real email notification to btvmentogoo@gmail.com
     try {
       await fetch("https://formsubmit.co/ajax/btvmentogoo@gmail.com", {
         method: "POST",
@@ -376,10 +341,9 @@ Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT la
         })
       });
     } catch {
-      // Continue even if offline
+      // offline safe
     }
 
-    // 3. Post to Notion Webhook if present
     if (notionWebhookUrl) {
       try {
         fetch(notionWebhookUrl, {
@@ -393,16 +357,14 @@ Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT la
     }
 
     setIsSubmittingBooking(false);
-    setBookingSuccessMsg(`Захиалгын хүсэлтийг хүлээн авлаа! Баталгаажуулах мэйл btvmentogoo@gmail.com болон таны ${newInquiry.email} хаяг руу илгээгдэж байна.`);
+    setBookingSuccessMsg(`Таны захиалгын хүсэлт бүртгэгдлээ. Баталгаажуулах мэдээлэл btvmentogoo@gmail.com болон таны ${newInquiry.email} хаяг руу илгээгдэж байна.`);
 
-    // Reset after 3 seconds
     setTimeout(() => {
       setBookingSuccessMsg(null);
       setActiveTab("notion");
     }, 2500);
   };
 
-  // Generate Email Reply for Manager
   const handleGenerateEmail = async () => {
     const inq = inquiries.find((i) => i.id === selectedInquiryId) || inquiries[0];
     if (!inq) return;
@@ -413,83 +375,82 @@ Tone: Warm, highly knowledgeable, professional, elegant. Respond in the EXACT la
     let body = "";
 
     if (emailTemplateType === "confirmation") {
-      subject = `Bataar Sanctuary Booking Confirmation & Expedition Details - ${inq.name}`;
+      subject = `Bataar Sanctuary • Reservation Confirmation - ${inq.name}`;
       body = `Dear ${inq.name},
 
-Warm greetings from the heart of the South Gobi desert!
+Warm greetings from the heart of the South Gobi desert.
 
-Thank you for choosing Bataar Sanctuary (Батаарын Өлгий). We are delighted to confirm your reservation inquiry for our eco-lodge in the Tost Tosonbumba Nature Reserve.
+Thank you for choosing Bataar Sanctuary (Батаарын Өлгий). We are delighted to confirm receipt of your reservation request for our luxury desert lodge in the Tost Tosonbumba Nature Reserve.
 
-Reservation Overview:
+Reservation Summary:
 • Guest Name: ${inq.name}
 • Check-in Date: ${inq.arrivalDate}
 • Check-out Date: ${inq.departureDate}
-• Accommodation: ${inq.roomType}
+• Suite Selected: ${inq.roomType}
 • Party Size: ${inq.guests} Guest(s)
-• Special Notes: ${inq.notes || "None specified"}
+• Special Requests: ${inq.notes || "None specified"}
 
-What awaits you at Bataar Sanctuary:
-• 100% Solar-Powered Luxury Lodge with 24/7 hot showers and heating
-• Starlink Satellite High-Speed Wi-Fi throughout the camp
-• Organic Pasture-to-Table Dining at our Gobi Oasis Restaurant
-• Deep-Sky Stargazing through our optical astronomical telescope
-• Gateway to the legendary Cretaceous fossil beds of Khermen Tsav
+Sanctuary Amenities Included in Your Stay:
+• 100% Off-Grid Solar-Powered Eco-Lodge with 24/7 hot showers and climate control
+• Starlink Satellite High-Speed Broadband across the retreat
+• Gourmet Pasture-to-Table Dining at our Gobi Oasis Pavilion
+• Deep-Sky Stargazing through our optical astronomical observatory
+• Gateway access to the sacred Cretaceous formations of Khermen Tsav
 
 Next Steps:
-Please confirm if you require 4x4 airport transfer from Dalanzadgad or direct expedition pickup. We will issue your official reservation invoice upon your reply.
+Please let us know if you require private Toyota Land Cruiser chauffeur transfers from Dalanzadgad Airport. We will issue your official reservation invoice upon your confirmation.
 
-If you have any urgent inquiries, feel free to reach our camp management directly at +976 7201 0099 or reply directly to this email.
+For any immediate assistance, our sanctuary desk is at your service at +976 7201 0099.
 
-Yours sincerely,
+With warm regards,
 
-Bataar Sanctuary Hospitality & Expedition Desk
-Tost Tosonbumba Nature Reserve, South Gobi, Mongolia
+The Sanctuary Team
+Bataar Sanctuary • Tost Tosonbumba Nature Reserve, South Gobi, Mongolia
 Web: https://odko-prog.github.io/bataar-sanctuary-new/
 Email: btvmentogoo@gmail.com
-Phone / WhatsApp: +976 7201 0099 / +976 8822 3584`;
+Phone: +976 7201 0099 / +976 8822 3584`;
     } else if (emailTemplateType === "quote") {
-      subject = `Expedition Quote & Travel Guide for ${inq.name} • Bataar Sanctuary`;
+      subject = `Expedition Itinerary & Rates for ${inq.name} • Bataar Sanctuary`;
       body = `Dear ${inq.name},
 
-Thank you for your interest in exploring the South Gobi with Bataar Sanctuary!
+Thank you for your interest in visiting Bataar Sanctuary in the South Gobi!
 
-We have prepared the following pricing and itinerary summary for your party of ${inq.guests}:
+We have prepared the following pricing summary for your upcoming journey:
 
 1. Accommodation:
-• ${inq.roomType} — Includes full artisanal breakfast, Starlink Wi-Fi, and eco-lodge comforts.
+• ${inq.roomType} — Includes artisanal breakfast, Starlink Wi-Fi, and private lodge comforts.
 
-2. Expedition Activities Available:
+2. Curated Field Expeditions:
 • Full-day guided 4x4 expedition to Khermen Tsav (The Grand Canyon of the Gobi)
-• Hands-on fossil geology and virtual excavation lab orientation
-• Sunset camel trek across golden dunes and stargazing sessions
+• Hands-on paleontology laboratory walk and geological fossil orientation
+• Sunset camel caravan across the singing dunes & evening stargazing
 
 3. Logistics:
-• Private Toyota Land Cruiser 4x4 transfers from Dalanzadgad with experienced local drivers are available upon request.
+• Private Toyota Land Cruiser 4x4 transfers from Dalanzadgad with experienced desert drivers are available upon request.
 
-Please let us know your preferred travel dates (${inq.arrivalDate} to ${inq.departureDate}), and we will reserve your private lodge immediately.
+Please confirm your preferred dates (${inq.arrivalDate} to ${inq.departureDate}), and we will reserve your private lodge immediately.
 
 Warm desert regards,
 
 Expedition Management Team
 Bataar Sanctuary
-Phone: +976 7201 0099 / +976 9953 0099
+Phone: +976 7201 0099
 Email: btvmentogoo@gmail.com`;
     } else {
-      subject = `Gobi Logistics & 4x4 Transfer Guide for ${inq.name} • Bataar Sanctuary`;
+      subject = `Gobi Chauffeur & 4x4 Logistics for ${inq.name} • Bataar Sanctuary`;
       body = `Dear ${inq.name},
 
-We are excited to welcome you to Bataar Sanctuary in Gurvantes, South Gobi!
+We are delighted to welcome you to Bataar Sanctuary in Gurvantes, South Gobi.
 
-To ensure a smooth journey across the desert, here is the essential travel itinerary:
-
+To ensure a seamless journey across the desert:
 • Flight: Domestic flight from Ulaanbaatar (Chinggis Khaan Airport) to Dalanzadgad (approx. 1 hour).
-• 4x4 Scenic Drive: Our Land Cruiser 4x4 will meet you at Dalanzadgad Airport. The drive to Bataar Sanctuary passes through the famous Bayanzag Flaming Cliffs and Khongor Sand Dunes.
-• Camp Arrival: Check-in, welcome tea, and orientation under the pristine Gobi sky.
+• 4x4 Scenic Transfer: Our Land Cruiser 4x4 will greet you at Dalanzadgad Airport. The scenic route traverses the legendary Bayanzag Flaming Cliffs and Khongor Sand Dunes.
+• Camp Arrival: Welcome tea, check-in, and sunset orientation under the pristine Gobi sky.
 
 Camp Amenities:
-• 24/7 Starlink Wi-Fi, 100% solar green power, deep well mineral water, organic dining.
+• 24/7 Starlink broadband, 100% solar green power, deep well mineral water, organic dining.
 
-We look forward to hosting your Cretaceous adventure!
+We look forward to hosting your Cretaceous journey!
 
 Bataar Sanctuary Expedition Desk
 Phone: +976 7201 0099
@@ -501,10 +462,10 @@ Email: btvmentogoo@gmail.com`;
         const ai = new GoogleGenAI({ apiKey: geminiApiKey.trim() });
         const res = await ai.models.generateContent({
           model: "gemini-3.8-flash",
-          contents: `Draft a professional, warm email reply from "Bataar Sanctuary" camp manager to tourist: ${inq.name} (${inq.email}).
+          contents: `Draft a refined Aurelia-resort style email reply from "Bataar Sanctuary" camp manager to guest: ${inq.name} (${inq.email}).
 Dates: ${inq.arrivalDate} to ${inq.departureDate}, Room: ${inq.roomType}, Guests: ${inq.guests}, Notes: ${inq.notes}.
 Special instructions: ${customEmailPrompt}.
-Format output with Subject on line 1 (starting with "Subject: "), followed by the full email body.`
+Format output with Subject on line 1, followed by body.`
         });
         const fullText = res.text || "";
         const lines = fullText.split("\n");
@@ -546,68 +507,68 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
 
   return (
     <>
-      {/* Sleek Desert-Luxury Floating Trigger */}
+      {/* Aurelia Floating Trigger Capsule */}
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 pointer-events-auto">
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="group flex items-center gap-3 px-4 py-2.5 rounded-full bg-stone-950/90 text-amber-200 border border-amber-500/40 shadow-2xl shadow-black/80 hover:border-amber-400 hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-xl cursor-pointer"
+            className="group flex items-center gap-3.5 px-4.5 py-3 rounded-full bg-[#0A0908]/92 text-[#F5F2EB] border border-[#C5A880]/40 shadow-[0_15px_40px_rgba(0,0,0,0.85)] hover:border-[#DFC8A7] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-2xl cursor-pointer"
           >
-            <div className="relative flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-tr from-amber-600 to-yellow-400 text-stone-950 shadow-inner">
-              <Sparkles className="w-3.5 h-3.5 fill-stone-950" />
-              <span className="w-2 h-2 rounded-full bg-emerald-400 absolute -top-0.5 -right-0.5 ring-2 ring-stone-950 animate-ping" />
+            <div className="relative flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-tr from-[#C5A880] to-[#E3CBA8] text-[#0A0908] shadow-inner">
+              <Sparkles className="w-3.5 h-3.5 fill-[#0A0908]" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400 absolute -top-0.5 -right-0.5 ring-2 ring-[#0A0908] animate-ping" />
             </div>
 
             <div className="flex flex-col text-left">
-              <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-amber-300 font-['Plus_Jakarta_Sans',sans-serif]">
-                Bataar Concierge & Booking
+              <span className="text-[10.5px] font-bold tracking-[0.2em] uppercase text-[#DFC8A7] font-['Plus_Jakarta_Sans',sans-serif]">
+                CONCIERGE & BOOKING
               </span>
-              <span className="text-[9.5px] text-stone-400 tracking-wider">
-                24/7 AI Хөтөч • Захиалга • CRM
+              <span className="text-[9px] text-[#A39C91] tracking-widest uppercase">
+                BATAAR SANCTUARY • 24/7 AI
               </span>
             </div>
 
-            <span className="ml-1 text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30 font-medium">
+            <span className="ml-1 text-[9.5px] bg-[#C5A880]/15 text-[#DFC8A7] px-2 py-0.5 rounded-full border border-[#C5A880]/30 font-medium">
               🇲🇳 🇬🇧 🇰🇷 🇨🇳
             </span>
           </button>
         )}
       </div>
 
-      {/* Main Luxury Drawer / Modal */}
+      {/* Aurelia Luxury Sanctuary Modal Drawer */}
       {isOpen && (
-        <div className="fixed bottom-6 right-4 sm:right-6 z-50 w-[95vw] sm:w-[490px] h-[670px] max-h-[88vh] bg-stone-950/95 border border-amber-500/30 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden backdrop-blur-2xl animate-in fade-in slide-in-from-bottom-5 duration-300 text-stone-100 font-['Plus_Jakarta_Sans',sans-serif]">
+        <div className="fixed bottom-6 right-4 sm:right-6 z-50 w-[95vw] sm:w-[490px] h-[670px] max-h-[88vh] bg-[#0E0C0A]/95 border border-[#C5A880]/35 rounded-3xl shadow-[0_30px_70px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden backdrop-blur-2xl animate-in fade-in slide-in-from-bottom-5 duration-300 text-[#F5F2EB] font-['Plus_Jakarta_Sans',sans-serif]">
           
           {/* Header Bar */}
-          <div className="px-5 py-3.5 bg-gradient-to-r from-stone-900 via-stone-900/95 to-amber-950/30 border-b border-amber-500/20 flex items-center justify-between">
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#141210] via-[#141210]/95 to-[#1A1613] border-b border-[#C5A880]/20 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 border border-amber-500/40 flex items-center justify-center text-amber-300 shadow-inner">
-                <Sparkles className="w-4 h-4 fill-amber-400" />
+              <div className="w-9 h-9 rounded-xl bg-[#C5A880]/15 border border-[#C5A880]/40 flex items-center justify-center text-[#DFC8A7] shadow-inner">
+                <Sparkles className="w-4 h-4 fill-[#C5A880]" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-['Cormorant_Garamond',serif] font-bold text-amber-200 text-base tracking-wide">
+                  <h3 className="font-['Cormorant_Garamond',serif] font-bold text-[#DFC8A7] text-base tracking-wide">
                     BATAAR SANCTUARY CONCIERGE
                   </h3>
-                  <span className="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-mono">
-                    ONLINE
+                  <span className="text-[8.5px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-mono uppercase tracking-wider">
+                    Online
                   </span>
                 </div>
-                <p className="text-[10px] text-stone-400">South Gobi Expedition & Reservation Desk</p>
+                <p className="text-[10px] text-[#A39C91] tracking-wider uppercase">Aurelia Luxury Desert Retreat Desk</p>
               </div>
             </div>
 
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setShowSettings(!showSettings)}
-                className={`p-1.5 rounded-lg transition-colors ${showSettings ? "bg-amber-500/20 text-amber-300" : "text-stone-400 hover:text-amber-300 hover:bg-stone-850"}`}
+                className={`p-1.5 rounded-lg transition-colors ${showSettings ? "bg-[#C5A880]/20 text-[#DFC8A7]" : "text-[#A39C91] hover:text-[#DFC8A7] hover:bg-stone-850"}`}
                 title="Settings & API Keys"
               >
                 <Settings className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-stone-800 transition-colors"
+                className="p-1.5 rounded-lg text-[#A39C91] hover:text-[#F5F2EB] hover:bg-stone-850 transition-colors"
                 title="Close"
               >
                 <X className="w-4 h-4" />
@@ -616,13 +577,13 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
           </div>
 
           {/* Navigation Bar */}
-          <div className="grid grid-cols-5 bg-stone-900/90 p-1 border-b border-stone-800/80 text-[11px] font-medium">
+          <div className="grid grid-cols-5 bg-[#141210] p-1 border-b border-[#C5A880]/15 text-[10.5px] font-medium">
             <button
               onClick={() => { setActiveTab("chat"); setShowSettings(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
                 activeTab === "chat" && !showSettings
-                  ? "bg-amber-500 text-stone-950 font-bold shadow-md"
-                  : "text-stone-400 hover:text-stone-200"
+                  ? "bg-[#C5A880] text-[#0A0908] font-bold shadow-md"
+                  : "text-[#A39C91] hover:text-[#F5F2EB]"
               }`}
             >
               <MessageSquare className="w-3.5 h-3.5" />
@@ -633,8 +594,8 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
               onClick={() => { setActiveTab("booking"); setShowSettings(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
                 activeTab === "booking" && !showSettings
-                  ? "bg-amber-500 text-stone-950 font-bold shadow-md"
-                  : "text-stone-400 hover:text-stone-200"
+                  ? "bg-[#C5A880] text-[#0A0908] font-bold shadow-md"
+                  : "text-[#A39C91] hover:text-[#F5F2EB]"
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
@@ -645,8 +606,8 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
               onClick={() => { setActiveTab("email"); setShowSettings(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
                 activeTab === "email" && !showSettings
-                  ? "bg-amber-500 text-stone-950 font-bold shadow-md"
-                  : "text-stone-400 hover:text-stone-200"
+                  ? "bg-[#C5A880] text-[#0A0908] font-bold shadow-md"
+                  : "text-[#A39C91] hover:text-[#F5F2EB]"
               }`}
             >
               <Mail className="w-3.5 h-3.5" />
@@ -657,14 +618,14 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
               onClick={() => { setActiveTab("notion"); setShowSettings(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all relative ${
                 activeTab === "notion" && !showSettings
-                  ? "bg-amber-500 text-stone-950 font-bold shadow-md"
-                  : "text-stone-400 hover:text-stone-200"
+                  ? "bg-[#C5A880] text-[#0A0908] font-bold shadow-md"
+                  : "text-[#A39C91] hover:text-[#F5F2EB]"
               }`}
             >
               <Database className="w-3.5 h-3.5" />
               <span>Notion</span>
               {inquiries.some((i) => i.status === "New") && (
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 absolute top-1 right-2 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] absolute top-1 right-2 animate-pulse" />
               )}
             </button>
 
@@ -672,8 +633,8 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
               onClick={() => { setActiveTab("safety"); setShowSettings(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
                 activeTab === "safety" && !showSettings
-                  ? "bg-amber-500 text-stone-950 font-bold shadow-md"
-                  : "text-stone-400 hover:text-stone-200"
+                  ? "bg-[#C5A880] text-[#0A0908] font-bold shadow-md"
+                  : "text-[#A39C91] hover:text-[#F5F2EB]"
               }`}
             >
               <ShieldCheck className="w-3.5 h-3.5" />
@@ -683,55 +644,48 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
 
           {/* Settings Panel */}
           {showSettings && (
-            <div className="flex-1 p-5 overflow-y-auto bg-stone-950 text-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-stone-800 pb-2">
-                <h4 className="font-bold text-amber-300 text-sm flex items-center gap-2 font-['Cormorant_Garamond',serif]">
-                  <Settings className="w-4 h-4" /> Тохиргоо & Холболтууд
+            <div className="flex-1 p-5 overflow-y-auto bg-[#0E0C0A] text-xs space-y-4">
+              <div className="flex items-center justify-between border-b border-[#C5A880]/20 pb-2">
+                <h4 className="font-bold text-[#DFC8A7] text-sm flex items-center gap-2 font-['Cormorant_Garamond',serif]">
+                  <Settings className="w-4 h-4" /> Холболтууд & Тохиргоо
                 </h4>
-                <button onClick={() => setShowSettings(false)} className="text-stone-400 hover:text-white">
+                <button onClick={() => setShowSettings(false)} className="text-[#A39C91] hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Email dispatch info */}
-              <div className="bg-stone-900 border border-stone-800 rounded-xl p-3 space-y-1">
-                <span className="text-[10px] text-amber-400 uppercase tracking-wider font-bold">Имэйл мэдэгдэл</span>
+              <div className="bg-[#161412] border border-[#C5A880]/20 rounded-xl p-3 space-y-1">
+                <span className="text-[10px] text-[#C5A880] uppercase tracking-wider font-bold">Шууд имэйл мэдэгдэл</span>
                 <p className="text-stone-300 text-xs">
-                  Жуулчин захиалга өгөхөд автоматаар <strong className="text-amber-200">btvmentogoo@gmail.com</strong> хаяг руу шууд илгээгдэнэ.
+                  Жуулчны захиалгын мэдээлэл автоматаар <strong className="text-[#DFC8A7]">btvmentogoo@gmail.com</strong> хаяг руу шууд илгээгдэнэ.
                 </p>
               </div>
 
-              {/* Gemini Key */}
               <div className="space-y-1.5">
                 <label className="text-stone-300 font-medium flex items-center justify-between">
                   <span>Gemini API Key (Сонголтоор)</span>
-                  <span className="text-[10px] text-amber-400">Gemini 3.8 Flash</span>
+                  <span className="text-[10px] text-[#C5A880]">Gemini 3.8 Flash</span>
                 </label>
                 <input
                   type="password"
                   value={geminiApiKey}
                   onChange={(e) => setGeminiApiKey(e.target.value)}
                   placeholder="AIzaSy..."
-                  className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 focus:outline-none focus:border-amber-500 text-xs"
+                  className="w-full bg-[#161412] border border-[#C5A880]/20 rounded-xl px-3 py-2 text-stone-200 focus:outline-none focus:border-[#C5A880] text-xs"
                 />
-                <p className="text-[10px] text-stone-500">
-                  Хоосон орхисон ч баазын бүх өрөө, үнэ, маршрутыг 100% автоматаар хариулна.
-                </p>
               </div>
 
-              {/* Notion Token */}
-              <div className="space-y-1.5 pt-2 border-t border-stone-800">
+              <div className="space-y-1.5 pt-2 border-t border-[#C5A880]/20">
                 <label className="text-stone-300 font-medium">Notion Integration Token</label>
                 <input
                   type="password"
                   value={notionApiKey}
                   onChange={(e) => setNotionApiKey(e.target.value)}
                   placeholder="secret_..."
-                  className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 focus:outline-none focus:border-amber-500 text-xs font-mono"
+                  className="w-full bg-[#161412] border border-[#C5A880]/20 rounded-xl px-3 py-2 text-stone-200 focus:outline-none focus:border-[#C5A880] text-xs font-mono"
                 />
               </div>
 
-              {/* Notion Webhook */}
               <div className="space-y-1.5">
                 <label className="text-stone-300 font-medium">Auto-Sync Webhook (Make / Zapier / n8n)</label>
                 <input
@@ -739,13 +693,13 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                   value={notionWebhookUrl}
                   onChange={(e) => setNotionWebhookUrl(e.target.value)}
                   placeholder="https://hook.make.com/..."
-                  className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 focus:outline-none focus:border-amber-500 text-xs font-mono"
+                  className="w-full bg-[#161412] border border-[#C5A880]/20 rounded-xl px-3 py-2 text-stone-200 focus:outline-none focus:border-[#C5A880] text-xs font-mono"
                 />
               </div>
 
               <button
                 onClick={handleSaveSettings}
-                className="w-full bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold py-2.5 rounded-xl transition-colors mt-4 shadow-lg shadow-amber-500/20"
+                className="w-full bg-[#C5A880] hover:bg-[#DFC8A7] text-[#0A0908] font-bold py-2.5 rounded-xl transition-colors mt-4 shadow-lg shadow-[#C5A880]/20"
               >
                 Тохиргоог хадгалах
               </button>
@@ -761,21 +715,21 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                     <div
                       className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 leading-relaxed shadow-sm ${
                         m.sender === "user"
-                          ? "bg-amber-500 text-stone-950 font-medium rounded-tr-sm"
+                          ? "bg-[#C5A880] text-[#0A0908] font-medium rounded-tr-sm"
                           : m.sender === "system"
-                          ? "bg-emerald-950/60 border border-emerald-500/40 text-emerald-200"
-                          : "bg-stone-900/90 border border-stone-800 text-stone-200 rounded-tl-sm whitespace-pre-line"
+                          ? "bg-emerald-950/70 border border-emerald-500/40 text-emerald-200"
+                          : "bg-[#161412] border border-[#C5A880]/20 text-[#F5F2EB] rounded-tl-sm whitespace-pre-line"
                       }`}
                     >
                       {m.text}
                     </div>
 
                     <div className="flex items-center gap-2 mt-1 px-1">
-                      <span className="text-[10px] text-stone-500">{m.timestamp}</span>
+                      <span className="text-[10px] text-[#A39C91]">{m.timestamp}</span>
                       {m.action && (
                         <button
                           onClick={() => setActiveTab("booking")}
-                          className="text-[10px] text-amber-400 hover:text-amber-300 font-semibold underline flex items-center gap-1"
+                          className="text-[10px] text-[#C5A880] hover:text-[#DFC8A7] font-semibold underline flex items-center gap-1 cursor-pointer"
                         >
                           {m.action.label}
                         </button>
@@ -785,58 +739,58 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                 ))}
 
                 {isTyping && (
-                  <div className="flex items-center gap-1.5 text-stone-400 bg-stone-900/90 border border-stone-800 px-3 py-2 rounded-2xl w-fit">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce delay-100" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce delay-200" />
-                    <span className="text-[10px] ml-1 font-mono">Bataar Concierge typing...</span>
+                  <div className="flex items-center gap-1.5 text-stone-400 bg-[#161412] border border-[#C5A880]/20 px-3 py-2 rounded-2xl w-fit">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-bounce" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-bounce delay-100" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-bounce delay-200" />
+                    <span className="text-[10px] ml-1 font-mono text-[#C5A880]">Concierge typing...</span>
                   </div>
                 )}
                 <div ref={messagesEndRef} />
               </div>
 
               {/* Quick Chips */}
-              <div className="px-3 py-2 bg-stone-900/70 border-t border-stone-800/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+              <div className="px-3 py-2 bg-[#141210]/80 border-t border-[#C5A880]/15 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
                 <button
                   onClick={() => setInputMessage("What are the room rates and amenities?")}
-                  className="whitespace-nowrap px-2.5 py-1 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-full text-[11px] border border-stone-700/50 transition-colors"
+                  className="whitespace-nowrap px-2.5 py-1 bg-[#1A1815] hover:bg-[#26221E] text-stone-300 rounded-full text-[11px] border border-[#C5A880]/20 transition-colors"
                 >
-                  💵 Room Rates
+                  🏛️ Room Rates
                 </button>
                 <button
                   onClick={() => setInputMessage("How do we get to Bataar Sanctuary from UB?")}
-                  className="whitespace-nowrap px-2.5 py-1 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-full text-[11px] border border-stone-700/50 transition-colors"
+                  className="whitespace-nowrap px-2.5 py-1 bg-[#1A1815] hover:bg-[#26221E] text-stone-300 rounded-full text-[11px] border border-[#C5A880]/20 transition-colors"
                 >
-                  📍 4x4 Route
+                  📍 4x4 Chauffeur Route
                 </button>
                 <button
                   onClick={() => setInputMessage("Do you have Starlink Wi-Fi and solar power?")}
-                  className="whitespace-nowrap px-2.5 py-1 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-full text-[11px] border border-stone-700/50 transition-colors"
+                  className="whitespace-nowrap px-2.5 py-1 bg-[#1A1815] hover:bg-[#26221E] text-stone-300 rounded-full text-[11px] border border-[#C5A880]/20 transition-colors"
                 >
-                  🛰️ Starlink Wi-Fi
+                  🛰️ Starlink & Solar
                 </button>
                 <button
                   onClick={() => setActiveTab("booking")}
-                  className="whitespace-nowrap px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-full text-[11px] border border-amber-500/40 font-medium transition-colors"
+                  className="whitespace-nowrap px-2.5 py-1 bg-[#C5A880]/20 hover:bg-[#C5A880]/30 text-[#DFC8A7] rounded-full text-[11px] border border-[#C5A880]/40 font-medium transition-colors"
                 >
-                  📅 Book Lodge
+                  📅 Reserve Lodge
                 </button>
               </div>
 
               {/* Input Bar */}
-              <div className="p-3 bg-stone-900/95 border-t border-stone-800 flex items-center gap-2">
+              <div className="p-3 bg-[#141210]/95 border-t border-[#C5A880]/20 flex items-center gap-2">
                 <input
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder="Ask anything in English, 한국어, 中文, Монгол..."
-                  className="flex-1 bg-stone-950 border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-stone-100 placeholder-stone-500 focus:outline-none focus:border-amber-500 transition-colors"
+                  className="flex-1 bg-[#0A0908] border border-[#C5A880]/25 rounded-xl px-3.5 py-2.5 text-xs text-[#F5F2EB] placeholder-[#736C62] focus:outline-none focus:border-[#C5A880] transition-colors"
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!inputMessage.trim() || isTyping}
-                  className="p-2.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-stone-950 rounded-xl font-bold transition-all shadow-md shadow-amber-500/20"
+                  className="p-2.5 bg-[#C5A880] hover:bg-[#DFC8A7] disabled:opacity-50 text-[#0A0908] rounded-xl font-bold transition-all shadow-md shadow-[#C5A880]/20 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                 </button>
@@ -844,16 +798,16 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
             </div>
           )}
 
-          {/* TAB 2: DIRECT BOOKING & DATES */}
+          {/* TAB 2: DIRECT BOOKING */}
           {!showSettings && activeTab === "booking" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs">
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3">
-                <div className="flex items-center gap-2 text-amber-300 font-bold mb-1">
+              <div className="bg-[#1A1815] border border-[#C5A880]/30 rounded-2xl p-3.5">
+                <div className="flex items-center gap-2 text-[#DFC8A7] font-bold mb-1">
                   <Calendar className="w-4 h-4" />
-                  <span className="font-['Cormorant_Garamond',serif] text-sm">Өрөөний захиалга & Бэлэн байдал</span>
+                  <span className="font-['Cormorant_Garamond',serif] text-base">Өрөө захиалга & Бэлэн байдал</span>
                 </div>
                 <p className="text-stone-300 text-[11px] leading-relaxed">
-                  Захиалгын мэдээлэл нь Notion CRM дээр хадгалагдаж, <strong className="text-amber-200">btvmentogoo@gmail.com</strong> хаяг руу шууд илгээгдэнэ.
+                  Захиалгын мэдээлэл Notion CRM-д хадгалагдаж, <strong className="text-[#DFC8A7]">btvmentogoo@gmail.com</strong> хаяг руу шууд очно.
                 </p>
               </div>
 
@@ -865,38 +819,36 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
               )}
 
               <form onSubmit={handleBookingSubmit} className="space-y-3">
-                {/* Dates */}
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-stone-900 border border-stone-800 rounded-xl p-2.5 focus-within:border-amber-500/50">
-                    <label className="block text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Ирэх өдөр (Check-in)</label>
+                  <div className="bg-[#161412] border border-[#C5A880]/25 rounded-xl p-2.5 focus-within:border-[#C5A880]">
+                    <label className="block text-[10px] text-[#A39C91] uppercase tracking-wider font-semibold">Ирэх өдөр (Check-in)</label>
                     <input
                       type="date"
                       required
                       value={bookingForm.arrivalDate}
                       onChange={(e) => setBookingForm({ ...bookingForm, arrivalDate: e.target.value })}
-                      className="w-full bg-transparent text-stone-100 text-xs font-semibold focus:outline-none [color-scheme:dark] mt-1"
+                      className="w-full bg-transparent text-[#F5F2EB] text-xs font-semibold focus:outline-none [color-scheme:dark] mt-1"
                     />
                   </div>
 
-                  <div className="bg-stone-900 border border-stone-800 rounded-xl p-2.5 focus-within:border-amber-500/50">
-                    <label className="block text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Буцах өдөр (Check-out)</label>
+                  <div className="bg-[#161412] border border-[#C5A880]/25 rounded-xl p-2.5 focus-within:border-[#C5A880]">
+                    <label className="block text-[10px] text-[#A39C91] uppercase tracking-wider font-semibold">Буцах өдөр (Check-out)</label>
                     <input
                       type="date"
                       required
                       value={bookingForm.departureDate}
                       onChange={(e) => setBookingForm({ ...bookingForm, departureDate: e.target.value })}
-                      className="w-full bg-transparent text-stone-100 text-xs font-semibold focus:outline-none [color-scheme:dark] mt-1"
+                      className="w-full bg-transparent text-[#F5F2EB] text-xs font-semibold focus:outline-none [color-scheme:dark] mt-1"
                     />
                   </div>
                 </div>
 
-                {/* Room Selection */}
                 <div className="space-y-1">
-                  <label className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Өрөөний төрөл сонгох</label>
+                  <label className="text-[10px] text-[#A39C91] uppercase tracking-wider font-semibold">Өрөөний ангилал сонгох</label>
                   <select
                     value={bookingForm.roomType}
                     onChange={(e) => setBookingForm({ ...bookingForm, roomType: e.target.value })}
-                    className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 text-xs focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#161412] border border-[#C5A880]/25 rounded-xl px-3 py-2 text-[#F5F2EB] text-xs focus:outline-none focus:border-[#C5A880]"
                   >
                     <option value="Deluxe Wooden Lodge ($110/night)">Deluxe Wooden Lodge — $110/night (Queen bed, AC, Starlink, Private Bath)</option>
                     <option value="Standard Twin Room ($65/night)">Standard Twin Room — $65/night (2 Single beds, Private Bath)</option>
@@ -904,31 +856,29 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                   </select>
                 </div>
 
-                {/* Guests */}
                 <div className="space-y-1">
-                  <label className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Зочдын тоо</label>
+                  <label className="text-[10px] text-[#A39C91] uppercase tracking-wider font-semibold">Зочдын тоо</label>
                   <select
                     value={bookingForm.guests}
                     onChange={(e) => setBookingForm({ ...bookingForm, guests: Number(e.target.value) })}
-                    className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 text-xs focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#161412] border border-[#C5A880]/25 rounded-xl px-3 py-2 text-[#F5F2EB] text-xs focus:outline-none focus:border-[#C5A880]"
                   >
                     <option value={1}>1 Guest (Хүн)</option>
                     <option value={2}>2 Guests (Хүн)</option>
                     <option value={3}>3 Guests (Хүн)</option>
                     <option value={4}>4 Guests (Хүн)</option>
-                    <option value={6}>6+ Guests (Бүлэг аялал)</option>
+                    <option value={6}>6+ Guests (Бүлэг)</option>
                   </select>
                 </div>
 
-                {/* Contact info */}
-                <div className="space-y-2 pt-1 border-t border-stone-800/80">
+                <div className="space-y-2 pt-1 border-t border-[#C5A880]/20">
                   <input
                     type="text"
                     required
                     value={bookingForm.name}
                     onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
                     placeholder="Таны нэр (Full Name) *"
-                    className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 text-xs focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#161412] border border-[#C5A880]/25 rounded-xl px-3 py-2 text-[#F5F2EB] text-xs focus:outline-none focus:border-[#C5A880]"
                   />
 
                   <div className="grid grid-cols-2 gap-2">
@@ -938,14 +888,14 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                       value={bookingForm.email}
                       onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
                       placeholder="Имэйл хаяг *"
-                      className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 text-xs focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#161412] border border-[#C5A880]/25 rounded-xl px-3 py-2 text-[#F5F2EB] text-xs focus:outline-none focus:border-[#C5A880]"
                     />
                     <input
                       type="tel"
                       value={bookingForm.phone}
                       onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
                       placeholder="Утас / WhatsApp"
-                      className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 text-xs focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#161412] border border-[#C5A880]/25 rounded-xl px-3 py-2 text-[#F5F2EB] text-xs focus:outline-none focus:border-[#C5A880]"
                     />
                   </div>
 
@@ -953,15 +903,15 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                     rows={2}
                     value={bookingForm.notes}
                     onChange={(e) => setBookingForm({ ...bookingForm, notes: e.target.value })}
-                    placeholder="Тусгай хүсэлт (4x4 тосож авах, тэмээ унах, Хэрмэн цав аялах...)"
-                    className="w-full bg-stone-900 border border-stone-800 rounded-xl p-2.5 text-stone-200 text-xs focus:outline-none focus:border-amber-500"
+                    placeholder="Тусгай хүсэлт (4x4 тосож авах, тэмээ унах, Хэрмэн цавын малтлага...)"
+                    className="w-full bg-[#161412] border border-[#C5A880]/25 rounded-xl p-2.5 text-[#F5F2EB] text-xs focus:outline-none focus:border-[#C5A880]"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmittingBooking}
-                  className="w-full py-3 bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-400 hover:from-amber-500 hover:to-yellow-300 text-stone-950 font-bold uppercase tracking-wider text-xs rounded-xl shadow-xl shadow-amber-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 bg-gradient-to-r from-[#C5A880] to-[#AA885C] hover:from-[#DFC8A7] hover:to-[#C5A880] text-[#0A0908] font-bold uppercase tracking-[0.2em] text-[11px] rounded-xl shadow-xl shadow-[#C5A880]/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmittingBooking ? (
                     <>
@@ -982,13 +932,13 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
           {/* TAB 3: AI EMAIL REPLY GENERATOR */}
           {!showSettings && activeTab === "email" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs">
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3">
-                <div className="flex items-center gap-2 text-amber-300 font-bold mb-1">
+              <div className="bg-[#1A1815] border border-[#C5A880]/30 rounded-2xl p-3.5">
+                <div className="flex items-center gap-2 text-[#DFC8A7] font-bold mb-1">
                   <Mail className="w-4 h-4" />
-                  <span className="font-['Cormorant_Garamond',serif] text-sm">Гадаад жуулчинд хариу илгээх (AI Reply)</span>
+                  <span className="font-['Cormorant_Garamond',serif] text-base">Гадаад жуулчинд хариу илгээх (AI Reply)</span>
                 </div>
                 <p className="text-stone-300 text-[11px] leading-relaxed">
-                  Ирсэн хүсэлтийг сонгоод мэргэжлийн түвшний англи хариуг 1 товшилтоор үүсгэж шууд Gmail-ээр явуулна.
+                  Ирсэн хүсэлтийг сонгоод Aurelia тансаг хэв маягтай мэргэжлийн англи захидлыг бэлтгэж шууд Gmail-ээр илгээнэ.
                 </p>
               </div>
 
@@ -997,7 +947,7 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                 <select
                   value={selectedInquiryId}
                   onChange={(e) => setSelectedInquiryId(e.target.value)}
-                  className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-stone-200 text-xs focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#161412] border border-[#C5A880]/25 rounded-xl px-3 py-2 text-[#F5F2EB] text-xs focus:outline-none focus:border-[#C5A880]"
                 >
                   {inquiries.map((inq) => (
                     <option key={inq.id} value={inq.id}>
@@ -1012,8 +962,8 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                   onClick={() => setEmailTemplateType("confirmation")}
                   className={`p-2 rounded-xl border text-center transition-all ${
                     emailTemplateType === "confirmation"
-                      ? "bg-amber-500/20 border-amber-500 text-amber-200 font-bold"
-                      : "bg-stone-900 border-stone-800 text-stone-400 hover:text-stone-200"
+                      ? "bg-[#C5A880]/20 border-[#C5A880] text-[#DFC8A7] font-bold"
+                      : "bg-[#161412] border-[#C5A880]/20 text-[#A39C91] hover:text-[#F5F2EB]"
                   }`}
                 >
                   1. Баталгаажуулах
@@ -1022,8 +972,8 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                   onClick={() => setEmailTemplateType("quote")}
                   className={`p-2 rounded-xl border text-center transition-all ${
                     emailTemplateType === "quote"
-                      ? "bg-amber-500/20 border-amber-500 text-amber-200 font-bold"
-                      : "bg-stone-900 border-stone-800 text-stone-400 hover:text-stone-200"
+                      ? "bg-[#C5A880]/20 border-[#C5A880] text-[#DFC8A7] font-bold"
+                      : "bg-[#161412] border-[#C5A880]/20 text-[#A39C91] hover:text-[#F5F2EB]"
                   }`}
                 >
                   2. Үнийн санал
@@ -1032,8 +982,8 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                   onClick={() => setEmailTemplateType("logistics")}
                   className={`p-2 rounded-xl border text-center transition-all ${
                     emailTemplateType === "logistics"
-                      ? "bg-amber-500/20 border-amber-500 text-amber-200 font-bold"
-                      : "bg-stone-900 border-stone-800 text-stone-400 hover:text-stone-200"
+                      ? "bg-[#C5A880]/20 border-[#C5A880] text-[#DFC8A7] font-bold"
+                      : "bg-[#161412] border-[#C5A880]/20 text-[#A39C91] hover:text-[#F5F2EB]"
                   }`}
                 >
                   3. 4x4 Зам чиглэл
@@ -1043,7 +993,7 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
               <button
                 onClick={handleGenerateEmail}
                 disabled={isGeneratingEmail}
-                className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-stone-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                className="w-full py-2.5 bg-gradient-to-r from-[#C5A880] to-[#AA885C] hover:from-[#DFC8A7] hover:to-[#C5A880] text-[#0A0908] font-bold rounded-xl shadow-lg shadow-[#C5A880]/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
                 {isGeneratingEmail ? (
                   <>
@@ -1052,20 +1002,20 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 fill-stone-950" />
+                    <Sparkles className="w-4 h-4 fill-[#0A0908]" />
                     <span>Бэлэн хариу имэйл бэлтгэх</span>
                   </>
                 )}
               </button>
 
               {generatedEmail && (
-                <div className="space-y-2 pt-2 border-t border-stone-800">
+                <div className="space-y-2 pt-2 border-t border-[#C5A880]/20">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-amber-300">Бэлэн болсон имэйл:</span>
+                    <span className="font-bold text-[#DFC8A7]">Бэлэн болсон имэйл:</span>
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => handleCopyText(`Subject: ${generatedEmail.subject}\n\n${generatedEmail.body}`, "email")}
-                        className="px-2.5 py-1 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-lg text-[10px] flex items-center gap-1 border border-stone-700 cursor-pointer"
+                        className="px-2.5 py-1 bg-[#1A1815] hover:bg-[#26221E] text-stone-200 rounded-lg text-[10px] flex items-center gap-1 border border-[#C5A880]/30 cursor-pointer"
                       >
                         {copySuccess === "email" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                         <span>{copySuccess === "email" ? "Хуулагдлаа!" : "Хуулах"}</span>
@@ -1079,7 +1029,7 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                             href={mailtoHref}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-2.5 py-1 bg-amber-500 text-stone-950 rounded-lg text-[10px] flex items-center gap-1 font-bold shadow-sm"
+                            className="px-2.5 py-1 bg-[#C5A880] text-[#0A0908] rounded-lg text-[10px] flex items-center gap-1 font-bold shadow-sm"
                           >
                             <ExternalLink className="w-3 h-3" />
                             <span>Gmail дээр нээх</span>
@@ -1089,9 +1039,9 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                     </div>
                   </div>
 
-                  <div className="bg-stone-900 border border-stone-800 rounded-xl p-3 space-y-2">
-                    <div className="border-b border-stone-800 pb-1.5 font-semibold text-stone-200 text-[11px]">
-                      <span className="text-stone-500">Гарчиг: </span>
+                  <div className="bg-[#161412] border border-[#C5A880]/25 rounded-xl p-3 space-y-2">
+                    <div className="border-b border-[#C5A880]/20 pb-1.5 font-semibold text-[#F5F2EB] text-[11px]">
+                      <span className="text-[#A39C91]">Гарчиг: </span>
                       {generatedEmail.subject}
                     </div>
                     <div className="text-stone-300 whitespace-pre-line font-mono text-[10.5px] max-h-48 overflow-y-auto leading-relaxed">
@@ -1103,20 +1053,20 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
             </div>
           )}
 
-          {/* TAB 4: NOTION CRM & DATABASE */}
+          {/* TAB 4: NOTION CRM */}
           {!showSettings && activeTab === "notion" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-bold text-amber-300 text-sm flex items-center gap-1.5 font-['Cormorant_Garamond',serif]">
+                  <h4 className="font-bold text-[#DFC8A7] text-sm flex items-center gap-1.5 font-['Cormorant_Garamond',serif]">
                     <Database className="w-4 h-4" /> Захиалгын нэгдсэн сан (CRM)
                   </h4>
-                  <p className="text-[10px] text-stone-400">Нийт {inquiries.length} жуулчны захиалга бүртгэгдсэн</p>
+                  <p className="text-[10px] text-[#A39C91]">Нийт {inquiries.length} жуулчны захиалга бүртгэгдсэн</p>
                 </div>
 
                 <button
                   onClick={handleExportCSV}
-                  className="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl flex items-center gap-1.5 text-[11px] font-medium transition-colors cursor-pointer"
+                  className="px-2.5 py-1.5 bg-[#C5A880]/15 hover:bg-[#C5A880]/25 text-[#DFC8A7] border border-[#C5A880]/35 rounded-xl flex items-center gap-1.5 text-[11px] font-medium transition-colors cursor-pointer"
                   title="CSV татаж авах"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -1124,21 +1074,20 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                 </button>
               </div>
 
-              {/* Inquiry List */}
               <div className="space-y-2.5">
                 {inquiries.map((inq) => (
                   <div
                     key={inq.id}
-                    className="bg-stone-900/90 border border-stone-800/80 rounded-2xl p-3 space-y-2 hover:border-amber-500/30 transition-colors"
+                    className="bg-[#161412] border border-[#C5A880]/20 rounded-2xl p-3 space-y-2 hover:border-[#C5A880]/40 transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <div className="font-bold text-stone-100 flex items-center gap-1.5">
+                        <div className="font-bold text-[#F5F2EB] flex items-center gap-1.5">
                           <span>{inq.name}</span>
                           <span
                             className={`text-[9px] px-2 py-0.5 rounded-full font-mono ${
                               inq.status === "New"
-                                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                ? "bg-[#C5A880]/20 text-[#DFC8A7] border border-[#C5A880]/30"
                                 : inq.status === "Contacted"
                                 ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
                                 : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
@@ -1147,18 +1096,18 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                             {inq.status}
                           </span>
                         </div>
-                        <div className="text-[11px] text-amber-400/90 font-medium mt-0.5">
+                        <div className="text-[11px] text-[#C5A880] font-medium mt-0.5">
                           {inq.roomType} • {inq.guests} Зочин
                         </div>
                       </div>
 
-                      <span className="text-[10px] text-stone-500 font-mono">{inq.arrivalDate}</span>
+                      <span className="text-[10px] text-[#A39C91] font-mono">{inq.arrivalDate}</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-1 text-[11px] text-stone-300 bg-stone-950/60 p-2 rounded-xl">
+                    <div className="grid grid-cols-2 gap-1 text-[11px] text-stone-300 bg-[#0E0C0A] p-2 rounded-xl border border-[#C5A880]/10">
                       <div>📧 {inq.email}</div>
                       <div>📱 {inq.phone || "Утас байхгүй"}</div>
-                      <div className="col-span-2 text-stone-400 italic text-[10px] mt-0.5">
+                      <div className="col-span-2 text-[#A39C91] italic text-[10px] mt-0.5">
                         "{inq.notes || "Тусгай тэмдэглэл байхгүй"}"
                       </div>
                     </div>
@@ -1171,7 +1120,7 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                               prev.map((i) => (i.id === inq.id ? { ...i, status: "Contacted" } : i))
                             );
                           }}
-                          className="px-2 py-0.5 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded text-[10px]"
+                          className="px-2 py-0.5 bg-[#1F1C18] hover:bg-[#2B2722] text-stone-300 rounded text-[10px]"
                         >
                           Холбогдсон
                         </button>
@@ -1192,7 +1141,7 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
                           setSelectedInquiryId(inq.id);
                           setActiveTab("email");
                         }}
-                        className="text-amber-400 hover:text-amber-300 font-semibold text-[10.5px] flex items-center gap-1"
+                        className="text-[#DFC8A7] hover:text-white font-semibold text-[10.5px] flex items-center gap-1"
                       >
                         <Mail className="w-3 h-3" />
                         <span>Хариу мэйл бичих</span>
@@ -1204,13 +1153,13 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
             </div>
           )}
 
-          {/* TAB 5: TRAVEL SAFETY & QUICK UTILITIES */}
+          {/* TAB 5: TRAVEL SAFETY */}
           {!showSettings && activeTab === "safety" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs">
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3">
-                <div className="flex items-center gap-2 text-amber-300 font-bold mb-1">
+              <div className="bg-[#1A1815] border border-[#C5A880]/30 rounded-2xl p-3.5">
+                <div className="flex items-center gap-2 text-[#DFC8A7] font-bold mb-1">
                   <ShieldCheck className="w-4 h-4" />
-                  <span className="font-['Cormorant_Garamond',serif] text-sm">Хэрмэн цав & Говийн аяллын санамж</span>
+                  <span className="font-['Cormorant_Garamond',serif] text-base">Хэрмэн цав & Говийн аяллын санамж</span>
                 </div>
                 <p className="text-stone-300 text-[11px] leading-relaxed">
                   Өмнөговь аймгийн Гурвантэс сум, Тост тосон бумба, Хэрмэн цавын онгон байгальд аялахад анхаарах зүйлс:
@@ -1218,44 +1167,43 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
               </div>
 
               <div className="space-y-2">
-                <div className="bg-stone-900 border border-stone-800 rounded-2xl p-3 space-y-1">
-                  <div className="font-bold text-amber-300 flex items-center gap-1.5">
-                    <Compass className="w-4 h-4" /> 1. Тээврийн хэрэгсэл ба Зам чиглэл
+                <div className="bg-[#161412] border border-[#C5A880]/20 rounded-2xl p-3 space-y-1">
+                  <div className="font-bold text-[#DFC8A7] flex items-center gap-1.5">
+                    <Compass className="w-4 h-4 text-[#C5A880]" /> 1. Тээврийн хэрэгсэл ба 4х4 Зам
                   </div>
                   <p className="text-stone-300 text-[11px] leading-relaxed">
-                    Зөвхөн өндөр тэнхлэгтэй, 4х4 бүрэн хөтлөгчтэй Land Cruiser зэрэг машинтай явах. Говийн элсэнд суух эрсдэлтэй тул туршлагатай орон нутгийн жолоочтой зорчих нь аюулгүй.
+                    Зөвхөн өндөр тэнхлэгтэй, 4х4 бүрэн хөтлөгчтэй Land Cruiser зэрэг машинтай зорчих.
                   </p>
                 </div>
 
-                <div className="bg-stone-900 border border-stone-800 rounded-2xl p-3 space-y-1">
-                  <div className="font-bold text-amber-300 flex items-center gap-1.5">
-                    <Sun className="w-4 h-4" /> 2. Ус, нарны хамгаалалт & Салхи
+                <div className="bg-[#161412] border border-[#C5A880]/20 rounded-2xl p-3 space-y-1">
+                  <div className="font-bold text-[#DFC8A7] flex items-center gap-1.5">
+                    <Sun className="w-4 h-4 text-[#C5A880]" /> 2. Ус, нарны хамгаалалт & Салхи
                   </div>
                   <p className="text-stone-300 text-[11px] leading-relaxed">
-                    Нэг хүнд өдөрт хамгийн багадаа 3-4 литр ундны цэвэр ус тооцох. Нарны тос, хүзүүний алчуур, нарны шил болон оройн жиндэлтэд зориулсан дулаан хүрэм заавал авч явах.
+                    Нэг хүнд өдөрт 3-4 литр ундны ус тооцох. Нарны тос, шил, дулаан хүрэмтэй байх.
                   </p>
                 </div>
 
-                <div className="bg-stone-900 border border-stone-800 rounded-2xl p-3 space-y-1">
-                  <div className="font-bold text-amber-300 flex items-center gap-1.5">
-                    <Wifi className="w-4 h-4" /> 3. Холбоо бариа & Баазын тохь тух
+                <div className="bg-[#161412] border border-[#C5A880]/20 rounded-2xl p-3 space-y-1">
+                  <div className="font-bold text-[#DFC8A7] flex items-center gap-1.5">
+                    <Wifi className="w-4 h-4 text-[#C5A880]" /> 3. Холбоо бариа & Баазын тохь тух
                   </div>
                   <p className="text-stone-300 text-[11px] leading-relaxed">
-                    Батаарын өлгий бааз дээр Starlink сансрын өндөр хурдны интернэт, гүний цэвэр ус болон 24/7 цахилгаан эрчим хүчээр бүрэн хангагдсан.
+                    Батаарын өлгий бааз дээр Starlink сансрын өндөр хурдны интернэт, гүний цэвэр ус, 24/7 цахилгаанаар бүрэн хангагдсан.
                   </p>
                 </div>
               </div>
 
-              {/* Direct Hotline */}
-              <div className="p-3 bg-stone-900/90 border border-amber-500/20 rounded-2xl flex items-center justify-between">
+              <div className="p-3 bg-[#161412] border border-[#C5A880]/25 rounded-2xl flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-stone-200">Баазын шуурхай утас</div>
-                  <div className="text-[11px] text-amber-400 font-mono">+976 7201 0099 / +976 8822 3584</div>
+                  <div className="font-bold text-[#F5F2EB]">Баазын шуурхай утас</div>
+                  <div className="text-[11px] text-[#DFC8A7] font-mono">+976 7201 0099 / +976 8822 3584</div>
                 </div>
 
                 <a
                   href="tel:+97672010099"
-                  className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-xl text-xs flex items-center gap-1"
+                  className="px-3.5 py-1.5 bg-[#C5A880] hover:bg-[#DFC8A7] text-[#0A0908] font-bold rounded-xl text-xs flex items-center gap-1"
                 >
                   <Phone className="w-3.5 h-3.5" />
                   <span>Шууд залгах</span>
@@ -1265,15 +1213,12 @@ Format output with Subject on line 1 (starting with "Subject: "), followed by th
           )}
 
           {/* Footer Status Bar */}
-          <div className="px-4 py-2 bg-stone-950 border-t border-stone-900 flex items-center justify-between text-[10px] text-stone-400">
+          <div className="px-4 py-2 bg-[#0A0908] border-t border-[#C5A880]/15 flex items-center justify-between text-[10px] text-[#A39C91]">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span>Bataar Sanctuary • Tost Tosonbumba</span>
+              <span>Bataar Sanctuary • Aurelia Retreat</span>
             </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-stone-500 font-mono">v2.5 Luxury Concierge</span>
-            </div>
+            <span className="font-mono text-[#C5A880]">v2.6 Aurelia Style</span>
           </div>
 
         </div>
