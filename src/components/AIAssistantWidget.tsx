@@ -1287,38 +1287,43 @@ Phone: +976 7201 0099`;
                 <div className="bg-white border border-stone-200 rounded-2xl p-4 space-y-3 shadow-2xs">
                   <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                     <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
-                      <Monitor className="w-4 h-4 text-blue-600" /> Компьютер / Laptop (Windows, Mac) дээр суулгах:
+                      <Monitor className="w-4 h-4 text-blue-600" /> Компьютер / Laptop дээр програм болгож суулгах:
                     </span>
                     <span className="text-[10px] text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full font-semibold border border-blue-200">
-                      Chrome / Edge
+                      Edge / Chrome
                     </span>
                   </div>
 
-                  {/* 1-Click Install Button if browser supports it */}
-                  {isInstallable && (
-                    <div className="p-3 rounded-xl bg-blue-50 border border-blue-300 text-center space-y-2">
-                      <p className="text-[11px] text-blue-950 font-medium">
-                        Компьютертээ бие даасан Desktop програм болгож шууд суулгах:
-                      </p>
-                      <button
-                        onClick={async () => {
-                          await install();
-                          setShowAppInstall(false);
-                        }}
-                        className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold text-xs tracking-wider uppercase shadow-md flex items-center justify-center gap-2 cursor-pointer transition active:scale-95"
-                      >
-                        <Download className="w-4 h-4" /> Desktop App болгож суулгах
-                      </button>
+                  {/* Direct domain alert */}
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-stone-800 space-y-1.5">
+                    <div className="flex items-center gap-1.5 font-bold text-amber-900 text-xs">
+                      <span>💡 Чухал санамж:</span>
                     </div>
-                  )}
+                    <p className="text-[11px] leading-relaxed text-stone-700">
+                      Та одоогоор хөгжүүлэгчийн дотоод систем (AI Studio) дотор харж байгаа тул хөтөч нь програм суулгах цэсийг түр нуусан байна. Програм болгож суулгахын тулд <strong>үндсэн bataartravel.mn</strong> хаягаар орно уу:
+                    </p>
+                    <a
+                      href="https://bataartravel.mn"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-950 text-amber-400 font-bold text-[11px] hover:bg-stone-800 transition shadow-sm mt-1"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" /> bataartravel.mn сайтыг шинэ цонхоор нээх ↗
+                    </a>
+                  </div>
 
-                  <div className="space-y-2.5 text-[11.5px] text-stone-700">
+                  {/* Microsoft Edge Instructions */}
+                  <div className="space-y-2 text-[11.5px] text-stone-700">
+                    <div className="font-bold text-stone-900 text-xs flex items-center gap-1 text-blue-700">
+                      <span>Таны ашиглаж буй Microsoft Edge хөтөч дээр:</span>
+                    </div>
+
                     <div className="flex items-start gap-2.5 p-2 rounded-xl bg-stone-50 border border-stone-200/60">
                       <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
                         1
                       </div>
                       <div className="flex-1">
-                        Google Chrome эсвэл Microsoft Edge хөтчийн хаягийн мөр (URL)-ийн хамгийн баруун захад харагдах <strong className="text-stone-900">"Компьютерт суулгах" (Install App 🖥️ ⬇️)</strong> дүрс дээр дарна.
+                        Шинэ таб нээгээд <strong className="text-stone-900">bataartravel.mn</strong> хаягаар орно.
                       </div>
                     </div>
 
@@ -1327,7 +1332,7 @@ Phone: +976 7201 0099`;
                         2
                       </div>
                       <div className="flex-1">
-                        (Эсвэл хөтчийн баруун дээд талын <strong className="text-stone-900">3 цэг (⋮)</strong> → <strong className="text-stone-900">"Cast, save, and share" / "Апп суулгах"</strong> → <strong className="text-blue-700">"Install Bataar Travel"</strong> гэснийг сонгоно).
+                        Edge хөтчийнхөө баруун дээд буланд байрлах <strong className="text-stone-900">3 цэг (...)</strong> товчийг дараад цэснээс <strong className="text-blue-700">"Apps" (Аппликейшн)</strong> сонголтыг сонгоно.
                       </div>
                     </div>
 
@@ -1336,7 +1341,16 @@ Phone: +976 7201 0099`;
                         3
                       </div>
                       <div className="flex-1">
-                        Таны Windows Taskbar, Start цэс болон Desktop дэлгэц дээр <strong className="text-stone-900">BataarTravel</strong> бие даасан Desktop App болж сууна. Хөтчийн хаягийн мөргүй, бүрэн дэлгэцээр тусдаа цонхоор нээгдэнэ!
+                        <strong className="text-stone-900">"Install Bataar Travel"</strong> (эсвэл <em>"Install this site as an app"</em>) гэснийг сонгоод <strong className="text-blue-700">"Install"</strong> дарна.
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5 p-2 rounded-xl bg-stone-50 border border-stone-200/60">
+                      <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        ✓
+                      </div>
+                      <div className="flex-1">
+                        Таны Windows Taskbar болон Desktop дэлгэц дээр <strong className="text-stone-900">BataarTravel</strong> тусдаа бие даасан програм болж шууд гарч ирнэ!
                       </div>
                     </div>
                   </div>
