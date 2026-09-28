@@ -19,9 +19,13 @@ import {
   CheckCircle2,
   Globe,
   Sun,
-  Wifi
+  Wifi,
+  Smartphone,
+  Share,
+  PlusSquare
 } from "lucide-react";
 import { GoogleGenAI } from "@google/genai";
+import { usePWAInstall } from "../hooks/usePWAInstall";
 
 export type SupportedLang = "mn" | "en" | "ko" | "ja" | "zh" | "ru" | "de" | "fr";
 
@@ -96,7 +100,8 @@ const I18N = {
     safetyP2: "2. Ус ба нар: 1 хүнд өдөрт 3-4л ундны ус тооцох, нарны хамгаалалт, салхины дулаан хувцастай байх.",
     safetyP3: "3. Баазын тохь: Starlink интернэт, гүний цэвэр ус, 24/7 цахилгаанаар бүрэн хангагдсан.",
     callDirect: "Шууд залгах",
-    campHotline: "Баазын шуурхай утас"
+    campHotline: "Баазын шуурхай утас",
+    installApp: "Апп суулгах"
   },
   en: {
     widgetTitle: "BATAAR SANCTUARY CONCIERGE",
@@ -142,7 +147,8 @@ I am your 24/7 AI Sanctuary Concierge. How may I orchestrate your Gobi journey?
     safetyP2: "2. Hydration & Sun: Carry 3-4 liters of water per person daily, sun protection, and windproof gear.",
     safetyP3: "3. Sanctuary Comfort: Starlink broadband, hot showers, and 100% solar green power await your arrival.",
     callDirect: "Call Concierge",
-    campHotline: "Sanctuary Direct Line"
+    campHotline: "Sanctuary Direct Line",
+    installApp: "Install App"
   },
   ko: {
     widgetTitle: "바타르 생츄어리 컨시어지",
@@ -188,7 +194,8 @@ I am your 24/7 AI Sanctuary Concierge. How may I orchestrate your Gobi journey?
     safetyP2: "2. 식수 및 자외선: 1인당 하루 3~4리터의 식수와 자외선 차단제, 방풍 재킷을 준비하세요.",
     safetyP3: "3. 리조트 편의: 베이스캠프 전 구역에서 스타링크 위성 인터넷과 온수 샤워가 가능합니다.",
     callDirect: "전화 문의",
-    campHotline: "리조트 직통 전화"
+    campHotline: "리조트 직통 전화",
+    installApp: "앱 설치"
   },
   zh: {
     widgetTitle: "巴塔尔度假圣地 管家服务",
@@ -234,7 +241,8 @@ I am your 24/7 AI Sanctuary Concierge. How may I orchestrate your Gobi journey?
     safetyP2: "2. 水与防晒: 每人每天需储备3-4升饮用水，备好防晒霜及防风外套。",
     safetyP3: "3. 营地保障: 度假村全天候供应热水淋浴、星链卫星WiFi及绿色太阳能电力。",
     callDirect: "拨打客服",
-    campHotline: "度假村直通热线"
+    campHotline: "度假村直通热线",
+    installApp: "安装应用"
   },
   ja: {
     widgetTitle: "バタール・サンクチュアリ コンシェルジュ",
@@ -280,7 +288,8 @@ I am your 24/7 AI Sanctuary Concierge. How may I orchestrate your Gobi journey?
     safetyP2: "2. 水分と紫外線: 1日1人3〜4リットルの飲料水、日焼け止め、防風着をご用意ください。",
     safetyP3: "3. 快適な拠点: キャンプ場内はスターリンクWi-Fi、温水シャワー、太陽光電力が完備されています。",
     callDirect: "電話で問い合わせ",
-    campHotline: "リゾート直通電話"
+    campHotline: "リゾート直通電話",
+    installApp: "アプリ導入"
   },
   ru: {
     widgetTitle: "КОНСЬЕРЖ БАТААР САНКТУАРИЙ",
@@ -326,7 +335,8 @@ I am your 24/7 AI Sanctuary Concierge. How may I orchestrate your Gobi journey?
     safetyP2: "2. Вода и солнце: Не менее 3-4 литров воды на человека в день, защита от солнца и ветра.",
     safetyP3: "3. База Батаар: На базе доступен спутниковый интернет Starlink, горячая вода и электричество 24/7.",
     callDirect: "Позвонить",
-    campHotline: "Горячая линия базы"
+    campHotline: "Горячая линия базы",
+    installApp: "Установить"
   },
   de: {
     widgetTitle: "BATAAR SANCTUARY CONCIERGE",
@@ -370,7 +380,8 @@ Ihr 24/7 AI-Concierge steht Ihnen zur Seite:
     safetyP2: "2. Wasser & Sonne: Mindestens 3-4 Liter Wasser pro Tag und Sonnenschutz mitführen.",
     safetyP3: "3. Schutz: Starlink-Internet und heißes Quellwasser stehen im Camp bereit.",
     callDirect: "Anrufen",
-    campHotline: "Direktkontakt"
+    campHotline: "Direktkontakt",
+    installApp: "App laden"
   },
   fr: {
     widgetTitle: "BATAAR SANCTUARY CONCIERGERIE",
@@ -414,7 +425,8 @@ Votre concierge IA est à votre service 24h/24 :
     safetyP2: "2. Hydratation : Prévoir 3 à 4 litres d'eau par jour et par personne.",
     safetyP3: "3. Équipements : Wi-Fi Starlink et douches chaudes disponibles au camp.",
     callDirect: "Appeler",
-    campHotline: "Ligne directe du camp"
+    campHotline: "Ligne directe du camp",
+    installApp: "Installer l'app"
   }
 };
 
@@ -483,11 +495,13 @@ export const AIAssistantWidget: React.FC = () => {
     }
   });
 
-  // Settings
+  // Settings & PWA App
   const [geminiApiKey, setGeminiApiKey] = useState(() => localStorage.getItem("bataar_gemini_api_key") || "");
   const [notionApiKey, setNotionApiKey] = useState(() => localStorage.getItem("bataar_notion_api_key") || "");
   const [notionWebhookUrl, setNotionWebhookUrl] = useState(() => localStorage.getItem("bataar_notion_webhook") || "");
   const [showSettings, setShowSettings] = useState(false);
+  const [showAppInstall, setShowAppInstall] = useState(false);
+  const { isInstallable, isInstalled, isIOS, isAndroid, install } = usePWAInstall();
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
 
   // Booking Form State
@@ -826,28 +840,49 @@ Phone: +976 7201 0099`;
       {/* Light / Gegeeleg Floating Launcher Button */}
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 pointer-events-auto">
         {!isOpen && (
-          <button
-            onClick={() => setIsOpen(true)}
-            className="group flex items-center gap-3 px-4.5 py-3 rounded-full bg-white/95 text-stone-900 border border-stone-200/90 shadow-[0_12px_36px_rgba(40,30,20,0.12)] hover:border-amber-500/60 hover:shadow-[0_16px_40px_rgba(217,119,6,0.18)] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-xl cursor-pointer"
-          >
-            <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-white shadow-sm">
-              <Sparkles className="w-4 h-4 fill-white" />
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 absolute -top-0.5 -right-0.5 ring-2 ring-white animate-pulse" />
-            </div>
-
-            <div className="flex flex-col text-left">
-              <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-stone-900 font-['Plus_Jakarta_Sans',sans-serif]">
-                {t.launcherBtn}
+          <>
+            {/* Quick App Shortcut Button */}
+            <button
+              onClick={() => {
+                setIsOpen(true);
+                setShowAppInstall(true);
+                setShowSettings(false);
+              }}
+              className="group flex items-center gap-2 px-3.5 py-3 rounded-full bg-white/95 text-stone-900 border border-stone-200/90 shadow-[0_12px_36px_rgba(40,30,20,0.12)] hover:border-amber-500/60 hover:text-amber-800 hover:shadow-[0_16px_40px_rgba(217,119,6,0.18)] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-xl cursor-pointer"
+              title="Bataar Travel Аппликейшнийг утсандаа суулгах (PWA)"
+            >
+              <Smartphone className="w-4 h-4 text-amber-600 group-hover:scale-110 transition-transform" />
+              <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-stone-900 font-['Plus_Jakarta_Sans',sans-serif]">
+                {t.installApp || "Апп"}
               </span>
-              <span className="text-[9px] text-stone-500 tracking-wider uppercase font-medium">
-                {t.launcherSub}
-              </span>
-            </div>
+            </button>
 
-            <span className="ml-1 text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200/60 font-semibold uppercase">
-              {currentLang.toUpperCase()}
-            </span>
-          </button>
+            <button
+              onClick={() => {
+                setIsOpen(true);
+                setShowAppInstall(false);
+              }}
+              className="group flex items-center gap-3 px-4.5 py-3 rounded-full bg-white/95 text-stone-900 border border-stone-200/90 shadow-[0_12px_36px_rgba(40,30,20,0.12)] hover:border-amber-500/60 hover:shadow-[0_16px_40px_rgba(217,119,6,0.18)] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-xl cursor-pointer"
+            >
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-white shadow-sm">
+                <Sparkles className="w-4 h-4 fill-white" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 absolute -top-0.5 -right-0.5 ring-2 ring-white animate-pulse" />
+              </div>
+
+              <div className="flex flex-col text-left">
+                <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-stone-900 font-['Plus_Jakarta_Sans',sans-serif]">
+                  {t.launcherBtn}
+                </span>
+                <span className="text-[9px] text-stone-500 tracking-wider uppercase font-medium">
+                  {t.launcherSub}
+                </span>
+              </div>
+
+              <span className="ml-1 text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200/60 font-semibold uppercase">
+                {currentLang.toUpperCase()}
+              </span>
+            </button>
+          </>
         )}
       </div>
 
@@ -875,6 +910,24 @@ Phone: +976 7201 0099`;
             </div>
 
             <div className="flex items-center gap-1.5">
+              {/* PWA App Install quick button in header */}
+              <button
+                onClick={() => {
+                  setShowAppInstall(!showAppInstall);
+                  setShowSettings(false);
+                }}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-xs transition-colors border cursor-pointer ${
+                  showAppInstall
+                    ? "bg-amber-100 text-amber-900 border-amber-300 font-bold"
+                    : "bg-white border-stone-200 text-stone-700 hover:text-stone-900 hover:bg-stone-50"
+                }`}
+                title="Bataar Travel Аппликейшнийг утсандаа суулгах (PWA)"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-amber-600" />
+                <span className="hidden sm:inline">{t.installApp || "Апп суулгах"}</span>
+                <span className="sm:hidden">Апп</span>
+              </button>
+
               {/* Language Selector Dropdown */}
               <div className="relative group">
                 <button
@@ -897,7 +950,10 @@ Phone: +976 7201 0099`;
               </div>
 
               <button
-                onClick={() => setShowSettings(!showSettings)}
+                onClick={() => {
+                  setShowSettings(!showSettings);
+                  setShowAppInstall(false);
+                }}
                 className={`p-1.5 rounded-lg transition-colors ${showSettings ? "bg-amber-100 text-amber-800" : "text-stone-500 hover:text-stone-800 hover:bg-white"}`}
                 title="Settings & API Keys"
               >
@@ -916,9 +972,9 @@ Phone: +976 7201 0099`;
           {/* Navigation Bar */}
           <div className="grid grid-cols-5 bg-[#F2EDE4]/70 p-1 border-b border-stone-200/80 text-[10.5px] font-medium">
             <button
-              onClick={() => { setActiveTab("chat"); setShowSettings(false); }}
+              onClick={() => { setActiveTab("chat"); setShowSettings(false); setShowAppInstall(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
-                activeTab === "chat" && !showSettings
+                activeTab === "chat" && !showSettings && !showAppInstall
                   ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
                   : "text-stone-600 hover:text-stone-900"
               }`}
@@ -928,9 +984,9 @@ Phone: +976 7201 0099`;
             </button>
 
             <button
-              onClick={() => { setActiveTab("booking"); setShowSettings(false); }}
+              onClick={() => { setActiveTab("booking"); setShowSettings(false); setShowAppInstall(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
-                activeTab === "booking" && !showSettings
+                activeTab === "booking" && !showSettings && !showAppInstall
                   ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
                   : "text-stone-600 hover:text-stone-900"
               }`}
@@ -940,9 +996,9 @@ Phone: +976 7201 0099`;
             </button>
 
             <button
-              onClick={() => { setActiveTab("email"); setShowSettings(false); }}
+              onClick={() => { setActiveTab("email"); setShowSettings(false); setShowAppInstall(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
-                activeTab === "email" && !showSettings
+                activeTab === "email" && !showSettings && !showAppInstall
                   ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
                   : "text-stone-600 hover:text-stone-900"
               }`}
@@ -952,9 +1008,9 @@ Phone: +976 7201 0099`;
             </button>
 
             <button
-              onClick={() => { setActiveTab("notion"); setShowSettings(false); }}
+              onClick={() => { setActiveTab("notion"); setShowSettings(false); setShowAppInstall(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all relative ${
-                activeTab === "notion" && !showSettings
+                activeTab === "notion" && !showSettings && !showAppInstall
                   ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
                   : "text-stone-600 hover:text-stone-900"
               }`}
@@ -967,9 +1023,9 @@ Phone: +976 7201 0099`;
             </button>
 
             <button
-              onClick={() => { setActiveTab("safety"); setShowSettings(false); }}
+              onClick={() => { setActiveTab("safety"); setShowSettings(false); setShowAppInstall(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
-                activeTab === "safety" && !showSettings
+                activeTab === "safety" && !showSettings && !showAppInstall
                   ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
                   : "text-stone-600 hover:text-stone-900"
               }`}
@@ -1043,8 +1099,122 @@ Phone: +976 7201 0099`;
             </div>
           )}
 
+          {/* PWA App Install Panel */}
+          {showAppInstall && !showSettings && (
+            <div className="flex-1 p-5 overflow-y-auto bg-[#FAF9F6] text-xs space-y-4">
+              <div className="flex items-center justify-between border-b border-stone-200 pb-2">
+                <h4 className="font-bold text-stone-900 text-sm flex items-center gap-2 font-['Cormorant_Garamond',serif]">
+                  <Smartphone className="w-4 h-4 text-amber-600" /> Bataar Travel Гар утасны Аппликейшн
+                </h4>
+                <button
+                  onClick={() => setShowAppInstall(false)}
+                  className="text-stone-500 hover:text-stone-800 p-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* App banner */}
+              <div className="bg-white border border-stone-200/90 rounded-2xl p-4 shadow-2xs flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 p-0.5 shadow-sm shrink-0 flex items-center justify-center">
+                  <img src="./favicon.png" alt="Bataar App Icon" className="w-full h-full object-cover rounded-[10px]" onError={(e) => (e.target as HTMLElement).style.display = 'none'} />
+                </div>
+                <div>
+                  <div className="font-['Cormorant_Garamond',serif] font-bold text-stone-900 text-base">
+                    Батаарын Өлгий | Bataar Travel
+                  </div>
+                  <div className="text-[11px] text-stone-500">
+                    bataartravel.mn • Албан ёсны гар утасны хувилбар (PWA)
+                  </div>
+                </div>
+              </div>
+
+              {/* Benefits */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-white border border-stone-200 rounded-xl p-3 shadow-2xs">
+                  <div className="font-bold text-stone-900 flex items-center gap-1.5 text-xs mb-1">
+                    <Smartphone className="w-3.5 h-3.5 text-amber-600" /> Нүүр дэлгэц дээр
+                  </div>
+                  <div className="text-[11px] text-stone-600 leading-tight">
+                    Хөтөч нээхгүйгээр апп шиг шууд нээгдэнэ
+                  </div>
+                </div>
+
+                <div className="bg-white border border-stone-200 rounded-xl p-3 shadow-2xs">
+                  <div className="font-bold text-stone-900 flex items-center gap-1.5 text-xs mb-1">
+                    <Wifi className="w-3.5 h-3.5 text-emerald-600" /> Офлайн горим
+                  </div>
+                  <div className="text-[11px] text-stone-600 leading-tight">
+                    Говьд сүлжээ тасарсан ч мэдээллээ харна
+                  </div>
+                </div>
+              </div>
+
+              {/* Install action card */}
+              {isInstallable ? (
+                <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-center space-y-3 shadow-2xs">
+                  <p className="text-xs text-amber-950 font-medium">
+                    Таны төхөөрөмж 1 товшилтоор шууд суулгахыг дэмжиж байна:
+                  </p>
+                  <button
+                    onClick={async () => {
+                      await install();
+                      setShowAppInstall(false);
+                    }}
+                    className="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs tracking-wider uppercase shadow-sm flex items-center justify-center gap-2 cursor-pointer transition"
+                  >
+                    <Download className="w-4 h-4" /> Утсандаа 1 товшилтоор суулгах
+                  </button>
+                </div>
+              ) : isIOS ? (
+                <div className="bg-white border border-stone-200 rounded-2xl p-4 space-y-2.5 shadow-2xs">
+                  <div className="font-bold text-stone-900 text-xs flex items-center gap-1.5 border-b border-stone-100 pb-2">
+                    <Smartphone className="w-4 h-4 text-amber-600" /> iPhone / iPad (Safari) дээр суулгах:
+                  </div>
+                  <ol className="space-y-2 text-[11px] text-stone-700">
+                    <li className="flex items-start gap-2">
+                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">1</span>
+                      <span>Safari хөтчийн доод талын <strong>Share (Хуваалцах ⎋)</strong> товчийг дарна.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">2</span>
+                      <span>Доош гүйлгээд <strong>"Add to Home Screen" (Нүүр дэлгэцэнд нэмэх ⊞)</strong> сонгоно.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">3</span>
+                      <span>Баруун дээд булангийн <strong>"Add"</strong> дарснаар таны дэлгэц дээр сууж бэлэн болно!</span>
+                    </li>
+                  </ol>
+                </div>
+              ) : (
+                <div className="bg-white border border-stone-200 rounded-2xl p-4 space-y-2.5 shadow-2xs">
+                  <div className="font-bold text-stone-900 text-xs flex items-center gap-1.5 border-b border-stone-100 pb-2">
+                    <Smartphone className="w-4 h-4 text-amber-600" /> Android / Компьютер дээр суулгах:
+                  </div>
+                  <ol className="space-y-2 text-[11px] text-stone-700">
+                    <li className="flex items-start gap-2">
+                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">1</span>
+                      <span>Chrome хөтчийн баруун дээд булангийн <strong>3 цэг (⋮)</strong> цэсийг дарна.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">2</span>
+                      <span><strong>"Апп суулгах" (Install app)</strong> эсвэл <strong>"Нүүр дэлгэцэнд нэмэх"</strong> сонгоно.</span>
+                    </li>
+                  </ol>
+                </div>
+              )}
+
+              <button
+                onClick={() => setShowAppInstall(false)}
+                className="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold rounded-xl text-xs transition cursor-pointer"
+              >
+                ← Буцах (AI Чат руу)
+              </button>
+            </div>
+          )}
+
           {/* TAB 1: AI CHAT */}
-          {!showSettings && activeTab === "chat" && (
+          {!showSettings && !showAppInstall && activeTab === "chat" && (
             <div className="flex-1 flex flex-col overflow-hidden bg-[#FAF9F6]">
               <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs">
                 {messages.map((m) => (
@@ -1090,8 +1260,15 @@ Phone: +976 7201 0099`;
                   <button
                     key={idx}
                     onClick={() => {
-                      if (idx === 3) setActiveTab("booking");
-                      else setInputMessage(chip);
+                      if (idx === 3) {
+                        setActiveTab("booking");
+                        setShowAppInstall(false);
+                      } else if (chip.includes("Апп") || chip.includes("App") || chip.includes("앱") || chip.includes("应用") || chip.includes("アプリ") || chip.includes("Установить")) {
+                        setShowAppInstall(true);
+                        setShowSettings(false);
+                      } else {
+                        setInputMessage(chip);
+                      }
                     }}
                     className={`whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] border transition-colors cursor-pointer ${
                       idx === 3
@@ -1126,7 +1303,7 @@ Phone: +976 7201 0099`;
           )}
 
           {/* TAB 2: DIRECT BOOKING */}
-          {!showSettings && activeTab === "booking" && (
+          {!showSettings && !showAppInstall && activeTab === "booking" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs bg-[#FAF9F6]">
               <div className="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-2xs">
                 <div className="flex items-center gap-2 text-stone-900 font-bold mb-1">
@@ -1257,7 +1434,7 @@ Phone: +976 7201 0099`;
           )}
 
           {/* TAB 3: AI EMAIL REPLY GENERATOR */}
-          {!showSettings && activeTab === "email" && (
+          {!showSettings && !showAppInstall && activeTab === "email" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs bg-[#FAF9F6]">
               <div className="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-2xs">
                 <div className="flex items-center gap-2 text-stone-900 font-bold mb-1">
@@ -1348,7 +1525,7 @@ Phone: +976 7201 0099`;
           )}
 
           {/* TAB 4: NOTION CRM */}
-          {!showSettings && activeTab === "notion" && (
+          {!showSettings && !showAppInstall && activeTab === "notion" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-[#FAF9F6]">
               <div className="flex items-center justify-between">
                 <div>
@@ -1448,7 +1625,7 @@ Phone: +976 7201 0099`;
           )}
 
           {/* TAB 5: TRAVEL SAFETY */}
-          {!showSettings && activeTab === "safety" && (
+          {!showSettings && !showAppInstall && activeTab === "safety" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-[#FAF9F6]">
               <div className="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-2xs">
                 <div className="flex items-center gap-2 text-stone-900 font-bold mb-1">
