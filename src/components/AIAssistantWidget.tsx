@@ -840,49 +840,31 @@ Phone: +976 7201 0099`;
       {/* Light / Gegeeleg Floating Launcher Button */}
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 pointer-events-auto">
         {!isOpen && (
-          <>
-            {/* Quick App Shortcut Button */}
-            <button
-              onClick={() => {
-                setIsOpen(true);
-                setShowAppInstall(true);
-                setShowSettings(false);
-              }}
-              className="group flex items-center gap-2 px-3.5 py-3 rounded-full bg-white/95 text-stone-900 border border-stone-200/90 shadow-[0_12px_36px_rgba(40,30,20,0.12)] hover:border-amber-500/60 hover:text-amber-800 hover:shadow-[0_16px_40px_rgba(217,119,6,0.18)] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-xl cursor-pointer"
-              title="Bataar Travel Аппликейшнийг утсандаа суулгах (PWA)"
-            >
-              <Smartphone className="w-4 h-4 text-amber-600 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-stone-900 font-['Plus_Jakarta_Sans',sans-serif]">
-                {t.installApp || "Апп"}
+          <button
+            onClick={() => {
+              setIsOpen(true);
+              setShowAppInstall(false);
+            }}
+            className="group flex items-center gap-3 px-4.5 py-3 rounded-full bg-white/95 text-stone-900 border border-stone-200/90 shadow-[0_12px_36px_rgba(40,30,20,0.12)] hover:border-amber-500/60 hover:shadow-[0_16px_40px_rgba(217,119,6,0.18)] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-xl cursor-pointer"
+          >
+            <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-white shadow-sm">
+              <Sparkles className="w-4 h-4 fill-white" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 absolute -top-0.5 -right-0.5 ring-2 ring-white animate-pulse" />
+            </div>
+
+            <div className="flex flex-col text-left">
+              <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-stone-900 font-['Plus_Jakarta_Sans',sans-serif]">
+                {t.launcherBtn}
               </span>
-            </button>
-
-            <button
-              onClick={() => {
-                setIsOpen(true);
-                setShowAppInstall(false);
-              }}
-              className="group flex items-center gap-3 px-4.5 py-3 rounded-full bg-white/95 text-stone-900 border border-stone-200/90 shadow-[0_12px_36px_rgba(40,30,20,0.12)] hover:border-amber-500/60 hover:shadow-[0_16px_40px_rgba(217,119,6,0.18)] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-xl cursor-pointer"
-            >
-              <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-white shadow-sm">
-                <Sparkles className="w-4 h-4 fill-white" />
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 absolute -top-0.5 -right-0.5 ring-2 ring-white animate-pulse" />
-              </div>
-
-              <div className="flex flex-col text-left">
-                <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-stone-900 font-['Plus_Jakarta_Sans',sans-serif]">
-                  {t.launcherBtn}
-                </span>
-                <span className="text-[9px] text-stone-500 tracking-wider uppercase font-medium">
-                  {t.launcherSub}
-                </span>
-              </div>
-
-              <span className="ml-1 text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200/60 font-semibold uppercase">
-                {currentLang.toUpperCase()}
+              <span className="text-[9px] text-stone-500 tracking-wider uppercase font-medium">
+                {t.launcherSub}
               </span>
-            </button>
-          </>
+            </div>
+
+            <span className="ml-1 text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200/60 font-semibold uppercase">
+              {currentLang.toUpperCase()}
+            </span>
+          </button>
         )}
       </div>
 
