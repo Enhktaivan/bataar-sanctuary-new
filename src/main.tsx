@@ -3,8 +3,9 @@ import "./index.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { AIAssistantWidget } from "./components/AIAssistantWidget";
+import { LiveUpdateManager } from "./components/LiveUpdateManager";
 
-// Mount AI Concierge (with integrated PWA and shortcuts)
+// Mount AI Concierge and Real-time Live Update Manager
 const mountWidgets = () => {
   let conciergeContainer = document.getElementById("bataar-ai-concierge-root");
   if (!conciergeContainer) {
@@ -15,6 +16,7 @@ const mountWidgets = () => {
   const conciergeRoot = ReactDOM.createRoot(conciergeContainer);
   conciergeRoot.render(
     <React.StrictMode>
+      <LiveUpdateManager />
       <AIAssistantWidget />
     </React.StrictMode>
   );

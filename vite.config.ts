@@ -1,8 +1,40 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import fs from 'fs';
 import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
+
+function versionStamperPlugin() {
+  return {
+    name: 'version-stamper',
+    buildStart() {
+      const buildTime = Date.now();
+      const versionObj = {
+        version: `v1.0.${buildTime}`,
+        buildTime,
+        date: new Date().toISOString()
+      };
+      const publicDir = path.resolve(__dirname, 'public');
+      if (!fs.existsSync(publicDir)) {
+        fs.mkdirSync(publicDir, { recursive: true });
+      }
+      fs.writeFileSync(path.resolve(publicDir, 'app-version.json'), JSON.stringify(versionObj, null, 2));
+    },
+    closeBundle() {
+      const buildTime = Date.now();
+      const versionObj = {
+        version: `v1.0.${buildTime}`,
+        buildTime,
+        date: new Date().toISOString()
+      };
+      const distDir = path.resolve(__dirname, 'dist');
+      if (fs.existsSync(distDir)) {
+        fs.writeFileSync(path.resolve(distDir, 'app-version.json'), JSON.stringify(versionObj, null, 2));
+      }
+    }
+  };
+}
 
 export default defineConfig(() => {
   return {
@@ -10,6 +42,7 @@ export default defineConfig(() => {
     plugins: [
       react(),
       tailwindcss(),
+      versionStamperPlugin(),
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.png', 'apple-touch-icon.png', 'og-image.jpg'],
@@ -46,6 +79,11 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
+          skipWaiting: true,
+          clientsClaim: true,
+          cleanupOutdatedCaches: true,
+          navigateFallback: '/index.html',
+          navigateFallbackDenylist: [/^\/api/, /app-version\.json/],
           maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp,woff,woff2}'],
           runtimeCaching: [
