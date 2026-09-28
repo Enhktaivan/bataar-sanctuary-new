@@ -22,7 +22,9 @@ import {
   Wifi,
   Smartphone,
   Share,
-  PlusSquare
+  PlusSquare,
+  AlertTriangle,
+  HelpCircle
 } from "lucide-react";
 import { GoogleGenAI } from "@google/genai";
 import { usePWAInstall } from "../hooks/usePWAInstall";
@@ -501,8 +503,17 @@ export const AIAssistantWidget: React.FC = () => {
   const [notionWebhookUrl, setNotionWebhookUrl] = useState(() => localStorage.getItem("bataar_notion_webhook") || "");
   const [showSettings, setShowSettings] = useState(false);
   const [showAppInstall, setShowAppInstall] = useState(false);
-  const { isInstallable, isInstalled, isIOS, isAndroid, install } = usePWAInstall();
+  const { isInstallable, isInstalled, isIOS, isAndroid, isInAppBrowser, isSafari, isChrome, install } = usePWAInstall();
+  const [installDeviceTab, setInstallDeviceTab] = useState<"ios" | "android">("ios");
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isAndroid) {
+      setInstallDeviceTab("android");
+    } else {
+      setInstallDeviceTab("ios");
+    }
+  }, [isAndroid, isIOS]);
 
   // Booking Form State
   const [bookingForm, setBookingForm] = useState({
@@ -1083,112 +1094,216 @@ Phone: +976 7201 0099`;
 
           {/* PWA App Install Panel */}
           {showAppInstall && !showSettings && (
-            <div className="flex-1 p-5 overflow-y-auto bg-[#FAF9F6] text-xs space-y-4">
+            <div className="flex-1 p-4 sm:p-5 overflow-y-auto bg-[#FAF9F6] text-xs space-y-3.5">
               <div className="flex items-center justify-between border-b border-stone-200 pb-2">
                 <h4 className="font-bold text-stone-900 text-sm flex items-center gap-2 font-['Cormorant_Garamond',serif]">
                   <Smartphone className="w-4 h-4 text-amber-600" /> Bataar Travel Гар утасны Аппликейшн
                 </h4>
                 <button
                   onClick={() => setShowAppInstall(false)}
-                  className="text-stone-500 hover:text-stone-800 p-1"
+                  className="text-stone-500 hover:text-stone-800 p-1 cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* App banner */}
-              <div className="bg-white border border-stone-200/90 rounded-2xl p-4 shadow-2xs flex items-center gap-3.5">
+              <div className="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-2xs flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 p-0.5 shadow-sm shrink-0 flex items-center justify-center">
                   <img src="./favicon.png" alt="Bataar App Icon" className="w-full h-full object-cover rounded-[10px]" onError={(e) => (e.target as HTMLElement).style.display = 'none'} />
                 </div>
-                <div>
-                  <div className="font-['Cormorant_Garamond',serif] font-bold text-stone-900 text-base">
+                <div className="flex-1 min-w-0">
+                  <div className="font-['Cormorant_Garamond',serif] font-bold text-stone-900 text-base leading-snug truncate">
                     Батаарын Өлгий | Bataar Travel
                   </div>
-                  <div className="text-[11px] text-stone-500">
+                  <div className="text-[10.5px] text-stone-500 truncate">
                     bataartravel.mn • Албан ёсны гар утасны хувилбар (PWA)
                   </div>
                 </div>
               </div>
 
+              {/* In-App Browser Warning (Facebook, Messenger, Instagram, etc.) */}
+              {isInAppBrowser && (
+                <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3.5 space-y-2 shadow-2xs">
+                  <div className="flex items-center gap-2 text-amber-950 font-bold text-xs">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>Анхаар: Та Facebook / Messenger дотор нээсэн байна</span>
+                  </div>
+                  <p className="text-[11px] text-amber-900 leading-relaxed">
+                    Facebook болон Messenger-ийн дотоод хөтөч нь гар утсанд апп суулгах үйлдлийг хаадаг тул дараах 2 алхмыг хийнэ үү:
+                  </p>
+                  <ol className="text-[11px] text-stone-800 space-y-1 bg-white/80 p-2.5 rounded-xl border border-amber-200">
+                    <li>1. Дэлгэцийн баруун дээд эсвэл доод талын <strong>3 цэг (⋮)</strong> эсвэл <strong>Хуваалцах (Share)</strong> дээр дарна.</li>
+                    <li>2. <strong>"Safari-д нээх" (Open in Safari)</strong> эсвэл <strong>"Хөтчид нээх" (Open in Browser)</strong> сонголтыг дарж үндсэн хөтчөөрөө нээнэ.</li>
+                  </ol>
+                </div>
+              )}
+
+              {/* Device Selector Tabs */}
+              <div className="flex rounded-xl bg-stone-200/70 p-1 text-[11px] font-semibold">
+                <button
+                  onClick={() => setInstallDeviceTab("ios")}
+                  className={`flex-1 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                    installDeviceTab === "ios"
+                      ? "bg-white text-stone-900 shadow-2xs font-bold"
+                      : "text-stone-600 hover:text-stone-900"
+                  }`}
+                >
+                  <span>🍏 iPhone / iPad (iOS)</span>
+                </button>
+                <button
+                  onClick={() => setInstallDeviceTab("android")}
+                  className={`flex-1 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                    installDeviceTab === "android"
+                      ? "bg-white text-stone-900 shadow-2xs font-bold"
+                      : "text-stone-600 hover:text-stone-900"
+                  }`}
+                >
+                  <span>🤖 Android (Samsung / Chrome)</span>
+                </button>
+              </div>
+
+              {/* iOS Step-by-Step Instructions */}
+              {installDeviceTab === "ios" && (
+                <div className="bg-white border border-stone-200 rounded-2xl p-4 space-y-3 shadow-2xs">
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2">
+                    <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+                      <Smartphone className="w-4 h-4 text-amber-600" /> iPhone / iPad дээр суулгах заавар:
+                    </span>
+                    <span className="text-[10px] text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full font-semibold border border-amber-200">
+                      Safari
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-[11.5px] text-stone-700">
+                    <div className="flex items-start gap-2.5 p-2 rounded-xl bg-stone-50 border border-stone-200/60">
+                      <div className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        1
+                      </div>
+                      <div className="flex-1">
+                        Safari хөтчийн дэлгэцийн доод талын голд байрлах <strong className="text-stone-900">Share / Хуваалцах</strong> (дөрвөлжин дээр дээшээ сумтай <span className="inline-block px-1.5 py-0.5 bg-white border border-stone-300 rounded font-mono font-bold text-xs">⎋</span>) товчийг дарна.
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5 p-2 rounded-xl bg-stone-50 border border-stone-200/60">
+                      <div className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        2
+                      </div>
+                      <div className="flex-1">
+                        Гарч ирэх цэсийг доош нь гүйлгээд <strong className="text-stone-900">"Add to Home Screen"</strong> (<span className="text-amber-700 font-semibold">Нүүр дэлгэцэнд нэмэх</span> <span className="inline-block px-1 py-0.5 bg-white border border-stone-300 rounded font-mono text-xs">⊞</span>) сонголтыг сонгоно.
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5 p-2 rounded-xl bg-stone-50 border border-stone-200/60">
+                      <div className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        3
+                      </div>
+                      <div className="flex-1">
+                        Баруун дээд буланд байрлах <strong className="text-emerald-700">"Add" (Нэмэх)</strong> товчийг дарахад таны утасны дэлгэц дээр <strong className="text-stone-900">BataarTravel</strong> апп шууд сууж бэлэн болно!
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Android Step-by-Step Instructions */}
+              {installDeviceTab === "android" && (
+                <div className="bg-white border border-stone-200 rounded-2xl p-4 space-y-3 shadow-2xs">
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2">
+                    <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+                      <Smartphone className="w-4 h-4 text-emerald-600" /> Android дээр суулгах заавар:
+                    </span>
+                    <span className="text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full font-semibold border border-emerald-200">
+                      Chrome / Samsung
+                    </span>
+                  </div>
+
+                  {/* 1-Click Install Button if browser supports it */}
+                  {isInstallable && (
+                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-center space-y-2">
+                      <p className="text-[11px] text-amber-900 font-medium">
+                        Таны төхөөрөмж шууд 1 товшилтоор суулгахыг дэмжиж байна:
+                      </p>
+                      <button
+                        onClick={async () => {
+                          await install();
+                          setShowAppInstall(false);
+                        }}
+                        className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold text-xs tracking-wider uppercase shadow-md flex items-center justify-center gap-2 cursor-pointer transition active:scale-95"
+                      >
+                        <Download className="w-4 h-4" /> Утсандаа 1 товшилтоор суулгах
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="space-y-2.5 text-[11.5px] text-stone-700">
+                    <div className="flex items-start gap-2.5 p-2 rounded-xl bg-stone-50 border border-stone-200/60">
+                      <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        1
+                      </div>
+                      <div className="flex-1">
+                        Chrome хөтчийн баруун дээд булангийн <strong className="text-stone-900">3 цэг (⋮)</strong> товчийг дарна (эсвэл Samsung Internet-ийн баруун доод <span className="font-bold">≡</span> цэс).
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5 p-2 rounded-xl bg-stone-50 border border-stone-200/60">
+                      <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        2
+                      </div>
+                      <div className="flex-1">
+                        Цэснээс <strong className="text-stone-900">"Install app" (Аппликейшн суулгах)</strong> эсвэл <strong className="text-stone-900">"Add to Home screen" (Нүүр дэлгэцэнд нэмэх)</strong> гэснийг сонгоно.
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5 p-2 rounded-xl bg-stone-50 border border-stone-200/60">
+                      <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        3
+                      </div>
+                      <div className="flex-1">
+                        <strong className="text-emerald-700">"Install" (Суулгах)</strong> товчийг баталгаажуулахад таны утасны дэлгэц дээр сууж бэлэн болно!
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Benefits */}
-              <div className="grid grid-cols-2 gap-2">
-                <div className="bg-white border border-stone-200 rounded-xl p-3 shadow-2xs">
-                  <div className="font-bold text-stone-900 flex items-center gap-1.5 text-xs mb-1">
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div className="bg-white border border-stone-200 rounded-xl p-2.5 shadow-2xs">
+                  <div className="font-bold text-stone-900 flex items-center gap-1.5 text-xs mb-0.5">
                     <Smartphone className="w-3.5 h-3.5 text-amber-600" /> Нүүр дэлгэц дээр
                   </div>
-                  <div className="text-[11px] text-stone-600 leading-tight">
-                    Хөтөч нээхгүйгээр апп шиг шууд нээгдэнэ
+                  <div className="text-[10.5px] text-stone-600 leading-tight">
+                    Броузер нээхгүйгээр 1 товшилтоор апп шиг нээгдэнэ
                   </div>
                 </div>
 
-                <div className="bg-white border border-stone-200 rounded-xl p-3 shadow-2xs">
-                  <div className="font-bold text-stone-900 flex items-center gap-1.5 text-xs mb-1">
+                <div className="bg-white border border-stone-200 rounded-xl p-2.5 shadow-2xs">
+                  <div className="font-bold text-stone-900 flex items-center gap-1.5 text-xs mb-0.5">
                     <Wifi className="w-3.5 h-3.5 text-emerald-600" /> Офлайн горим
                   </div>
-                  <div className="text-[11px] text-stone-600 leading-tight">
+                  <div className="text-[10.5px] text-stone-600 leading-tight">
                     Говьд сүлжээ тасарсан ч мэдээллээ харна
                   </div>
                 </div>
               </div>
 
-              {/* Install action card */}
-              {isInstallable ? (
-                <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-center space-y-3 shadow-2xs">
-                  <p className="text-xs text-amber-950 font-medium">
-                    Таны төхөөрөмж 1 товшилтоор шууд суулгахыг дэмжиж байна:
-                  </p>
-                  <button
-                    onClick={async () => {
-                      await install();
-                      setShowAppInstall(false);
-                    }}
-                    className="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs tracking-wider uppercase shadow-sm flex items-center justify-center gap-2 cursor-pointer transition"
-                  >
-                    <Download className="w-4 h-4" /> Утсандаа 1 товшилтоор суулгах
-                  </button>
+              {/* Support footer */}
+              <div className="bg-stone-100 rounded-xl p-3 flex items-center justify-between">
+                <div className="text-[11px] text-stone-600">
+                  Асууж тодруулах зүйл байвал:
                 </div>
-              ) : isIOS ? (
-                <div className="bg-white border border-stone-200 rounded-2xl p-4 space-y-2.5 shadow-2xs">
-                  <div className="font-bold text-stone-900 text-xs flex items-center gap-1.5 border-b border-stone-100 pb-2">
-                    <Smartphone className="w-4 h-4 text-amber-600" /> iPhone / iPad (Safari) дээр суулгах:
-                  </div>
-                  <ol className="space-y-2 text-[11px] text-stone-700">
-                    <li className="flex items-start gap-2">
-                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">1</span>
-                      <span>Safari хөтчийн доод талын <strong>Share (Хуваалцах ⎋)</strong> товчийг дарна.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">2</span>
-                      <span>Доош гүйлгээд <strong>"Add to Home Screen" (Нүүр дэлгэцэнд нэмэх ⊞)</strong> сонгоно.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">3</span>
-                      <span>Баруун дээд булангийн <strong>"Add"</strong> дарснаар таны дэлгэц дээр сууж бэлэн болно!</span>
-                    </li>
-                  </ol>
-                </div>
-              ) : (
-                <div className="bg-white border border-stone-200 rounded-2xl p-4 space-y-2.5 shadow-2xs">
-                  <div className="font-bold text-stone-900 text-xs flex items-center gap-1.5 border-b border-stone-100 pb-2">
-                    <Smartphone className="w-4 h-4 text-amber-600" /> Android / Компьютер дээр суулгах:
-                  </div>
-                  <ol className="space-y-2 text-[11px] text-stone-700">
-                    <li className="flex items-start gap-2">
-                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">1</span>
-                      <span>Chrome хөтчийн баруун дээд булангийн <strong>3 цэг (⋮)</strong> цэсийг дарна.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">2</span>
-                      <span><strong>"Апп суулгах" (Install app)</strong> эсвэл <strong>"Нүүр дэлгэцэнд нэмэх"</strong> сонгоно.</span>
-                    </li>
-                  </ol>
-                </div>
-              )}
+                <a
+                  href="tel:+97672010099"
+                  className="px-2.5 py-1 bg-white border border-stone-300 rounded-lg text-amber-900 font-bold text-xs flex items-center gap-1 shadow-2xs hover:bg-stone-50"
+                >
+                  <Phone className="w-3 h-3 text-amber-600" /> +976 7201 0099
+                </a>
+              </div>
 
               <button
                 onClick={() => setShowAppInstall(false)}
-                className="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold rounded-xl text-xs transition cursor-pointer"
+                className="w-full py-2 bg-stone-200/80 hover:bg-stone-300/80 text-stone-800 font-semibold rounded-xl text-xs transition cursor-pointer"
               >
                 ← Буцах (AI Чат руу)
               </button>

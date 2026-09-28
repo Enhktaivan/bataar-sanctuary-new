@@ -10,6 +10,9 @@ export function usePWAInstall() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
+  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
+  const [isSafari, setIsSafari] = useState(false);
+  const [isChrome, setIsChrome] = useState(false);
 
   useEffect(() => {
     // Detect standalone mode (already installed)
@@ -19,12 +22,22 @@ export function usePWAInstall() {
       document.referrer.includes('android-app://');
     setIsInstalled(isStandalone);
 
-    // Detect mobile OS
+    // Detect mobile OS & in-app browser
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
     const isAndroidDevice = /android/.test(userAgent);
     setIsIOS(isIOSDevice);
     setIsAndroid(isAndroidDevice);
+
+    // In-app browsers: Facebook, Instagram, Messenger, WeChat, Telegram, Line, etc.
+    const inApp = /fban|fbav|instagram|messenger|micromessenger|telegram|line|threads|snapchat/.test(userAgent);
+    setIsInAppBrowser(inApp);
+
+    // Browsers
+    const isChromeBrowser = /chrome|crios/.test(userAgent) && !/edge|opr\//.test(userAgent) && !inApp;
+    const isSafariBrowser = /safari/.test(userAgent) && !/chrome|crios/.test(userAgent) && !inApp;
+    setIsChrome(isChromeBrowser);
+    setIsSafari(isSafariBrowser);
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
@@ -47,12 +60,16 @@ export function usePWAInstall() {
 
   const install = async () => {
     if (!deferredPrompt) return false;
-    await deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setIsInstalled(true);
-      setDeferredPrompt(null);
-      return true;
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setIsInstalled(true);
+        setDeferredPrompt(null);
+        return true;
+      }
+    } catch (err) {
+      console.error('Install prompt error:', err);
     }
     return false;
   };
@@ -62,6 +79,9 @@ export function usePWAInstall() {
     isInstalled,
     isIOS,
     isAndroid,
+    isInAppBrowser,
+    isSafari,
+    isChrome,
     install,
     promptAvailable: !!deferredPrompt,
   };
