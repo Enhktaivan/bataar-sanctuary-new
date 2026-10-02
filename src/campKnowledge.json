@@ -1,0 +1,412 @@
+{
+  "schemaVersion": 1,
+  "languages": [
+    {
+      "code": "mn",
+      "name": "Монгол"
+    },
+    {
+      "code": "en",
+      "name": "English"
+    },
+    {
+      "code": "ko",
+      "name": "한국어"
+    },
+    {
+      "code": "zh",
+      "name": "中文"
+    },
+    {
+      "code": "ja",
+      "name": "日本語"
+    },
+    {
+      "code": "ru",
+      "name": "Русский"
+    },
+    {
+      "code": "de",
+      "name": "Deutsch"
+    },
+    {
+      "code": "fr",
+      "name": "Français"
+    },
+    {
+      "code": "it",
+      "name": "Italiano"
+    }
+  ],
+  "facts": [
+    {
+      "id": "contact",
+      "locales": {
+        "mn": {
+          "title": "Холбоо",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        },
+        "en": {
+          "title": "Contact",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        },
+        "ko": {
+          "title": "연락처",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        },
+        "zh": {
+          "title": "联系方式",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        },
+        "ja": {
+          "title": "連絡先",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        },
+        "ru": {
+          "title": "Контакты",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        },
+        "de": {
+          "title": "Kontakt",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        },
+        "fr": {
+          "title": "Contact",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        },
+        "it": {
+          "title": "Contatti",
+          "content": "Bataar Sanctuary / Батаарын өлгий — https://bataartravel.mn/ — bataartravel@gmail.com — +976 7201 0099 / +976 8822 3584"
+        }
+      }
+    },
+    {
+      "id": "location",
+      "locales": {
+        "mn": {
+          "title": "Байршил",
+          "content": "Бааз Өмнөговь аймгийн Гурвантэс сум, Тост Тосонбумбын нурууны бүсэд байрладаг. Даланзадгадаас очих зам, 4x4 тосох үйлчилгээг баазтай урьдчилан тохироорой: +976 7201 0099."
+        },
+        "en": {
+          "title": "Location",
+          "content": "The camp is in Gurvantes, South Gobi, near Tost Tosonbumba. Arrange your route and 4x4 transfer from Dalanzadgad with the camp in advance: +976 7201 0099."
+        },
+        "ko": {
+          "title": "위치",
+          "content": "캠프는 남고비 구르반테스의 토스트 토손붐바 인근입니다. 달란자드가드에서 오는 경로와 4x4 픽업을 미리 예약하세요."
+        },
+        "zh": {
+          "title": "位置",
+          "content": "营地位于南戈壁古尔班特斯，靠近托斯特托松本巴。请提前安排从达兰扎德嘎德出发的路线和四驱接送。"
+        },
+        "ja": {
+          "title": "所在地",
+          "content": "キャンプは南ゴビのグルバンテス、トスト・トソンブンバ付近です。ダランザドガドからの道順と四輪駆動送迎を事前に手配してください。"
+        },
+        "ru": {
+          "title": "Расположение",
+          "content": "База находится в Гурвантесе, Южная Гоби, рядом с Тост-Тосонбумбой. Заранее согласуйте маршрут и трансфер 4x4 из Даланзадгада."
+        },
+        "de": {
+          "title": "Lage",
+          "content": "Das Camp liegt in Gurvantes in der Südgobi bei Tost Tosonbumba. Vereinbaren Sie Anreise und 4x4-Transfer aus Dalanzadgad im Voraus."
+        },
+        "fr": {
+          "title": "Localisation",
+          "content": "Le camp se situe à Gurvantes, dans le Gobi du Sud, près de Tost Tosonbumba. Organisez votre transfert 4x4 depuis Dalanzadgad à l’avance."
+        },
+        "it": {
+          "title": "Posizione",
+          "content": "Il campo si trova a Gurvantes, nel Gobi meridionale, vicino a Tost Tosonbumba. Concordate in anticipo il percorso e il trasferimento 4x4 da Dalanzadgad."
+        }
+      }
+    },
+    {
+      "id": "facilities",
+      "locales": {
+        "mn": {
+          "title": "Үйлчилгээ",
+          "content": "Бааз Starlink интернэт, нарны цахилгаан болон халуун шүршүүртэй. Таны ирэх хугацаанд хэрэгтэй тусгай үйлчилгээний бэлэн байдлыг баазтай урьдчилан баталгаажуулаарай."
+        },
+        "en": {
+          "title": "Facilities",
+          "content": "The camp offers Starlink internet, solar power and hot showers. Confirm any specific requirements with the camp before arrival."
+        },
+        "ko": {
+          "title": "시설",
+          "content": "Starlink 인터넷, 태양광 전력, 온수 샤워가 있습니다. 필요한 서비스를 방문 전에 확인하세요."
+        },
+        "zh": {
+          "title": "设施",
+          "content": "提供 Starlink 网络、太阳能电力和热水淋浴。请提前确认特殊需求。"
+        },
+        "ja": {
+          "title": "設備",
+          "content": "Starlink、太陽光電力、温水シャワーがあります。必要なサービスを到着前に確認してください。"
+        },
+        "ru": {
+          "title": "Услуги",
+          "content": "Есть Starlink, солнечная электроэнергия и горячий душ. Уточните особые требования до приезда."
+        },
+        "de": {
+          "title": "Ausstattung",
+          "content": "Starlink, Solarstrom und warme Duschen sind vorhanden. Bestätigen Sie besondere Anforderungen vor der Anreise."
+        },
+        "fr": {
+          "title": "Équipements",
+          "content": "Le camp dispose de Starlink, d’énergie solaire et de douches chaudes. Confirmez vos besoins avant votre arrivée."
+        },
+        "it": {
+          "title": "Servizi",
+          "content": "Sono disponibili Starlink, energia solare e docce calde. Confermate esigenze particolari prima dell’arrivo."
+        }
+      }
+    },
+    {
+      "id": "booking_request",
+      "locales": {
+        "mn": {
+          "title": "Захиалгын хүсэлт",
+          "content": "Захиалгын маягтад огноо, хүний тоо, холбоо барих мэдээллээ оруулна уу. Бааз сул байр болон эцсийн үнийг баталсны дараа төлбөрийн холбоос өгнө."
+        },
+        "en": {
+          "title": "Reservation request",
+          "content": "Enter dates, guest count and contact details in the reservation form. The camp confirms availability and price before providing a payment link."
+        },
+        "ko": {
+          "title": "예약 요청",
+          "content": "예약 양식에 날짜, 인원과 연락처를 입력하세요. 캠프에서 가능 여부와 가격을 확인한 후 결제 링크를 제공합니다."
+        },
+        "zh": {
+          "title": "预订请求",
+          "content": "请在预订表单填写日期、人数和联系方式。营地确认空房与价格后会提供付款链接。"
+        },
+        "ja": {
+          "title": "予約リクエスト",
+          "content": "予約フォームに日程、人数、連絡先を入力してください。キャンプが空室と料金を確認した後、支払いリンクを提供します。"
+        },
+        "ru": {
+          "title": "Заявка",
+          "content": "Укажите даты, количество гостей и контакты в форме. База подтвердит наличие и цену, затем предоставит ссылку для оплаты."
+        },
+        "de": {
+          "title": "Buchungsanfrage",
+          "content": "Tragen Sie Datum, Gästezahl und Kontakt in das Formular ein. Das Camp bestätigt Verfügbarkeit und Preis und stellt danach einen Zahlungslink bereit."
+        },
+        "fr": {
+          "title": "Demande de réservation",
+          "content": "Indiquez les dates, le nombre de personnes et vos coordonnées dans le formulaire. Le camp confirme disponibilité et prix avant de fournir un lien de paiement."
+        },
+        "it": {
+          "title": "Richiesta di prenotazione",
+          "content": "Inserite date, numero di ospiti e contatti nel modulo. Il campo conferma disponibilità e prezzo prima di fornire il link di pagamento."
+        }
+      }
+    },
+    {
+      "id": "rooms",
+      "locales": {
+        "mn": {
+          "title": "Үнэ нягтлуулах",
+          "content": "Люкс, стандарт болон гэр бүлийн өрөөний сонголттой. Гэр бүлийн өрөө нь том давхар ортой мастер өрөө, хувийн шүршүүр болон ариун цэврийн өрөөтэй. Үнэ, сул өрөөг сонгосон огноо, зочдын тоогоор баазаас баталгаажуулна. “Захиалга” хэсгээс хүсэлтээ илгээгээрэй."
+        },
+        "en": {
+          "title": "Price confirmation",
+          "content": "Choose Deluxe, Standard or Family Suite. The family suite has a double-bed master bedroom and private bathroom. Ask the camp to confirm rates and availability for your dates and guest count."
+        },
+        "ko": {
+          "title": "가격 확인",
+          "content": "디럭스, 스탠더드, 패밀리 객실이 있습니다. 날짜별 가격과 가능 여부를 캠프에 확인하세요."
+        },
+        "zh": {
+          "title": "价格确认",
+          "content": "有豪华、标准和家庭客房。请向营地确认价格与空房。"
+        },
+        "ja": {
+          "title": "料金確認",
+          "content": "デラックス、スタンダード、ファミリー客室があります。料金と空室をキャンプに確認してください。"
+        },
+        "ru": {
+          "title": "Подтверждение цены",
+          "content": "Есть номера Deluxe, Standard и Family. Уточните цены и наличие на ваши даты."
+        },
+        "de": {
+          "title": "Preisbestätigung",
+          "content": "Es gibt Deluxe-, Standard- und Familienzimmer. Lassen Sie Preise und Verfügbarkeit bestätigen."
+        },
+        "fr": {
+          "title": "Confirmation du prix",
+          "content": "Des chambres Deluxe, Standard et familiales sont proposées. Faites confirmer prix et disponibilité."
+        },
+        "it": {
+          "title": "Conferma del prezzo",
+          "content": "Sono disponibili camere Deluxe, Standard e Family. Chiedete conferma di prezzi e disponibilità."
+        }
+      }
+    },
+    {
+      "id": "payment",
+      "locales": {
+        "mn": {
+          "title": "Төлбөр",
+          "content": "QPay төлбөр MNT-ээр. QR харсан нь төлсөн нотолгоо биш; сервер зөв нэхэмжлэх, валют, дүн, давхардаагүй гүйлгээг шалгаж төлбөр баталгаажсан болгосны дараа баталгаажсан гэж бичнэ. USD нь ханш, огноотой ойролцоо мэдээллийн хөрвүүлэлт. Шууд Visa/Mastercard төлбөрийн холболт баталгаажаагүй."
+        },
+        "en": {
+          "title": "Payment",
+          "content": "QPay payment is in MNT. Viewing a QR is not proof of payment; only report payment confirmed after the server verifies the invoice, currency, amount and unique transactions and marks it payment confirmed. USD is an indicative conversion with rate/date. Direct Visa/Mastercard processing is not confirmed."
+        },
+        "ko": {
+          "title": "결제",
+          "content": "QPay 결제는 MNT입니다. QR을 보는 것은 결제 증거가 아닙니다. 서버가 청구서, 통화, 금액, 중복 없는 거래를 확인하고 결제 확인로 표시한 후에만 결제 확인을 안내합니다. USD는 환율·날짜가 있는 참고 환산입니다. Visa/Mastercard 직접 결제는 확인되지 않았습니다."
+        },
+        "zh": {
+          "title": "付款",
+          "content": "QPay以MNT付款。看到二维码不代表已付款；只有服务器核实账单、币种、金额及不重复交易并标为付款已确认后，才可说明付款已确认。USD是带汇率和日期的参考换算。未确认直接Visa/Mastercard支付。"
+        },
+        "ja": {
+          "title": "支払い",
+          "content": "QPayはMNTで支払います。QR表示は支払い証明ではありません。サーバーが請求書、通貨、金額、重複しない取引を検証し支払い確認済みにした後のみ支払い確認と案内します。USDは為替・日付付き参考換算です。Visa/Mastercard直接決済は未確認です。"
+        },
+        "ru": {
+          "title": "Оплата",
+          "content": "QPay оплачивается в MNT. Просмотр QR не доказывает оплату. Подтверждать её можно только после проверки сервером счёта, валюты, суммы и уникальных транзакций и статуса оплата подтверждена. USD — справочный пересчёт с курсом/датой. Прямая оплата Visa/Mastercard не подтверждена."
+        },
+        "de": {
+          "title": "Zahlung",
+          "content": "QPay-Zahlungen erfolgen in MNT. Ein sichtbarer QR beweist keine Zahlung. Bestätigen Sie Zahlung erst nach serverseitiger Prüfung von Rechnung, Währung, Betrag und eindeutigen Transaktionen mit Status Zahlung bestätigt. USD ist eine unverbindliche Umrechnung mit Kurs/Datum. Direkte Visa/Mastercard-Zahlung ist nicht bestätigt."
+        },
+        "fr": {
+          "title": "Paiement",
+          "content": "QPay est payé en MNT. Voir un QR ne prouve pas le paiement. Ne confirmez le paiement qu’après vérification serveur de la facture, devise, montant et transactions uniques avec statut paiement confirmé. USD est une conversion indicative avec taux/date. Le paiement direct Visa/Mastercard n’est pas confirmé."
+        },
+        "it": {
+          "title": "Pagamento",
+          "content": "QPay si paga in MNT. Vedere il QR non prova il pagamento. Confermatelo solo dopo che il server verifica fattura, valuta, importo e transazioni uniche e assegna pagamento confermato. USD è una conversione indicativa con tasso/data. Il pagamento diretto Visa/Mastercard non è confermato."
+        }
+      }
+    },
+    {
+      "id": "tours",
+      "locales": {
+        "mn": {
+          "title": "Аялал",
+          "content": "Тост Тосонбумба, Хүрэн ханын хэц, Хэрмэн цавын чиглэлийн аяллуудтай. Хүссэн чиглэл, огноо, хүний тоогоо хэлбэл захиалгын хүсэлтдээ оруулахад тусална. Ирвэс харах нь байгалийн нөхцөлөөс хамаардаг."
+        },
+        "en": {
+          "title": "Tours",
+          "content": "Explore Tost Tosonbumba, Khuren Khan or Khermen Tsav. Include your preferred route, dates and party size in the reservation request. Wildlife sightings depend on natural conditions."
+        },
+        "ko": {
+          "title": "여행",
+          "content": "토스트 토손붐바나 헤르멘 차브 여행 경로를 요청에 적어 주세요. 야생동물 관찰은 자연 조건에 따라 달라집니다."
+        },
+        "zh": {
+          "title": "旅行",
+          "content": "请注明托斯特托松本巴或赫尔门察夫路线。野生动物能否出现取决于自然条件。"
+        },
+        "ja": {
+          "title": "ツアー",
+          "content": "トスト・トソンブンバやヘルメンツァブの希望ルートを記入してください。野生動物との遭遇は自然条件に左右されます。"
+        },
+        "ru": {
+          "title": "Экскурсии",
+          "content": "Укажите маршрут в Тост-Тосонбумбу или Хэрмэн-Цав. Наблюдение за животными зависит от природных условий."
+        },
+        "de": {
+          "title": "Touren",
+          "content": "Geben Sie Ihre Route nach Tost Tosonbumba oder Khermen Tsav an. Wildtiersichtungen hängen von natürlichen Bedingungen ab."
+        },
+        "fr": {
+          "title": "Excursions",
+          "content": "Indiquez votre itinéraire à Tost Tosonbumba ou Khermen Tsav. Les observations d’animaux dépendent des conditions naturelles."
+        },
+        "it": {
+          "title": "Escursioni",
+          "content": "Indicate il percorso desiderato a Tost Tosonbumba o Khermen Tsav. Gli avvistamenti dipendono dalle condizioni naturali."
+        }
+      }
+    },
+    {
+      "id": "unspecified_policy",
+      "locales": {
+        "mn": {
+          "title": "Мэдэгдээгүй нөхцөл",
+          "content": "Цуцлалт, буцаалт, урьдчилгаа, төлбөрийн хугацаа, check-in/out цаг, хүүхдийн үнэ, хөнгөлөлт, тосох үнэ баталгаажаагүй. Зохиож амлахгүй; ажилтнаас асууна."
+        },
+        "en": {
+          "title": "Unspecified conditions",
+          "content": "Cancellation, refunds, deposits, payment deadlines, check-in/out times, child rates, discounts and transfer prices are unspecified. Do not invent promises; ask staff."
+        },
+        "ko": {
+          "title": "미정 조건",
+          "content": "취소, 환불, 예약금, 결제기한, 체크인·아웃 시간, 아동요금, 할인, 픽업요금은 미정입니다. 약속을 만들지 말고 직원에게 확인하세요."
+        },
+        "zh": {
+          "title": "未确定条件",
+          "content": "取消、退款、定金、付款期限、入住退房时间、儿童价、折扣和接送价未确定。不要编造承诺，请询问员工。"
+        },
+        "ja": {
+          "title": "未確定の条件",
+          "content": "取消、返金、前金、支払期限、チェックイン・アウト時刻、子供料金、割引、送迎料金は未確定です。約束を作らずスタッフに確認してください。"
+        },
+        "ru": {
+          "title": "Неустановленные условия",
+          "content": "Отмена, возврат, предоплата, сроки оплаты, время заезда/выезда, детские тарифы, скидки и трансфер не определены. Не придумывайте обещания; спросите сотрудника."
+        },
+        "de": {
+          "title": "Ungeklärte Bedingungen",
+          "content": "Stornierung, Erstattung, Anzahlung, Zahlungsfristen, Check-in/out-Zeiten, Kinderpreise, Rabatte und Transferpreise sind ungeklärt. Keine Versprechen erfinden; Personal fragen."
+        },
+        "fr": {
+          "title": "Conditions non précisées",
+          "content": "Annulation, remboursement, acompte, délais de paiement, heures d’arrivée/départ, tarifs enfants, remises et transferts ne sont pas précisés. N’inventez aucune promesse ; demandez au personnel."
+        },
+        "it": {
+          "title": "Condizioni non definite",
+          "content": "Cancellazione, rimborsi, anticipo, scadenze, orari di arrivo/partenza, prezzi bambini, sconti e trasferimenti non sono definiti. Non inventate promesse; chiedete al personale."
+        }
+      }
+    },
+    {
+      "id": "email_draft",
+      "locales": {
+        "mn": {
+          "title": "Имэйлийн ноорог",
+          "content": "Имэйл автоматаар илгээгдэхгүй. Мэдээллээ бичээд өөрөө илгээнэ үү."
+        },
+        "en": {
+          "title": "Email draft",
+          "content": "Email is not sent automatically. Add your details and send it yourself."
+        },
+        "ko": {
+          "title": "이메일 초안",
+          "content": "자동으로 전송되지 않습니다. 정보를 입력하고 직접 보내세요."
+        },
+        "zh": {
+          "title": "邮件草稿",
+          "content": "邮件不会自动发送。请填写信息后自行发送。"
+        },
+        "ja": {
+          "title": "メール下書き",
+          "content": "メールは自動送信されません。情報を入力してご自身で送信してください。"
+        },
+        "ru": {
+          "title": "Черновик письма",
+          "content": "Письмо не отправляется автоматически. Заполните данные и отправьте его самостоятельно."
+        },
+        "de": {
+          "title": "E-Mail-Entwurf",
+          "content": "Die E-Mail wird nicht automatisch gesendet. Ergänzen Sie Ihre Angaben und senden Sie sie selbst."
+        },
+        "fr": {
+          "title": "Brouillon de message",
+          "content": "Le message ne sera pas envoyé automatiquement. Ajoutez vos informations et envoyez-le vous-même."
+        },
+        "it": {
+          "title": "Bozza email",
+          "content": "L’email non viene inviata automaticamente. Inserite i vostri dati e inviatela personalmente."
+        }
+      }
+    }
+  ]
+}

@@ -1,3 +1,12 @@
+import campKnowledge from './campKnowledge.json' with { type: 'json' };
+
+/** Published public reference snapshot; never queries Notion or customer records. */
+export function publicKnowledgeReply(id: string, lang = 'mn'): string | undefined {
+ const language = campKnowledge.languages.some(item => item.code === lang) ? lang : 'en';
+ const fact = campKnowledge.facts.find(item => item.id === id);
+ return (fact?.locales as Record<string, { title: string; content: string }> | undefined)?.[language]?.content;
+}
+
 export function originalReply(query: string, lang = 'mn'): string {
   const q=query.toLowerCase().normalize('NFKC');const mn=lang==='mn';
   const has=(words:string[])=>words.some(w=>q.includes(w));
@@ -31,10 +40,21 @@ const details: Record<string,string[]> = {
  fr:['Des chambres Deluxe, Standard et familiales sont proposées. Faites confirmer prix et disponibilité.','Le camp se situe à Gurvantes, dans le Gobi du Sud, près de Tost Tosonbumba. Organisez votre transfert 4x4 depuis Dalanzadgad à l’avance.','Le camp dispose de Starlink, d’énergie solaire et de douches chaudes. Confirmez vos besoins avant votre arrivée.','Indiquez votre itinéraire à Tost Tosonbumba ou Khermen Tsav. Les observations d’animaux dépendent des conditions naturelles.','Je ne dispose pas d’informations vérifiées. Précisez votre demande ou contactez le camp.'],
  it:['Sono disponibili camere Deluxe, Standard e Family. Chiedete conferma di prezzi e disponibilità.','Il campo si trova a Gurvantes, nel Gobi meridionale, vicino a Tost Tosonbumba. Concordate in anticipo il percorso e il trasferimento 4x4 da Dalanzadgad.','Sono disponibili Starlink, energia solare e docce calde. Confermate esigenze particolari prima dell’arrivo.','Indicate il percorso desiderato a Tost Tosonbumba o Khermen Tsav. Gli avvistamenti dipendono dalle condizioni naturali.','Non ho informazioni verificate. Precisate la domanda o contattate il campo.'],
 };
-export function publicConciergeCopy(lang:string) {const c=localized[lang]||localized.en;return {welcome:c[0],bookingDescription:c[1],gmail:c[2],emailApp:c[3],emailNotice:c[4]};}
+const referenceNotice: Record<string,string> = {
+ mn:'Хариулт нь нийтэд зориулсан хадгалсан лавлах мэдээлэлд тулгуурлана.',
+ en:'Replies use a saved public reference.',
+ ko:'답변은 저장된 공개 안내 정보를 사용합니다.',
+ zh:'回答使用已保存的公开参考信息。',
+ ja:'回答には保存済みの公開案内情報を使用します。',
+ ru:'Ответы основаны на сохранённом общедоступном справочнике.',
+ de:'Antworten verwenden gespeicherte öffentliche Informationen.',
+ fr:'Les réponses utilisent une référence publique enregistrée.',
+ it:'Le risposte utilizzano informazioni pubbliche salvate.',
+};
+export function publicConciergeCopy(lang:string) {const c=localized[lang]||localized.en;return {welcome:c[0]+' '+(referenceNotice[lang]||referenceNotice.en),bookingDescription:c[1],gmail:c[2],emailApp:c[3],emailNotice:c[4]};}
 export function conciergeReply(query:string,lang='mn'):string {
  const q=query.toLowerCase().normalize('NFKC');const has=(words:string[])=>words.some(w=>q.includes(w));
- if(has(['захиал','zahial','reserve','booking','book','예약','预订','予約','брони','reserv','buchen','prenot'])) return publicConciergeCopy(lang).bookingDescription;
+ if(has(['захиал','zahial','reserve','booking','book','예약','预订','予約','брони','reserv','buchen','prenot'])) return publicKnowledgeReply('booking_request',lang) || publicConciergeCopy(lang).bookingDescription;
  if(has(['сайн','sain','hello','안녕','你好','こんにちは','привет','hallo','bonjour','ciao','salve']))return publicConciergeCopy(lang).welcome;
  const intent=(words:string[],index:number)=>has(words)?index:-1;
  const category=[
@@ -43,9 +63,13 @@ export function conciergeReply(query:string,lang='mn'):string {
  intent(['starlink','wifi','wi-fi','solar','internet','施設','시설','网络','星链','电力','設備','услуг','удобств','équipement','serviz','старлинк','스타링크','スターリンク','интернэт','цахилгаан','нарны','эрчим'],2),
  intent(['аялал','ayal','ирвэс','irves','цав','khermen','dino','fossil','tour','expedition','leopard','공룡','여행','恐龙','旅行','тур','экскурс','ausflug','excursion','escursion'],3),
  ].find(index=>index>=0)??4;
- if(has(['имэйл','мэйл','mail','утас','utas','holboo','холбоо','contact','phone','연락','电话','連絡','kontakt','контакт','contatt']))return 'bataartravel@gmail.com / +976 7201 0099 / +976 8822 3584';
+ if(has(['имэйл','мэйл','mail','утас','utas','holboo','холбоо','contact','phone','연락','电话','連絡','kontakt','контакт','contatt']))return publicKnowledgeReply('contact',lang) || 'bataartravel@gmail.com / +976 7201 0099 / +976 8822 3584';
+ if(has(['qpay','төлбөр','tulbur','payment','pay ','결제','支付','付款','支払い','оплат','zahlung','paiement','pagament'])) return publicKnowledgeReply('payment',lang) || originalReply('unknown',lang==='mn'?'mn':'en');
+ if(has(['cancel','refund','deposit','check-in','check-out','цуц','буцаалт','барьцаа','취소','환불','取消','退款','キャンセル','返金','отмен','возврат','storn','erstattung','annulation','rembourse','cancell','rimbor'])) return publicKnowledgeReply('unspecified_policy',lang) || originalReply('unknown',lang==='mn'?'mn':'en');
+ const published = category < 4 ? publicKnowledgeReply(['rooms','location','facilities','tours'][category],lang) : undefined;
+ if(published) return published;
  if(lang==='mn'||lang==='en')return originalReply(['room price','route','Starlink','tour','unknown'][category],lang);
- return (details[lang]||details.en)[category];
+ return details[lang]?.[category] || originalReply(['room price','route','Starlink','tour','unknown'][category],'en');
 }
 
 

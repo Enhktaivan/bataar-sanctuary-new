@@ -40,3 +40,11 @@ Assistant and hosted booking flows support `mn`, `en`, `ko`, `zh`, `ja`, `ru`, `
 ### 2026-10-02 — Italian fallback review completed
 
 Main-site rendering safely falls back to English when Italian is selected. Stored language and assistant events remain Italian, so the assistant and hosted booking form retain Italian. Targeted tests against the actual bundled initialization and callback pass. This supersedes the pending fallback review above; full Italian main-site translation remains outside the verified coverage.
+
+### 2026-10-03 — Shared public camp knowledge and notification preparation
+
+The owner requested one camp knowledge base for email drafts and the reference chat in all nine existing languages. `src/campKnowledge.json` is the reviewed public snapshot: nine topics in nine languages. It contains no guest records, private payment status, credentials or internal source paths. Chat answers and authenticated staff draft helpers use this snapshot; staff review and send inquiry replies. This is deterministic reference content, not a live LLM or automatic inbox reader.
+
+The same 81 localized entries were imported into the private Erdii Notion workspace. A separate booking database was created. Direct edits in Notion do not yet automatically update the website snapshot. Make Gmail is connected and notification drafts are saved; Notion OAuth completion and end-to-end delivery remain unverified. Do not claim automatic emails or Notion sync are active.
+
+The payment Worker has a durable private notification outbox. New bookings and server-verified MNT payments enqueue stable event IDs atomically. Customer receipt addresses come from linked bookings. Optional Make delivery remains disabled until the receiver workflow is verified; a webhook acceptance is not proof of email delivery. No cron, paid upgrade or real test email was added.
