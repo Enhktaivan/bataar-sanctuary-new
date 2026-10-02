@@ -23,23 +23,24 @@ import {
   HelpCircle
 } from "lucide-react";
 
-import { conciergeReply } from "../conciergeReplies";
+import { conciergeReply, publicConciergeCopy } from "../conciergeReplies";
 import { usePWAInstall } from "../hooks/usePWAInstall";
 
-export type SupportedLang = "mn" | "en" | "ko" | "ja" | "zh" | "ru" | "de" | "fr";
+export type SupportedLang = "mn" | "en" | "ko" | "ja" | "zh" | "ru" | "de" | "fr" | "it";
 
 interface ChatMessage {
   id: string;
   sender: "user" | "assistant" | "system";
   text: string;
   timestamp: string;
+  query?: string;
   action?: {
     type: "book";
     label: string;
   };
 }
 
-const I18N = {
+const BASE_I18N = {
   mn: {
     widgetTitle: "БАТААРЫН ӨЛГИЙ ХӨТӨЧ",
     widgetSubtitle: "Говийн тансаг ресорт & Захиалгын төв",
@@ -323,6 +324,11 @@ bataartravel@gmail.com • +976 7201 0099`,
 };
 
 
+const I18N = {...BASE_I18N, it: {...BASE_I18N.en,
+ widgetTitle:'GUIDA BATAAR SANCTUARY',widgetSubtitle:'Soggiorni nel Gobi e prenotazioni',launcherBtn:'GUIDA & PRENOTAZIONI',launcherSub:'BATAAR SANCTUARY • 24/7',
+ tabChat:'Chat',tabBooking:'Prenota',tabSafety:'Consigli',chips:['🏛️ Prezzi camere','📍 Percorso 4x4','🛰️ Starlink e solare','📅 Prenota soggiorno'],inputPlaceholder:'Chiedi informazioni in italiano...',bookingTitle:'Prenotazione e disponibilità',
+ safetyTitle:'Consigli per il Gobi e Khermen Tsav',safetyP1:'1. Trasporto: utilizzare veicoli 4x4 adatti al terreno.',safetyP2:'2. Acqua e sole: portare 3–4 litri di acqua al giorno per persona, protezione solare e abiti antivento.',safetyP3:'3. Servizi: verificare con il campo internet, docce calde ed energia prima dell’arrivo.',callDirect:'Chiama il campo',campHotline:'Contatto del campo',installApp:'Installa app'}};
+
 export const AIAssistantWidget: React.FC = () => {
   const [currentLang, setCurrentLang] = useState<SupportedLang>(() => {
     try {
@@ -332,7 +338,10 @@ export const AIAssistantWidget: React.FC = () => {
     return "mn";
   });
 
-  const t = I18N[currentLang] || I18N.en;
+  const copy = publicConciergeCopy(currentLang);
+  const t = {...(I18N[currentLang] || I18N.en),welcome:copy.welcome};
+  const languageRef=useRef(currentLang);
+  languageRef.current=currentLang;
 
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"chat" | "booking" | "safety">("chat");
@@ -409,17 +418,7 @@ export const AIAssistantWidget: React.FC = () => {
 
   // When language changes, update welcome message
   useEffect(() => {
-    setMessages((prev) => {
-      if (prev.length > 0 && prev[0].id === "msg-0") {
-        const updated = [...prev];
-        updated[0] = {
-          ...updated[0],
-          text: t.welcome
-        };
-        return updated;
-      }
-      return prev;
-    });
+    setMessages((prev) => prev.map(message => message.id === 'msg-0' ? {...message,text:t.welcome} : message.sender === 'assistant' && message.query ? {...message,text:conciergeReply(message.query,currentLang),action:message.action ? {...message.action,label:'📅 '+t.tabBooking} : undefined} : message));
   }, [currentLang, t.welcome]);
 
 
@@ -459,7 +458,8 @@ export const AIAssistantWidget: React.FC = () => {
 
     try {
       await new Promise((r) => setTimeout(r, 250));
-      const replyText = generateLocalReply(userText);
+      const replyLang=languageRef.current;
+      const replyText = conciergeReply(userText,replyLang);
 
       setMessages((prev) => [
         ...prev,
@@ -467,10 +467,11 @@ export const AIAssistantWidget: React.FC = () => {
           id: `msg-${Date.now() + 1}`,
           sender: "assistant",
           text: replyText,
+          query: userText,
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           action: {
             type: "book",
-            label: `📅 ${t.tabBooking}`
+            label: `📅 ${I18N[replyLang].tabBooking}`
           }
         }
       ]);
@@ -480,7 +481,8 @@ export const AIAssistantWidget: React.FC = () => {
         {
           id: `msg-${Date.now() + 1}`,
           sender: "assistant",
-          text: (currentLang === "mn" ? "AI холболт амжилтгүй. Доорх нь автомат лавлахын хариу: " : "AI connection failed. Local reference answer: ") + generateLocalReply(userText),
+          text: generateLocalReply(userText),
+          query: userText,
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
         }
       ]);
@@ -581,7 +583,7 @@ export const AIAssistantWidget: React.FC = () => {
                   <button onClick={() => switchLanguage("ja")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "ja" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇯🇵 日本語</button>
                   <button onClick={() => switchLanguage("ru")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "ru" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇷🇺 Русский</button>
                   <button onClick={() => switchLanguage("de")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "de" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇩🇪 Deutsch</button>
-                  <button onClick={() => switchLanguage("fr")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "fr" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇫🇷 Français</button>
+                  <button onClick={() => switchLanguage("fr")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "fr" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇫🇷 Français</button><button onClick={() => switchLanguage("it")} className="px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50">🇮🇹 Italiano</button>
                 </div>
               </div>
 
@@ -1038,7 +1040,7 @@ export const AIAssistantWidget: React.FC = () => {
                   <span className="font-['Cormorant_Garamond',serif] text-base">{t.bookingTitle}</span>
                 </div>
                 <p className="text-stone-600 text-[11px] leading-relaxed">
-                  Захиалгын хүсэлтээ маягтаар илгээнэ үү. Бааз сул байр болон эцсийн үнийг батална.
+                  {copy.bookingDescription}
                 </p>
               </div>
 
@@ -1049,8 +1051,10 @@ export const AIAssistantWidget: React.FC = () => {
                 </div>
               )}
 
-              <a href="https://bataar-sanctuary-payments.erdii4812.workers.dev/booking" className="block w-full py-3 text-center bg-stone-900 text-white font-bold rounded-xl">{t.bookingTitle} — QPay</a>
-        <a className="block mt-3 rounded-xl border border-amber-300 p-3 text-center text-xs text-stone-900" href={`mailto:bataartravel@gmail.com?subject=${encodeURIComponent("Bataar reservation request")}&body=${encodeURIComponent(`Name: ${bookingForm.name}\nEmail: ${bookingForm.email}\nPhone: ${bookingForm.phone}\nArrival: ${bookingForm.arrivalDate}\nDeparture: ${bookingForm.departureDate}\nRoom: ${bookingForm.roomType}\nGuests: ${bookingForm.guests}\nNotes: ${bookingForm.notes}`)}`}>Өөрийн имэйлээр хүсэлт илгээх / Send with your email app</a>
+              <a href={'https://bataar-sanctuary-payments.erdii4812.workers.dev/booking?lang='+currentLang} className="block w-full py-3 text-center bg-stone-900 text-white font-bold rounded-xl">{t.bookingTitle} — QPay</a>
+              <a target="_blank" rel="noopener noreferrer" className="block mt-3 rounded-xl border border-amber-300 p-3 text-center text-xs text-stone-900" href={'https://mail.google.com/mail/?view=cm&fs=1&to=bataartravel%40gmail.com&su='+encodeURIComponent(t.bookingTitle)+'&body='+encodeURIComponent(copy.bookingDescription)}>{copy.gmail}</a>
+              <a className="block mt-2 text-center underline" href={'mailto:bataartravel@gmail.com?subject='+encodeURIComponent(t.bookingTitle)+'&body='+encodeURIComponent(copy.bookingDescription)}>{copy.emailApp}</a>
+              <p className="text-stone-500">{copy.emailNotice}</p>
             </div>
           )}
 
@@ -1119,4 +1123,5 @@ export const AIAssistantWidget: React.FC = () => {
     </>
   );
 };
+
 

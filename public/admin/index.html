@@ -1,4 +1,4 @@
-<!doctype html><html lang="mn"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; script-src 'nonce-e61UzGydD7Jz+g7MYH37GdUY'; connect-src https://bataar-sanctuary-payments.erdii4812.workers.dev; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Батаарын өлгий — QPay удирдлага</title>
+<!doctype html><html lang="mn"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; script-src 'nonce-rvSBu1XtUN4jeegyTmJz10Ml'; connect-src https://bataar-sanctuary-payments.erdii4812.workers.dev; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Батаарын өлгий — QPay удирдлага</title>
 <style>
 :root{color-scheme:light;--cream:#faf8f3;--paper:#fffefb;--ink:#3d3025;--muted:#8b7b69;--gold:#a7854c;--line:#e8e0d3;--brown:#5b4430}
 *{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.65 Arial,sans-serif;-webkit-font-smoothing:antialiased}
@@ -16,7 +16,7 @@ main{max-width:1200px;padding:40px 24px 56px;margin:auto}.page-intro{text-align:
 <header class="site-header"><a class="brand" href="/"><img src="/favicon.png" alt="Батаарын өлгий"><span><span class="brand-name">Батаарын өлгий</span><span class="brand-caption">Bataar Sanctuary · South Gobi</span></span></a><a class="site-back" href="/">← Сайт руу буцах</a></header><main><div class="page-intro"><span class="eyebrow">Sanctuary management</span><h1>Захиалгын удирдлага</h1><p>Зочдын хүсэлт, захиалгын баталгаажуулалт, QPay төлбөрийг нэг дор.</p></div>
 <form id="login"><h2>Тавтай морилно уу</h2><p class="login-note">Баазын админ эрхээр нэвтэрч захиалгаа удирдана уу.</p><label>Админы нууц үг <input id="token" type="password" autocomplete="off" required></label><button>Нэвтрэх</button></form>
 <section id="workspace" hidden><div class="dashboard-intro"><div><span class="eyebrow">Bataar Sanctuary</span><h2>Баазын ажлын самбар</h2><p>Эцсийн үнэ болон сул байрыг баталсны дараа төлбөрийн нэхэмжлэх үүсгэнэ.</p></div><span class="dashboard-badge">Админ удирдлага</span></div><button id="logout">Гарах</button><button id="providerHealth">QPay холболт шалгах</button><h2>Ирсэн захиалгын хүсэлтүүд</h2><label><input type="checkbox" id="showTests"> Туршилтын захиалгуудыг харуулах</label><div class="table-shell"><table><thead><tr><th>Зочин</th><th>Огноо / хүн</th><th>Төлөв</th><th>Батлах</th></tr></thead><tbody id="bookings"></tbody></table></div><h2>Төлбөрийн үнийн санал</h2><form id="quote"><label>Захиалгын дугаар / тайлбар <input id="reference" type="text" maxlength="120" required></label><label>Эцсийн дүн (₮) <input id="amount" type="number" min="1" max="1000000000" step="1" required></label><label><input id="availability" type="checkbox" required> Бааз захиалгын боломж болон үнийг шалгаж баталсан</label><button id="create">Баталсан үнийн санал үүсгэх</button></form><button id="refresh">Төлөв шинэчлэх</button><div class="table-shell"><table><thead><tr><th>Захиалга</th><th>Дүн</th><th>Төлөв</th><th>Үйлдэл</th></tr></thead><tbody id="rows"></tbody></table></div></section><p id="message" role="status" aria-live="polite"></p>
-</main><footer>БАТААРЫН ӨЛГИЙ · ЗОЧДЫН ҮЙЛЧИЛГЭЭ</footer><script nonce="e61UzGydD7Jz+g7MYH37GdUY">
+</main><footer>БАТААРЫН ӨЛГИЙ · ЗОЧДЫН ҮЙЛЧИЛГЭЭ</footer><script nonce="rvSBu1XtUN4jeegyTmJz10Ml">
 'use strict';
 let token = '';
 let loginBusy=false;
@@ -27,7 +27,17 @@ async function request(path, body) {
   if (!response.ok) { if (response.status === 401) logout(); throw new Error(response.status === 401 ? 'Админы нууц үг буруу эсвэл хүчингүй байна.' : 'Хүсэлт амжилтгүй (' + response.status + '). Нэхэмжлэхийг дахин үүсгэхээс өмнө төлөвийг шалгана уу.'); }
   return response.json();
 }
-function logout() { token=''; get('token').value=''; get('rows').replaceChildren(); get('bookings').replaceChildren(); get('inboxAccess')?.remove(); get('workspace').hidden=true; get('login').hidden=false; message('Системээс гарлаа.'); }
+function logout() { token=''; get('token').value=''; get('rows').replaceChildren(); get('bookings').replaceChildren(); get('inboxAccess')?.remove(); get('adminTools')?.remove(); get('workspace').hidden=true; get('login').hidden=false; message('Системээс гарлаа.'); }
+function showAdminTools() {
+  if(!token||get('adminTools'))return;
+  const tools=document.createElement('section');tools.id='adminTools';
+  const title=document.createElement('h2');title.textContent='Ажилтны хэрэгслүүд';tools.append(title);
+  for(const [label,url] of [['Notion ажлын талбар нээх','https://www.notion.so/'],['Make автоматжуулалт / webhook нээх','https://www.make.com/']]) {
+    const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=label;tools.append(link,document.createElement('br'));
+  }
+  const note=document.createElement('p');note.textContent='Notion болон Make-д тусад нь нэвтэрнэ. Эдгээр нь хэрэгслийн холбоосууд; захиалга автоматаар sync хийх холболт тохируулагдаагүй. API түлхүүр болон хувийн webhook хаягийг энэ браузерт оруулахгүй.';
+  tools.append(note);get('workspace').prepend(tools);
+}
 function showInboxAccess() {
   if (!token || get('inboxAccess')) return;
   const container=document.createElement('p');container.id='inboxAccess';
@@ -49,10 +59,11 @@ function bookingReply(cell,item,pricing) {
     'Сул байр болон эцсийн үнийг баазтай баталгаажуулна уу.', '', 'Батаарын өлгий', 'erdii4812@gmail.com'].join('\n');
   label.append(draft);
   const link=document.createElement('a');link.textContent='Өөрийн имэйл аппад ноорог нээх';link.rel='noopener noreferrer';
-  const update=()=>{link.href='mailto:'+encodeURIComponent(item.email)+'?subject='+encodeURIComponent('Батаарын өлгий — захиалга '+item.id.slice(0,8))+'&body='+encodeURIComponent(draft.value);};
+  const gmail=document.createElement('a');gmail.textContent='Gmail вэб дээр ноорог нээх';gmail.target='_blank';gmail.rel='noopener noreferrer';
+  const update=()=>{const subject='Батаарын өлгий — захиалга '+item.id.slice(0,8);link.href='mailto:'+encodeURIComponent(item.email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(draft.value);gmail.href='https://mail.google.com/mail/?'+new URLSearchParams({authuser:'erdii4812@gmail.com',view:'cm',fs:'1',to:item.email,su:subject,body:draft.value}).toString();};
   draft.addEventListener('input',update);update();
   const notice=document.createElement('p');notice.textContent='Имэйлийг автоматаар илгээхгүй. Баазын Gmail хаягаар илгээж байгаа эсэхээ имэйл аппдаа шалгана уу.';
-  details.append(summary,recipient,label,link,notice);cell.append(details);
+  details.append(summary,recipient,label,gmail,document.createElement('br'),link,notice);cell.append(details);
 }
 function paymentLink(cell, url) {
   const parsed = new URL(url, location.origin);
@@ -121,7 +132,7 @@ async function refreshBookings() {
 }
 async function refresh(){await refreshBookings();await refreshQuotes();}
 get('showTests').onchange=()=>refresh().catch(error=>message(error.message));
-get('login').onsubmit=async event => { event.preventDefault(); if(loginBusy)return;loginBusy=true;const loginButton=get('login').querySelector('button');loginButton.disabled=true;token=get('token').value; get('token').value=''; try { await refresh(); get('login').hidden=true; get('workspace').hidden=false; showInboxAccess(); message('Нэвтэрлээ.'); } catch(error) { logout(); message(error.message); } finally{loginBusy=false;loginButton.disabled=false;} };
+get('login').onsubmit=async event => { event.preventDefault(); if(loginBusy)return;loginBusy=true;const loginButton=get('login').querySelector('button');loginButton.disabled=true;token=get('token').value; get('token').value=''; try { await refresh(); get('login').hidden=true; get('workspace').hidden=false; showInboxAccess(); showAdminTools(); message('Нэвтэрлээ.'); } catch(error) { logout(); message(error.message); } finally{loginBusy=false;loginButton.disabled=false;} };
 get('logout').onclick=logout;
 get('refresh').onclick=() => refresh().then(() => message('Төлөв шинэчлэгдлээ.')).catch(error => message(error.message));
 get('providerHealth').onclick=async ()=>{get('providerHealth').disabled=true;try {const result=await request('/admin/provider/health');message(result.authenticated?'QPay холболт баталгаажлаа.':'QPay холболт баталгаажаагүй.');}catch(error){message(error.message);}finally{get('providerHealth').disabled=false;}};
