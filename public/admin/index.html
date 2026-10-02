@@ -1,9 +1,9 @@
-<!doctype html><html lang="mn"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-gtvgaPhDePX7uI4jX11xzptf'; connect-src https://bataar-sanctuary-payments.erdii4812.workers.dev; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Батаарын өлгий — QPay удирдлага</title>
+<!doctype html><html lang="mn"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-deSWzzxcDUvZrno1zbdhekAp'; connect-src https://bataar-sanctuary-payments.erdii4812.workers.dev; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Батаарын өлгий — QPay удирдлага</title>
 <style>body{font:16px system-ui;max-width:900px;margin:32px auto;padding:20px;color:#16302a}input,button{font:inherit;padding:10px;margin:6px 0}label{display:block}button{cursor:pointer}table{border-collapse:collapse;width:100%}td,th{padding:10px;text-align:left;border-bottom:1px solid #ddd}a{color:#075985}#message{white-space:pre-wrap}input[type=text],input[type=password]{width:min(90%,400px)}</style>
 <h1>QPay төлбөрийн удирдлага</h1><p>Бааз захиалгын боломж болон эцсийн үнийг баталсны дараа үнийн санал үүсгэнэ. Нэхэмжлэх үүсгэх товч QPay руу хүсэлт илгээнэ.</p>
-<form id="login"><label>Админы нууц түлхүүр <input id="token" type="password" autocomplete="off" required></label><button>Нэвтрэх</button></form>
+<form id="login"><label>Админы нууц үг <input id="token" type="password" autocomplete="off" required></label><button>Нэвтрэх</button></form>
 <section id="workspace" hidden><button id="logout">Гарах</button><button id="providerHealth">QPay холболт шалгах</button><h2>Ирсэн захиалгын хүсэлтүүд</h2><label><input type="checkbox" id="showTests"> Туршилтын захиалгуудыг харуулах</label><table><thead><tr><th>Зочин</th><th>Огноо / хүн</th><th>Төлөв</th><th>Батлах</th></tr></thead><tbody id="bookings"></tbody></table><h2>Төлбөрийн үнийн санал</h2><form id="quote"><label>Захиалгын дугаар / тайлбар <input id="reference" type="text" maxlength="120" required></label><label>Эцсийн дүн (₮) <input id="amount" type="number" min="1" max="1000000000" step="1" required></label><label><input id="availability" type="checkbox" required> Бааз захиалгын боломж болон үнийг шалгаж баталсан</label><button id="create">Баталсан үнийн санал үүсгэх</button></form><button id="refresh">Төлөв шинэчлэх</button><table><thead><tr><th>Захиалга</th><th>Дүн</th><th>Төлөв</th><th>Үйлдэл</th></tr></thead><tbody id="rows"></tbody></table></section><p id="message" role="status" aria-live="polite"></p>
-<script nonce="gtvgaPhDePX7uI4jX11xzptf">
+<script nonce="deSWzzxcDUvZrno1zbdhekAp">
 'use strict';
 let token = '';
 let loginBusy=false;
@@ -11,10 +11,36 @@ const get = id => document.getElementById(id);
 const message = value => { get('message').textContent = value; };
 async function request(path, body) {
   const response = await fetch("https://bataar-sanctuary-payments.erdii4812.workers.dev" + path, {method:body ? 'POST' : 'GET', credentials:'omit', cache:'no-store', headers:{Authorization:'Bearer ' + token, ...(body ? {'Content-Type':'application/json'} : {})}, ...(body ? {body:JSON.stringify(body)} : {})});
-  if (!response.ok) { if (response.status === 401) logout(); throw new Error(response.status === 401 ? 'Токен буруу эсвэл хүчингүй байна.' : 'Хүсэлт амжилтгүй (' + response.status + '). Нэхэмжлэхийг дахин үүсгэхээс өмнө төлөвийг шалгана уу.'); }
+  if (!response.ok) { if (response.status === 401) logout(); throw new Error(response.status === 401 ? 'Админы нууц үг буруу эсвэл хүчингүй байна.' : 'Хүсэлт амжилтгүй (' + response.status + '). Нэхэмжлэхийг дахин үүсгэхээс өмнө төлөвийг шалгана уу.'); }
   return response.json();
 }
-function logout() { token=''; get('token').value=''; get('rows').replaceChildren(); get('bookings').replaceChildren(); get('workspace').hidden=true; get('login').hidden=false; message('Системээс гарлаа.'); }
+function logout() { token=''; get('token').value=''; get('rows').replaceChildren(); get('bookings').replaceChildren(); get('inboxAccess')?.remove(); get('workspace').hidden=true; get('login').hidden=false; message('Системээс гарлаа.'); }
+function showInboxAccess() {
+  if (!token || get('inboxAccess')) return;
+  const container=document.createElement('p');container.id='inboxAccess';
+  const link=document.createElement('a');link.href='https://mail.google.com/mail/?authuser=erdii4812%40gmail.com#inbox';
+  link.target='_blank';link.rel='noopener noreferrer';link.textContent='Баазын Gmail inbox нээх — erdii4812@gmail.com';
+  container.append(link,document.createElement('br'),document.createTextNode('Гаднын Gmail хуудас нээгдэнэ. Gmail-д тусад нь нэвтэрнэ; энэ самбар inbox уншихгүй, имэйл автоматаар илгээхгүй.'));
+  get('workspace').prepend(container);
+}
+function bookingReply(cell,item,pricing) {
+  if (!token || typeof item.email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(item.email)) return;
+  const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Энэ захиалгад хариу имэйл бэлдэх';
+  const recipient=document.createElement('p');recipient.textContent='Хүлээн авагч: '+item.email;
+  const label=document.createElement('label');label.textContent='Хариу (илгээхээс өмнө шалгаж засна уу)';
+  const draft=document.createElement('textarea');draft.rows=8;draft.style.width='100%';
+  draft.value=['Сайн байна уу, '+item.name+'?', '', 'Батаарын өлгийд илгээсэн захиалгын хүсэлтийг хүлээн авлаа.',
+    'Ирэх өдөр: '+item.arrival, 'Буцах өдөр: '+item.departure, 'Хүний тоо: '+item.persons,
+    ...(pricing?['Өрөө: '+pricing.roomName]:[]), 'Захиалгын төлөв: '+stateLabel(item.status),
+    ...(item.bookingUrl?['Захиалгын төлөвөө харах: '+item.bookingUrl]:[]), '',
+    'Сул байр болон эцсийн үнийг баазтай баталгаажуулна уу.', '', 'Батаарын өлгий', 'erdii4812@gmail.com'].join('\n');
+  label.append(draft);
+  const link=document.createElement('a');link.textContent='Өөрийн имэйл аппад ноорог нээх';link.rel='noopener noreferrer';
+  const update=()=>{link.href='mailto:'+encodeURIComponent(item.email)+'?subject='+encodeURIComponent('Батаарын өлгий — захиалга '+item.id.slice(0,8))+'&body='+encodeURIComponent(draft.value);};
+  draft.addEventListener('input',update);update();
+  const notice=document.createElement('p');notice.textContent='Имэйлийг автоматаар илгээхгүй. Баазын Gmail хаягаар илгээж байгаа эсэхээ имэйл аппдаа шалгана уу.';
+  details.append(summary,recipient,label,link,notice);cell.append(details);
+}
 function paymentLink(cell, url) {
   const parsed = new URL(url, location.origin);
   if (parsed.origin !== "https://bataar-sanctuary-payments.erdii4812.workers.dev" || !parsed.pathname.startsWith('/pay/')) throw new Error('Төлбөрийн холбоосын хаяг тохирохгүй байна.');
@@ -74,6 +100,7 @@ async function refreshBookings() {
       action.append(form);
     }
     if(item.bookingUrl){const customer=document.createElement('a');customer.href=item.bookingUrl;customer.textContent='Харилцагчийн захиалгын төлөв';customer.target='_blank';customer.rel='noopener noreferrer';action.append(customer);}
+    bookingReply(action,item,pricing);
       if(pricing){const summary=document.createElement('p');summary.textContent=pricing.roomName+' · '+pricing.rooms+' өрөө · '+pricing.nights+' хоног · '+Number(pricing.daily).toLocaleString()+' ₮ / хоног · Нийт '+Number(pricing.amount).toLocaleString()+' ₮ (байр + 3 хоол)';action.append(summary);}
       if (item.message) {const note=document.createElement('details');const title=document.createElement('summary');title.textContent='Нэмэлт хүсэлт';const text=document.createElement('p');text.textContent=item.message;note.append(title,text);action.append(note);}
     get('bookings').append(row);
@@ -81,7 +108,7 @@ async function refreshBookings() {
 }
 async function refresh(){await refreshBookings();await refreshQuotes();}
 get('showTests').onchange=()=>refresh().catch(error=>message(error.message));
-get('login').onsubmit=async event => { event.preventDefault(); if(loginBusy)return;loginBusy=true;const loginButton=get('login').querySelector('button');loginButton.disabled=true;token=get('token').value; get('token').value=''; try { await refresh(); get('login').hidden=true; get('workspace').hidden=false; message('Нэвтэрлээ.'); } catch(error) { token=''; message(error.message); } finally{loginBusy=false;loginButton.disabled=false;} };
+get('login').onsubmit=async event => { event.preventDefault(); if(loginBusy)return;loginBusy=true;const loginButton=get('login').querySelector('button');loginButton.disabled=true;token=get('token').value; get('token').value=''; try { await refresh(); get('login').hidden=true; get('workspace').hidden=false; showInboxAccess(); message('Нэвтэрлээ.'); } catch(error) { logout(); message(error.message); } finally{loginBusy=false;loginButton.disabled=false;} };
 get('logout').onclick=logout;
 get('refresh').onclick=() => refresh().then(() => message('Төлөв шинэчлэгдлээ.')).catch(error => message(error.message));
 get('providerHealth').onclick=async ()=>{get('providerHealth').disabled=true;try {const result=await request('/admin/provider/health');message(result.authenticated?'QPay холболт баталгаажлаа.':'QPay холболт баталгаажаагүй.');}catch(error){message(error.message);}finally{get('providerHealth').disabled=false;}};

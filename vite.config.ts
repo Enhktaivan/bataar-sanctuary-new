@@ -21,18 +21,7 @@ function versionStamperPlugin() {
       }
       fs.writeFileSync(path.resolve(publicDir, 'app-version.json'), JSON.stringify(versionObj, null, 2));
     },
-    closeBundle() {
-      const buildTime = Date.now();
-      const versionObj = {
-        version: `v1.0.${buildTime}`,
-        buildTime,
-        date: new Date().toISOString()
-      };
-      const distDir = path.resolve(__dirname, 'dist');
-      if (fs.existsSync(distDir)) {
-        fs.writeFileSync(path.resolve(distDir, 'app-version.json'), JSON.stringify(versionObj, null, 2));
-      }
-    }
+
   };
 }
 
@@ -84,8 +73,9 @@ export default defineConfig(() => {
           cleanupOutdatedCaches: true,
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/admin(?:\/|$)/, /^\/api/, /app-version\.json/],
+          globIgnores: ['admin/**'],
           maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp,woff,woff2}'],
+          globPatterns: ['**/*.{js,css,html,ico,svg,woff,woff2}'],
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -132,7 +122,7 @@ export default defineConfig(() => {
           ],
         },
         devOptions: {
-          enabled: true,
+          enabled: false,
         },
       }),
     ],

@@ -5,14 +5,8 @@ import {
   X,
   MessageSquare,
   Calendar,
-  Mail,
-  Copy,
-  Check,
   ExternalLink,
   ShieldCheck,
-  Settings,
-  Database,
-  RefreshCw,
   Phone,
   Download,
   Compass,
@@ -31,7 +25,6 @@ import {
 
 import { conciergeReply } from "../conciergeReplies";
 import { usePWAInstall } from "../hooks/usePWAInstall";
-import { assertDeliveryAcknowledged, validBookingDates } from "../bookingDelivery";
 
 export type SupportedLang = "mn" | "en" | "ko" | "ja" | "zh" | "ru" | "de" | "fr";
 
@@ -41,24 +34,9 @@ interface ChatMessage {
   text: string;
   timestamp: string;
   action?: {
-    type: "book" | "email" | "notion";
+    type: "book";
     label: string;
   };
-}
-
-interface TouristInquiry {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  arrivalDate: string;
-  departureDate: string;
-  roomType: string;
-  guests: number;
-  notes: string;
-  createdAt: string;
-  status: "New" | "Contacted" | "Confirmed";
-  language: string;
 }
 
 const I18N = {
@@ -69,8 +47,6 @@ const I18N = {
     launcherSub: "БАТААРЫН ӨЛГИЙ • 24/7",
     tabChat: "AI Чат",
     tabBooking: "Захиалга",
-    tabEmail: "AI Мэйл",
-    tabNotion: "Notion",
     tabSafety: "Санамж",
     welcome: `Батаарын өлгийд тавтай морилно уу! / Welcome to Bataar Sanctuary.
 
@@ -91,11 +67,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     notes: "Тусгай хүсэлт (4x4 тосох, тэмээ унах, Хэрмэн цавын аялал...)",
     submitBooking: "Захиалга илгээх (bataartravel@gmail.com)",
     bookingSent: "Хүсэлтийг илгээх үйлчилгээ хүлээн авлаа. Өрөөний боломж, үнийг баазын ажилтан баталгаажуулна.",
-    emailTitle: "Гадаад жуулчинд хариу илгээх (AI Reply)",
-    emailDesc: "Ирсэн захиалгад мэргэжлийн англи хариуг 1 товшилтоор үүсгэж Gmail дээр нээнэ.",
-    generateEmailBtn: "Хариу имэйл бэлтгэх",
-    crmTitle: "Захиалгын нэгдсэн сан (CRM)",
-    crmExport: "Notion CSV татах",
     safetyTitle: "Хэрмэн цав & Говийн аяллын санамж",
     safetyP1: "1. 4x4 Тээвэр: Зөвхөн бүрэн хөтлөгчтэй Land Cruiser зэрэг өндөр тэнхлэгтэй машинтай зорчих.",
     safetyP2: "2. Ус ба нар: 1 хүнд өдөрт 3-4л ундны ус тооцох, нарны хамгаалалт, салхины дулаан хувцастай байх.",
@@ -111,8 +82,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     launcherSub: "BATAAR SANCTUARY • 24/7",
     tabChat: "AI Chat",
     tabBooking: "Reserve",
-    tabEmail: "AI Mail",
-    tabNotion: "Notion",
     tabSafety: "Advisory",
     welcome: `Батаарын өлгийд тавтай морилно уу! / Welcome to Bataar Sanctuary.
 
@@ -133,11 +102,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     notes: "Special requests (4x4 airport pickup, camel trek, Khermen Tsav expedition...)",
     submitBooking: "Submit Reservation (To bataartravel@gmail.com)",
     bookingSent: "Your reservation request has been received! Our sanctuary team is contacting you shortly.",
-    emailTitle: "Guest Email Dispatcher (AI)",
-    emailDesc: "Compose a personalized luxury itinerary reply and open directly in Gmail.",
-    generateEmailBtn: "Draft Guest Reply",
-    crmTitle: "Guest Inquiries CRM Hub",
-    crmExport: "Export Notion CSV",
     safetyTitle: "Gobi & Khermen Tsav Travel Advisory",
     safetyP1: "1. 4x4 Vehicle: Travel only in high-clearance 4WD vehicles (Toyota Land Cruiser).",
     safetyP2: "2. Hydration & Sun: Carry 3-4 liters of water per person daily, sun protection, and windproof gear.",
@@ -153,8 +117,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     launcherSub: "바타르 생츄어리 • 24/7 AI",
     tabChat: "AI 챗",
     tabBooking: "객실 예약",
-    tabEmail: "AI 메일",
-    tabNotion: "Notion",
     tabSafety: "여행 수칙",
     welcome: `Батаарын өлгийд тавтай морилно уу! / Welcome to Bataar Sanctuary.
 
@@ -175,11 +137,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     notes: "특별 요청 사항 (공항 픽업, 낙타 트레킹, 헤르민 차브 탐사 등)",
     submitBooking: "예약 신청하기 (이메일 실시간 전송)",
     bookingSent: "예약 신청이 접수되었습니다! 담당 매니저가 이메일로 안내해 드립니다.",
-    emailTitle: "고객 안내 이메일 작성 (AI)",
-    emailDesc: "예약자에게 전달할 맞춤 안내문을 자동 작성하여 Gmail로 전송합니다.",
-    generateEmailBtn: "답변 이메일 생성",
-    crmTitle: "고객 예약 관리 대시보드 (CRM)",
-    crmExport: "Notion CSV 다운로드",
     safetyTitle: "고비 사막 & 헤르민 차브 여행 수칙",
     safetyP1: "1. 4x4 필수: 험로 주행을 위해 반드시 토요타 랜드크루저 등 사륜구동 차량을 이용하세요.",
     safetyP2: "2. 식수 및 자외선: 1인당 하루 3~4리터의 식수와 자외선 차단제, 방풍 재킷을 준비하세요.",
@@ -195,8 +152,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     launcherSub: "巴塔尔圣地 • 24小时 AI",
     tabChat: "AI 咨询",
     tabBooking: "客房预订",
-    tabEmail: "AI 邮件",
-    tabNotion: "Notion",
     tabSafety: "行程须知",
     welcome: `Батаарын өлгийд тавтай морилно уу! / Welcome to Bataar Sanctuary.
 
@@ -217,11 +172,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     notes: "特别需求 (越野接送、骑骆驼看日落、化石谷向导等)",
     submitBooking: "提交预订申请 (直发邮箱)",
     bookingSent: "您的预订申请已成功提交，工作人员将尽快回复确认！",
-    emailTitle: "AI 宾客回信生成器",
-    emailDesc: "一键生成高端礼宾英文回信并在 Gmail 中直接发送。",
-    generateEmailBtn: "生成回复邮件",
-    crmTitle: "宾客预订数据库 (CRM)",
-    crmExport: "导出 Notion CSV",
     safetyTitle: "戈壁旅行与赫尔曼察夫安全须知",
     safetyP1: "1. 越野车型: 严禁普通轿车进入，必须使用高底盘丰田陆地巡洋舰 (Land Cruiser)。",
     safetyP2: "2. 水与防晒: 每人每天需储备3-4升饮用水，备好防晒霜及防风外套。",
@@ -237,8 +187,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     launcherSub: "バタール聖地 • 24/7 AI",
     tabChat: "AI案内",
     tabBooking: "宿泊予約",
-    tabEmail: "AIメール",
-    tabNotion: "Notion",
     tabSafety: "旅の注意事項",
     welcome: `Батаарын өлгийд тавтай морилно уу! / Welcome to Bataar Sanctuary.
 
@@ -259,11 +207,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     notes: "ご要望（空港送迎、ラクダ体験、化石ツアー等）",
     submitBooking: "予約をリクエストする（メール送信）",
     bookingSent: "予約リクエストを受け付けました。担当者よりメールにてご連絡いたします。",
-    emailTitle: "お客様返信AIジェネレーター",
-    emailDesc: "英語の丁寧な旅程確認メールを作成し、Gmailで直接送信できます。",
-    generateEmailBtn: "返信メールを作成",
-    crmTitle: "予約管理データベース (CRM)",
-    crmExport: "Notion CSV出力",
     safetyTitle: "ゴビ砂漠＆ヘルメン・ツァフ旅行の安全事項",
     safetyP1: "1. 4WD車両必須: 険しい地形のため、必ずトヨタ・ランドクルーザーをご利用ください。",
     safetyP2: "2. 水分と紫外線: 1日1人3〜4リットルの飲料水、日焼け止め、防風着をご用意ください。",
@@ -279,8 +222,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     launcherSub: "БАТААРЫН ӨЛГИЙ • 24/7",
     tabChat: "AI Чат",
     tabBooking: "Бронь",
-    tabEmail: "AI Письмо",
-    tabNotion: "Notion",
     tabSafety: "Памятка",
     welcome: `Батаарын өлгийд тавтай морилно уу! / Welcome to Bataar Sanctuary.
 
@@ -301,11 +242,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     notes: "Пожелания (трансфер 4x4, катание на верблюдах, экспедиция)",
     submitBooking: "Отправить бронь (на bataartravel@gmail.com)",
     bookingSent: "Заявка успешно принята! Мы свяжемся с вами в ближайшее время.",
-    emailTitle: "Генератор ответов туристам (AI)",
-    emailDesc: "Создайте официальное письмо-подтверждение для отправки через Gmail.",
-    generateEmailBtn: "Сформировать ответ",
-    crmTitle: "База бронирований (CRM)",
-    crmExport: "Скачать CSV для Notion",
     safetyTitle: "Памятка для путешествия по Гоби",
     safetyP1: "1. Автомобиль 4х4: Передвижение только на полноприводных внедорожниках с высоким клиренсом.",
     safetyP2: "2. Вода и солнце: Не менее 3-4 литров воды на человека в день, защита от солнца и ветра.",
@@ -321,8 +257,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     launcherSub: "BATAAR SANCTUARY • 24/7",
     tabChat: "AI Chat",
     tabBooking: "Buchen",
-    tabEmail: "AI Mail",
-    tabNotion: "Notion",
     tabSafety: "Hinweise",
     welcome: `Батаарын өлгийд тавтай морилно уу! / Welcome to Bataar Sanctuary.
 
@@ -343,11 +277,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     notes: "Sonderwünsche (Transfer, Expeditionen)",
     submitBooking: "Reservierung anfragen",
     bookingSent: "Ihre Anfrage wurde erfolgreich an bataartravel@gmail.com übermittelt!",
-    emailTitle: "E-Mail-Antwortgenerator (AI)",
-    emailDesc: "Erstellen Sie professionelle Bestätigungen für Gmail.",
-    generateEmailBtn: "Antwort erstellen",
-    crmTitle: "Buchungs-CRM",
-    crmExport: "Notion CSV",
     safetyTitle: "Sicherheitshinweise für die Gobi",
     safetyP1: "1. 4x4 Fahrzeug: Nur geländegängige Allradfahrzeuge nutzen.",
     safetyP2: "2. Wasser & Sonne: Mindestens 3-4 Liter Wasser pro Tag und Sonnenschutz mitführen.",
@@ -363,8 +292,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     launcherSub: "BATAAR SANCTUARY • 24/7",
     tabChat: "AI Chat",
     tabBooking: "Réserver",
-    tabEmail: "AI Mail",
-    tabNotion: "Notion",
     tabSafety: "Conseils",
     welcome: `Батаарын өлгийд тавтай морилно уу! / Welcome to Bataar Sanctuary.
 
@@ -385,11 +312,6 @@ bataartravel@gmail.com • +976 7201 0099`,
     notes: "Demandes particulières (transfert 4x4, safari chameaux)",
     submitBooking: "Envoyer la réservation",
     bookingSent: "Votre réservation a été transmise à bataartravel@gmail.com !",
-    emailTitle: "Générateur d'e-mail IA",
-    emailDesc: "Générez une réponse personnalisée pour Gmail.",
-    generateEmailBtn: "Rédiger l'e-mail",
-    crmTitle: "Base de Réservations (CRM)",
-    crmExport: "Télécharger CSV Notion",
     safetyTitle: "Conseils de Sécurité dans le Gobi",
     safetyP1: "1. Véhicule 4x4 : Uniquement des véhicules tout-terrain Toyota Land Cruiser.",
     safetyP2: "2. Hydratation : Prévoir 3 à 4 litres d'eau par jour et par personne.",
@@ -400,36 +322,6 @@ bataartravel@gmail.com • +976 7201 0099`,
   }
 };
 
-const DEFAULT_INQUIRIES: TouristInquiry[] = [
-  {
-    id: "inq-101",
-    name: "Dr. Alexander Müller",
-    email: "a.mueller@paleo-berlin.de",
-    phone: "+49 170 829104",
-    arrivalDate: "2026-07-12",
-    departureDate: "2026-07-18",
-    roomType: "Deluxe Wooden Lodge",
-    guests: 2,
-    notes: "Interested in visiting Khermen Tsav fossil beds and night stargazing. Need 4x4 airport transfer from Dalanzadgad.",
-    createdAt: "2026-09-26 14:30",
-    status: "New",
-    language: "English"
-  },
-  {
-    id: "inq-102",
-    name: "Kim Min-ji (김민지)",
-    email: "minji.kim@seoul-travel.kr",
-    phone: "+82 10 9382 1102",
-    arrivalDate: "2026-08-04",
-    departureDate: "2026-08-08",
-    roomType: "Family Suite",
-    guests: 4,
-    notes: "Family trip with 2 kids. Want camel sunset safari and private ger experience with Starlink Wi-Fi.",
-    createdAt: "2026-09-25 18:45",
-    status: "Contacted",
-    language: "Korean"
-  }
-];
 
 export const AIAssistantWidget: React.FC = () => {
   const [currentLang, setCurrentLang] = useState<SupportedLang>(() => {
@@ -443,7 +335,7 @@ export const AIAssistantWidget: React.FC = () => {
   const t = I18N[currentLang] || I18N.en;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"chat" | "booking" | "email" | "notion" | "safety">("chat");
+  const [activeTab, setActiveTab] = useState<"chat" | "booking" | "safety">("chat");
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
       id: "msg-0",
@@ -455,24 +347,11 @@ export const AIAssistantWidget: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  // Inquiries
-  const [inquiries, setInquiries] = useState<TouristInquiry[]>(() => {
-    try {
-      const saved = localStorage.getItem("bataar_crm_inquiries");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
 
   // Settings & PWA App
-  const [notionApiKey, setNotionApiKey] = useState("");
-  const [notionWebhookUrl, setNotionWebhookUrl] = useState("");
-  const [showSettings, setShowSettings] = useState(false);
   const [showAppInstall, setShowAppInstall] = useState(false);
   const { isInstallable, isInstalled, isIOS, isAndroid, isInAppBrowser, isSafari, isChrome, install } = usePWAInstall();
   const [installDeviceTab, setInstallDeviceTab] = useState<"ios" | "android" | "desktop">("ios");
-  const [copySuccess, setCopySuccess] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAndroid) {
@@ -498,11 +377,6 @@ export const AIAssistantWidget: React.FC = () => {
   const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
   const [bookingSuccessMsg, setBookingSuccessMsg] = useState<string | null>(null);
 
-  // Email generator state
-  const [selectedInquiryId, setSelectedInquiryId] = useState<string>(inquiries[0]?.id || "");
-  const [emailTemplateType, setEmailTemplateType] = useState<"confirmation" | "quote" | "logistics">("confirmation");
-  const [generatedEmail, setGeneratedEmail] = useState<{ subject: string; body: string } | null>(null);
-  const [isGeneratingEmail, setIsGeneratingEmail] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -548,9 +422,6 @@ export const AIAssistantWidget: React.FC = () => {
     });
   }, [currentLang, t.welcome]);
 
-  useEffect(() => {
-    try { localStorage.setItem("bataar_crm_inquiries", JSON.stringify(inquiries)); } catch { /* Browser storage may be disabled; email delivery is independent. */ }
-  }, [inquiries]);
 
   useEffect(() => {
     if (messagesEndRef.current && activeTab === "chat") {
@@ -567,10 +438,6 @@ export const AIAssistantWidget: React.FC = () => {
     } catch {}
   };
 
-  const handleSaveSettings = () => {
-    // Optional keys remain in memory for this tab only; never persist credentials.
-    setShowSettings(false);
-  };
 
   const generateLocalReply = (query: string): string => conciergeReply(query, currentLang);
 
@@ -622,68 +489,6 @@ export const AIAssistantWidget: React.FC = () => {
     }
   };
 
-  const handleGenerateEmail = () => {
-    const inq = inquiries.find((i) => i.id === selectedInquiryId) || inquiries[0];
-    if (!inq) return;
-
-    setIsGeneratingEmail(true);
-
-    let subject = `Bataar Sanctuary • Reservation Request Received - ${inq.name}`;
-    let body = `Dear ${inq.name},
-
-Warm greetings from the heart of the South Gobi desert.
-
-Thank you for choosing Bataar Sanctuary (Батаарын Өлгий). We are delighted to confirm receipt of your reservation request for our luxury eco-lodge in the Tost Tosonbumba Nature Reserve.
-
-Reservation Details:
-• Guest Name: ${inq.name}
-• Check-in: ${inq.arrivalDate}
-• Check-out: ${inq.departureDate}
-• Suite: ${inq.roomType}
-• Party Size: ${inq.guests} Guest(s)
-• Special Notes: ${inq.notes || "None"}
-
-Included Amenities:
-• 100% Solar-Powered Lodge with 24/7 hot showers and climate control
-• Starlink Satellite High-Speed Broadband
-• Organic Pasture-to-Table Dining
-• Night Astronomy Telescope Stargazing
-• Gateway to Khermen Tsav dinosaur canyon
-
-If you require private Toyota Land Cruiser transfers from Dalanzadgad Airport, please let us know.
-
-With warm regards,
-
-The Sanctuary Team
-Bataar Sanctuary • South Gobi, Mongolia
-Web: https://bataartravel.mn/
-Email: bataartravel@gmail.com
-Phone: +976 7201 0099`;
-
-    setGeneratedEmail({ subject, body });
-    setIsGeneratingEmail(false);
-  };
-
-  const handleCopyText = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
-    setCopySuccess(key);
-    setTimeout(() => setCopySuccess(null), 2000);
-  };
-
-  const handleExportCSV = () => {
-    const headers = ["Name,Email,Phone,Arrival,Departure,Room Type,Guests,Status,Language,Notes,Created At"];
-    const rows = inquiries.map((i) =>
-      `"${i.name}","${i.email}","${i.phone}","${i.arrivalDate}","${i.departureDate}","${i.roomType}",${i.guests},"${i.status}","${i.language}","${(i.notes || "").replace(/"/g, '""')}","${i.createdAt}"`
-    );
-    const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `bataar_sanctuary_inquiries_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   return (
     <>
@@ -746,7 +551,6 @@ Phone: +976 7201 0099`;
               <button
                 onClick={() => {
                   setShowAppInstall(!showAppInstall);
-                  setShowSettings(false);
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-xs transition-colors border cursor-pointer ${
                   showAppInstall
@@ -782,16 +586,6 @@ Phone: +976 7201 0099`;
               </div>
 
               <button
-                onClick={() => {
-                  setShowSettings(!showSettings);
-                  setShowAppInstall(false);
-                }}
-                className={`p-1.5 rounded-lg transition-colors ${showSettings ? "bg-amber-100 text-amber-800" : "text-stone-500 hover:text-stone-800 hover:bg-white"}`}
-                title="Settings & API Keys"
-              >
-                <Settings className="w-4 h-4" />
-              </button>
-              <button
                 onClick={() => setIsOpen(false)}
                 className="p-1.5 rounded-lg text-stone-500 hover:text-stone-800 hover:bg-white transition-colors"
                 title="Close"
@@ -801,13 +595,12 @@ Phone: +976 7201 0099`;
             </div>
           </div>
 
-          <p className="px-4 py-2 text-xs text-stone-600">{currentLang === "mn" ? "Захиалгын жагсаалт зөвхөн энэ төхөөрөмжид хадгалагдана. Notion синк холбогдоогүй. Түлхүүргүй чат автомат лавлах ашиглана." : "Inquiry history is stored on this device only. Notion sync is not connected. Chat without a key uses local reference replies."}</p>
           {/* Navigation Bar */}
-          <div className="grid grid-cols-5 bg-[#F2EDE4]/70 p-1 border-b border-stone-200/80 text-[10.5px] font-medium">
+          <div className="grid grid-cols-3 bg-[#F2EDE4]/70 p-1 border-b border-stone-200/80 text-[10.5px] font-medium">
             <button
-              onClick={() => { setActiveTab("chat"); setShowSettings(false); setShowAppInstall(false); }}
+              onClick={() => { setActiveTab("chat"); setShowAppInstall(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
-                activeTab === "chat" && !showSettings && !showAppInstall
+                activeTab === "chat" && !showAppInstall
                   ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
                   : "text-stone-600 hover:text-stone-900"
               }`}
@@ -817,9 +610,9 @@ Phone: +976 7201 0099`;
             </button>
 
             <button
-              onClick={() => { setActiveTab("booking"); setShowSettings(false); setShowAppInstall(false); }}
+              onClick={() => { setActiveTab("booking"); setShowAppInstall(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
-                activeTab === "booking" && !showSettings && !showAppInstall
+                activeTab === "booking" && !showAppInstall
                   ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
                   : "text-stone-600 hover:text-stone-900"
               }`}
@@ -828,37 +621,11 @@ Phone: +976 7201 0099`;
               <span>{t.tabBooking}</span>
             </button>
 
-            <button
-              onClick={() => { setActiveTab("email"); setShowSettings(false); setShowAppInstall(false); }}
-              className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
-                activeTab === "email" && !showSettings && !showAppInstall
-                  ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
-                  : "text-stone-600 hover:text-stone-900"
-              }`}
-            >
-              <Mail className="w-3.5 h-3.5 text-amber-600" />
-              <span>{t.tabEmail}</span>
-            </button>
 
             <button
-              onClick={() => { setActiveTab("notion"); setShowSettings(false); setShowAppInstall(false); }}
-              className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all relative ${
-                activeTab === "notion" && !showSettings && !showAppInstall
-                  ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
-                  : "text-stone-600 hover:text-stone-900"
-              }`}
-            >
-              <Database className="w-3.5 h-3.5 text-amber-600" />
-              <span>{t.tabNotion}</span>
-              {inquiries.some((i) => i.status === "New") && (
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 absolute top-1 right-2 animate-pulse" />
-              )}
-            </button>
-
-            <button
-              onClick={() => { setActiveTab("safety"); setShowSettings(false); setShowAppInstall(false); }}
+              onClick={() => { setActiveTab("safety"); setShowAppInstall(false); }}
               className={`py-2 px-1 rounded-lg flex flex-col items-center gap-1 transition-all ${
-                activeTab === "safety" && !showSettings && !showAppInstall
+                activeTab === "safety" && !showAppInstall
                   ? "bg-white text-stone-900 font-bold shadow-xs border border-stone-200/60"
                   : "text-stone-600 hover:text-stone-900"
               }`}
@@ -868,60 +635,9 @@ Phone: +976 7201 0099`;
             </button>
           </div>
 
-          {/* Settings Panel */}
-          {showSettings && (
-            <div className="flex-1 p-5 overflow-y-auto bg-[#FAF9F6] text-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-stone-200 pb-2">
-                <h4 className="font-bold text-stone-900 text-sm flex items-center gap-2 font-['Cormorant_Garamond',serif]">
-                  <Settings className="w-4 h-4 text-amber-600" /> Тохиргоо & Холболт
-                </h4>
-                <button onClick={() => setShowSettings(false)} className="text-stone-500 hover:text-stone-800">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 space-y-1">
-                <span className="text-[10px] text-amber-900 uppercase tracking-wider font-bold">Шууд имэйл мэдэгдэл</span>
-                <p className="text-stone-700 text-xs">
-                  Жуулчны захиалгын мэдээлэл автоматаар <strong className="text-amber-900 font-bold">bataartravel@gmail.com</strong> хаяг руу шууд илгээгдэнэ.
-                </p>
-              </div>
-
-              <p className="text-xs text-stone-600">Автомат лавлах: өрөө, зам, захиалга, холбоо барих мэдээлэл. Чөлөөт AI холболт тохируулагдаагүй.</p>
-
-              <div className="space-y-1.5 pt-2 border-t border-stone-200">
-                <label className="text-stone-700 font-medium">Notion Integration Token</label>
-                <input
-                  type="password"
-                  disabled title="Notion sync is not connected" value={notionApiKey}
-                  onChange={(e) => setNotionApiKey(e.target.value)}
-                  placeholder="secret_..."
-                  className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 focus:outline-none focus:border-amber-500 text-xs font-mono shadow-2xs"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-stone-700 font-medium">Auto-Sync Webhook URL</label>
-                <input
-                  type="text"
-                  disabled title="Notion sync is not connected" value={notionWebhookUrl}
-                  onChange={(e) => setNotionWebhookUrl(e.target.value)}
-                  placeholder="https://hook.make.com/..."
-                  className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 focus:outline-none focus:border-amber-500 text-xs font-mono shadow-2xs"
-                />
-              </div>
-
-              <button
-                onClick={handleSaveSettings}
-                className="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 rounded-xl transition-colors mt-4 shadow-sm"
-              >
-                Тохиргоог хадгалах
-              </button>
-            </div>
-          )}
 
           {/* PWA App Install Panel */}
-          {showAppInstall && !showSettings && (
+          {showAppInstall && (
             <div className="flex-1 p-4 sm:p-5 overflow-y-auto bg-[#FAF9F6] text-xs space-y-3.5">
               <div className="flex items-center justify-between border-b border-stone-200 pb-2">
                 <h4 className="font-bold text-stone-900 text-sm flex items-center gap-2 font-['Cormorant_Garamond',serif]">
@@ -1225,7 +941,7 @@ Phone: +976 7201 0099`;
           )}
 
           {/* TAB 1: AI CHAT */}
-          {!showSettings && !showAppInstall && activeTab === "chat" && (
+          {!showAppInstall && activeTab === "chat" && (
             <div className="flex-1 flex flex-col overflow-hidden bg-[#FAF9F6]">
               <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs">
                 {messages.map((m) => (
@@ -1276,7 +992,6 @@ Phone: +976 7201 0099`;
                         setShowAppInstall(false);
                       } else if (chip.includes("Апп") || chip.includes("App") || chip.includes("앱") || chip.includes("应用") || chip.includes("アプリ") || chip.includes("Установить")) {
                         setShowAppInstall(true);
-                        setShowSettings(false);
                       } else {
                         void handleSendMessage(chip);
                       }
@@ -1315,7 +1030,7 @@ Phone: +976 7201 0099`;
           )}
 
           {/* TAB 2: DIRECT BOOKING */}
-          {!showSettings && !showAppInstall && activeTab === "booking" && (
+          {!showAppInstall && activeTab === "booking" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs bg-[#FAF9F6]">
               <div className="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-2xs">
                 <div className="flex items-center gap-2 text-stone-900 font-bold mb-1">
@@ -1339,199 +1054,9 @@ Phone: +976 7201 0099`;
             </div>
           )}
 
-          {/* TAB 3: AI EMAIL REPLY GENERATOR */}
-          {!showSettings && !showAppInstall && activeTab === "email" && (
-            <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs bg-[#FAF9F6]">
-              <div className="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-2xs">
-                <div className="flex items-center gap-2 text-stone-900 font-bold mb-1">
-                  <Mail className="w-4 h-4 text-amber-600" />
-                  <span className="font-['Cormorant_Garamond',serif] text-base">{t.emailTitle}</span>
-                </div>
-                <p className="text-stone-600 text-[11px] leading-relaxed">
-                  {t.emailDesc}
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-stone-700 font-medium">Жуулчны захиалгыг сонгох:</label>
-                <select
-                  value={selectedInquiryId}
-                  onChange={(e) => setSelectedInquiryId(e.target.value)}
-                  className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 text-xs focus:outline-none focus:border-amber-500 shadow-2xs"
-                >
-                  {inquiries.map((inq) => (
-                    <option key={inq.id} value={inq.id}>
-                      {inq.name} ({inq.roomType.slice(0, 20)} • {inq.arrivalDate})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <button
-                onClick={handleGenerateEmail}
-                disabled={isGeneratingEmail}
-                className="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
-              >
-                {isGeneratingEmail ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Имэйл боловсруулж байна...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 fill-white" />
-                    <span>{t.generateEmailBtn}</span>
-                  </>
-                )}
-              </button>
-
-              {generatedEmail && (
-                <div className="space-y-2 pt-2 border-t border-stone-200">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-stone-900">Бэлэн болсон хариу:</span>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => handleCopyText(`Subject: ${generatedEmail.subject}\n\n${generatedEmail.body}`, "email")}
-                        className="px-2.5 py-1 bg-white hover:bg-stone-50 text-stone-700 rounded-lg text-[10px] flex items-center gap-1 border border-stone-200 shadow-2xs cursor-pointer"
-                      >
-                        {copySuccess === "email" ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                        <span>{copySuccess === "email" ? "Хуулагдлаа!" : "Хуулах"}</span>
-                      </button>
-
-                      {(() => {
-                        const inq = inquiries.find((i) => i.id === selectedInquiryId);
-                        const mailtoHref = `mailto:${inq?.email || ""}?subject=${encodeURIComponent(generatedEmail.subject)}&body=${encodeURIComponent(generatedEmail.body)}`;
-                        return (
-                          <a
-                            href={mailtoHref}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-2.5 py-1 bg-stone-900 text-white rounded-lg text-[10px] flex items-center gap-1 font-bold shadow-xs"
-                          >
-                            <ExternalLink className="w-3 h-3 text-amber-400" />
-                            <span>Gmail дээр нээх</span>
-                          </a>
-                        );
-                      })()}
-                    </div>
-                  </div>
-
-                  <div className="bg-white border border-stone-200 rounded-xl p-3 space-y-2 shadow-2xs">
-                    <div className="border-b border-stone-100 pb-1.5 font-semibold text-stone-900 text-[11px]">
-                      <span className="text-stone-500">Гарчиг: </span>
-                      {generatedEmail.subject}
-                    </div>
-                    <div className="text-stone-700 whitespace-pre-line font-mono text-[10.5px] max-h-48 overflow-y-auto leading-relaxed">
-                      {generatedEmail.body}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 4: NOTION CRM */}
-          {!showSettings && !showAppInstall && activeTab === "notion" && (
-            <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-[#FAF9F6]">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-stone-900 text-sm flex items-center gap-1.5 font-['Cormorant_Garamond',serif]">
-                    <Database className="w-4 h-4 text-amber-600" /> {t.crmTitle}
-                  </h4>
-                  <p className="text-[10px] text-stone-500">Нийт {inquiries.length} захиалга бүртгэгдсэн</p>
-                </div>
-
-                <button
-                  onClick={handleExportCSV}
-                  className="px-2.5 py-1.5 bg-white hover:bg-stone-50 text-stone-800 border border-stone-200 rounded-xl flex items-center gap-1.5 text-[11px] font-medium shadow-2xs transition-colors cursor-pointer"
-                  title="CSV татаж авах"
-                >
-                  <Download className="w-3.5 h-3.5 text-amber-600" />
-                  <span>{t.crmExport}</span>
-                </button>
-              </div>
-
-              <div className="space-y-2.5">
-                {inquiries.map((inq) => (
-                  <div
-                    key={inq.id}
-                    className="bg-white border border-stone-200 rounded-2xl p-3 space-y-2 shadow-2xs hover:border-amber-400 transition-colors"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="font-bold text-stone-900 flex items-center gap-1.5">
-                          <span>{inq.name}</span>
-                          <span
-                            className={`text-[9px] px-2 py-0.5 rounded-full font-mono font-bold ${
-                              inq.status === "New"
-                                ? "bg-amber-100 text-amber-800 border border-amber-200"
-                                : inq.status === "Contacted"
-                                ? "bg-blue-100 text-blue-800 border border-blue-200"
-                                : "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                            }`}
-                          >
-                            {inq.status}
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-amber-800 font-medium mt-0.5">
-                          {inq.roomType} • {inq.guests} Guests
-                        </div>
-                      </div>
-
-                      <span className="text-[10px] text-stone-400 font-mono">{inq.arrivalDate}</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-1 text-[11px] text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-200/60">
-                      <div>📧 {inq.email}</div>
-                      <div>📱 {inq.phone || "No phone"}</div>
-                      <div className="col-span-2 text-stone-500 italic text-[10px] mt-0.5">
-                        "{inq.notes || "No notes"}"
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-1">
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={() => {
-                            setInquiries((prev) =>
-                              prev.map((i) => (i.id === inq.id ? { ...i, status: "Contacted" } : i))
-                            );
-                          }}
-                          className="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded text-[10px]"
-                        >
-                          Холбогдсон
-                        </button>
-                        <button
-                          onClick={() => {
-                            setInquiries((prev) =>
-                              prev.map((i) => (i.id === inq.id ? { ...i, status: "Confirmed" } : i))
-                            );
-                          }}
-                          className="px-2 py-0.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded text-[10px]"
-                        >
-                          Баталгаажсан
-                        </button>
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          setSelectedInquiryId(inq.id);
-                          setActiveTab("email");
-                        }}
-                        className="text-amber-800 hover:text-amber-900 font-semibold text-[10.5px] flex items-center gap-1"
-                      >
-                        <Mail className="w-3 h-3" />
-                        <span>Хариу мэйл бичих</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* TAB 5: TRAVEL SAFETY */}
-          {!showSettings && !showAppInstall && activeTab === "safety" && (
+          {!showAppInstall && activeTab === "safety" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-[#FAF9F6]">
               <div className="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-2xs">
                 <div className="flex items-center gap-2 text-stone-900 font-bold mb-1">
@@ -1594,3 +1119,4 @@ Phone: +976 7201 0099`;
     </>
   );
 };
+
