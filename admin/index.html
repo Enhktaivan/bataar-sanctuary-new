@@ -1,11 +1,12 @@
-<!doctype html><html lang="mn"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-OTwyJeNDI5EjuR9o32bGDa3W'; connect-src https://bataar-sanctuary-payments.erdii4812.workers.dev; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Батаарын өлгий — QPay удирдлага</title>
+<!doctype html><html lang="mn"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-gtvgaPhDePX7uI4jX11xzptf'; connect-src https://bataar-sanctuary-payments.erdii4812.workers.dev; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Батаарын өлгий — QPay удирдлага</title>
 <style>body{font:16px system-ui;max-width:900px;margin:32px auto;padding:20px;color:#16302a}input,button{font:inherit;padding:10px;margin:6px 0}label{display:block}button{cursor:pointer}table{border-collapse:collapse;width:100%}td,th{padding:10px;text-align:left;border-bottom:1px solid #ddd}a{color:#075985}#message{white-space:pre-wrap}input[type=text],input[type=password]{width:min(90%,400px)}</style>
 <h1>QPay төлбөрийн удирдлага</h1><p>Бааз захиалгын боломж болон эцсийн үнийг баталсны дараа үнийн санал үүсгэнэ. Нэхэмжлэх үүсгэх товч QPay руу хүсэлт илгээнэ.</p>
 <form id="login"><label>Админы нууц түлхүүр <input id="token" type="password" autocomplete="off" required></label><button>Нэвтрэх</button></form>
 <section id="workspace" hidden><button id="logout">Гарах</button><button id="providerHealth">QPay холболт шалгах</button><h2>Ирсэн захиалгын хүсэлтүүд</h2><label><input type="checkbox" id="showTests"> Туршилтын захиалгуудыг харуулах</label><table><thead><tr><th>Зочин</th><th>Огноо / хүн</th><th>Төлөв</th><th>Батлах</th></tr></thead><tbody id="bookings"></tbody></table><h2>Төлбөрийн үнийн санал</h2><form id="quote"><label>Захиалгын дугаар / тайлбар <input id="reference" type="text" maxlength="120" required></label><label>Эцсийн дүн (₮) <input id="amount" type="number" min="1" max="1000000000" step="1" required></label><label><input id="availability" type="checkbox" required> Бааз захиалгын боломж болон үнийг шалгаж баталсан</label><button id="create">Баталсан үнийн санал үүсгэх</button></form><button id="refresh">Төлөв шинэчлэх</button><table><thead><tr><th>Захиалга</th><th>Дүн</th><th>Төлөв</th><th>Үйлдэл</th></tr></thead><tbody id="rows"></tbody></table></section><p id="message" role="status" aria-live="polite"></p>
-<script nonce="OTwyJeNDI5EjuR9o32bGDa3W">
+<script nonce="gtvgaPhDePX7uI4jX11xzptf">
 'use strict';
 let token = '';
+let loginBusy=false;
 const get = id => document.getElementById(id);
 const message = value => { get('message').textContent = value; };
 async function request(path, body) {
@@ -39,7 +40,7 @@ async function refreshQuotes() {
       button.onclick=async () => {
         if (item.status === 'approved' && !confirm('Энэ захиалгад ' + item.amount + ' ₮ дүнтэй QPay нэхэмжлэх үүсгэх үү?')) return;
         button.disabled=true;
-        try { const result=await request('/admin/quotes/' + encodeURIComponent(item.id) + '/invoice', {}); action.replaceChildren(); paymentLink(action,result.paymentUrl); message('Төлөв: ' + result.status); }
+        try { const result=await request('/admin/quotes/' + encodeURIComponent(item.id) + '/invoice', {}); await refresh(); message('Төлөв: ' + stateLabel(result.status)); }
         catch(error) { message(error.message); } finally { button.disabled=false; }
       }; action.append(button);
     }
@@ -52,7 +53,7 @@ async function refreshBookings() {
   testBookingIds=new Set(items.filter(item=>/^SYSTEM.*TEST/.test(item.name)).map(item=>item.quote_id).filter(Boolean));
   for (const item of items) {
     if(!get('showTests').checked&&/^SYSTEM.*TEST/.test(item.name))continue;
-      const pricing=item.pricing?JSON.parse(item.pricing):null;
+      let pricing=null;try{pricing=item.pricing?JSON.parse(item.pricing):null;}catch{};
     const row=document.createElement('tr');
     for (const value of [item.name+' / '+item.email+' / '+(item.phone||''), (item.check_in||item.arrival)+' — '+(item.check_out||item.departure)+' / '+(item.guests||item.persons)+' хүн', stateLabel(item.status)]) {
       const cell=document.createElement('td'); cell.textContent=value; row.append(cell);
@@ -80,7 +81,7 @@ async function refreshBookings() {
 }
 async function refresh(){await refreshBookings();await refreshQuotes();}
 get('showTests').onchange=()=>refresh().catch(error=>message(error.message));
-get('login').onsubmit=async event => { event.preventDefault(); token=get('token').value; get('token').value=''; try { await refresh(); get('login').hidden=true; get('workspace').hidden=false; message('Нэвтэрлээ.'); } catch(error) { token=''; message(error.message); } };
+get('login').onsubmit=async event => { event.preventDefault(); if(loginBusy)return;loginBusy=true;const loginButton=get('login').querySelector('button');loginButton.disabled=true;token=get('token').value; get('token').value=''; try { await refresh(); get('login').hidden=true; get('workspace').hidden=false; message('Нэвтэрлээ.'); } catch(error) { token=''; message(error.message); } finally{loginBusy=false;loginButton.disabled=false;} };
 get('logout').onclick=logout;
 get('refresh').onclick=() => refresh().then(() => message('Төлөв шинэчлэгдлээ.')).catch(error => message(error.message));
 get('providerHealth').onclick=async ()=>{get('providerHealth').disabled=true;try {const result=await request('/admin/provider/health');message(result.authenticated?'QPay холболт баталгаажлаа.':'QPay холболт баталгаажаагүй.');}catch(error){message(error.message);}finally{get('providerHealth').disabled=false;}};
