@@ -36,13 +36,16 @@ export function conciergeReply(query:string,lang='mn'):string {
  const q=query.toLowerCase().normalize('NFKC');const has=(words:string[])=>words.some(w=>q.includes(w));
  if(has(['захиал','zahial','reserve','booking','book','예약','预订','予約','брони','reserv','buchen','prenot'])) return publicConciergeCopy(lang).bookingDescription;
  if(has(['сайн','sain','hello','안녕','你好','こんにちは','привет','hallo','bonjour','ciao','salve']))return publicConciergeCopy(lang).welcome;
- if(lang==='mn'||lang==='en')return originalReply(query,lang);
- const d=details[lang]||details.en;
- if(has(['имэйл','mail','утас','contact','phone','연락','电话','連絡','kontakt','контакт','contatt']))return 'bataartravel@gmail.com / +976 7201 0099 / +976 8822 3584';
- if(has(['room','rate','price','가격','객실','房','preis','zimmer','tarif','料金','客室','номер','цен','chambre','camera','prezz']))return d[0];
- if(has(['route','location','transfer','pickup','4x4','달란','길','路线','アクセス','道順','маршрут','anreise','trajet','percor','trasfer']))return d[1];
- if(has(['starlink','wifi','wi-fi','solar','internet','시설','网络','星链','电力','設備','услуг','équipement','serviz']))return d[2];
- if(has(['khermen','dino','fossil','tour','expedition','leopard','공룡','여행','恐龙','旅行','тур','экскурс','ausflug','excursion','escursion']))return d[3];
- return d[4];
+ const intent=(words:string[],index:number)=>has(words)?index:-1;
+ const category=[
+ intent(['үнэ','une','өрөө','uruu','room','rate','price','가격','객실','요금','房','preis','zimmer','tarif','料金','宿泊','客室','номер','цен','стоимость','chambre','lodge','camera','camere','prezz'],0),
+ intent(['зам','чиглэл','байрш','хаана','zam','haana','route','location','transfer','pickup','4x4','4wd','달란','길','경로','이동','路线','交通','アクセス','道順','маршрут','anreise','trajet','percor','trasfer'],1),
+ intent(['starlink','wifi','wi-fi','solar','internet','施設','시설','网络','星链','电力','設備','услуг','удобств','équipement','serviz','старлинк','스타링크','スターリンク','интернэт','цахилгаан','нарны','эрчим'],2),
+ intent(['аялал','ayal','ирвэс','irves','цав','khermen','dino','fossil','tour','expedition','leopard','공룡','여행','恐龙','旅行','тур','экскурс','ausflug','excursion','escursion'],3),
+ ].find(index=>index>=0)??4;
+ if(has(['имэйл','мэйл','mail','утас','utas','holboo','холбоо','contact','phone','연락','电话','連絡','kontakt','контакт','contatt']))return 'bataartravel@gmail.com / +976 7201 0099 / +976 8822 3584';
+ if(lang==='mn'||lang==='en')return originalReply(['room price','route','Starlink','tour','unknown'][category],lang);
+ return (details[lang]||details.en)[category];
 }
+
 
