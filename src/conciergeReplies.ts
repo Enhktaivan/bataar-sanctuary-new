@@ -41,7 +41,8 @@ export function conciergeReply(query:string,lang='mn'):string {
  if(has(['имэйл','mail','утас','contact','phone','연락','电话','連絡','kontakt','контакт','contatt']))return 'bataartravel@gmail.com / +976 7201 0099 / +976 8822 3584';
  if(has(['room','rate','price','가격','객실','房','preis','zimmer','tarif','料金','客室','номер','цен','chambre','camera','prezz']))return d[0];
  if(has(['route','location','transfer','pickup','4x4','달란','길','路线','アクセス','道順','маршрут','anreise','trajet','percor','trasfer']))return d[1];
- if(has(['starlink','wifi','wi-fi','solar','internet','시설','网络','設備','услуг','équipement','serviz']))return d[2];
+ if(has(['starlink','wifi','wi-fi','solar','internet','시설','网络','星链','电力','設備','услуг','équipement','serviz']))return d[2];
  if(has(['khermen','dino','fossil','tour','expedition','leopard','공룡','여행','恐龙','旅行','тур','экскурс','ausflug','excursion','escursion']))return d[3];
  return d[4];
 }
+
