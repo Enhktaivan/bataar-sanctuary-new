@@ -6,6 +6,10 @@ Project: `Enhktaivan/bataar-sanctuary-new` (Bataar Sanctuary). This record descr
 
 Add dated entries with the human instruction or verified source, implementation consequence, and any unresolved question. Preserve older entries; supersede them explicitly rather than rewriting their evidence. Dates below use Asia/Ulaanbaatar.
 
+### 2026-10-03 — Language dropdown interaction regression
+
+The user reported that the nine-language dropdown disappeared while moving to or selecting an option. The public widget used hover-only visibility with a gap below its trigger. The widget now opens explicitly by clicking or tapping the language button and remains open while moving within the dropdown. Outside pointer/focus interaction and Escape dismiss it; selection closes it and restores trigger focus. The trigger reports expanded state and identifies the controlled options. Targeted source-bound behavior tests cover internal pointer/focus stability, outside dismissal, Escape, listener cleanup and all nine selections. TypeScript/build verification is separate from published browser verification; publication is handled by the owning agent.
+
 ### 2026-10-02 — Booking and payment roles
 
 Customers submit the common hosted booking form for accommodation or tours. The camp confirms availability and the final MNT amount before issuing an invoice. Public inquiries never authorize payment or mark an invoice paid. A private customer status link is a bearer link: anyone holding it can see the limited status page; it must not expose email, phone, or free-form notes.

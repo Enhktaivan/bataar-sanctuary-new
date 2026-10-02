@@ -342,6 +342,18 @@ export const AIAssistantWidget: React.FC = () => {
   const t = {...(I18N[currentLang] || I18N.en),welcome:copy.welcome};
   const languageRef=useRef(currentLang);
   languageRef.current=currentLang;
+  const [languageMenuOpen,setLanguageMenuOpen]=useState(false);
+  const languageMenuRef=useRef<HTMLDivElement>(null);
+  const languageButtonRef=useRef<HTMLButtonElement>(null);
+  useEffect(()=>{
+    if(!languageMenuOpen)return;
+    const outside=(event:Event)=>{if(!languageMenuRef.current?.contains(event.target as Node))setLanguageMenuOpen(false);};
+    const keyboard=(event:KeyboardEvent)=>{if(event.key==='Escape'){setLanguageMenuOpen(false);languageButtonRef.current?.focus();}};
+    document.addEventListener('pointerdown',outside);
+    document.addEventListener('focusin',outside);
+    document.addEventListener('keydown',keyboard);
+    return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('focusin',outside);document.removeEventListener('keydown',keyboard);};
+  },[languageMenuOpen]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"chat" | "booking" | "safety">("chat");
@@ -429,6 +441,8 @@ export const AIAssistantWidget: React.FC = () => {
   }, [messages, isTyping, activeTab]);
 
   const switchLanguage = (newLang: SupportedLang) => {
+    setLanguageMenuOpen(false);
+    languageButtonRef.current?.focus();
     setCurrentLang(newLang);
     try {
       localStorage.setItem("bataar_lang", newLang);
@@ -567,15 +581,18 @@ export const AIAssistantWidget: React.FC = () => {
               </button>
 
               {/* Language Selector Dropdown */}
-              <div className="relative group">
+              <div className="relative" ref={languageMenuRef}>
                 <button
+                  type="button" ref={languageButtonRef}
+                  aria-expanded={languageMenuOpen} aria-controls="bataar-language-options"
+                  onClick={()=>setLanguageMenuOpen(open=>!open)}
                   className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white border border-stone-200 text-stone-700 hover:text-stone-900 text-xs font-semibold shadow-xs"
                   title="Хэл солих / Change Language"
                 >
                   <Globe className="w-3.5 h-3.5 text-amber-600" />
                   <span className="uppercase">{currentLang}</span>
                 </button>
-                <div className="absolute right-0 top-full mt-1 hidden group-hover:flex flex-col bg-white border border-stone-200 rounded-xl shadow-xl p-1 z-50 min-w-[130px]">
+                {languageMenuOpen && <div id="bataar-language-options" role="group" aria-label="Language" className="absolute right-0 top-full mt-1 flex flex-col bg-white border border-stone-200 rounded-xl shadow-xl p-1 z-50 min-w-[130px] max-h-[70vh] overflow-y-auto">
                   <button onClick={() => switchLanguage("mn")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "mn" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇲🇳 Монгол</button>
                   <button onClick={() => switchLanguage("en")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "en" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇬🇧 English</button>
                   <button onClick={() => switchLanguage("ko")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "ko" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇰🇷 한국어</button>
@@ -584,7 +601,7 @@ export const AIAssistantWidget: React.FC = () => {
                   <button onClick={() => switchLanguage("ru")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "ru" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇷🇺 Русский</button>
                   <button onClick={() => switchLanguage("de")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "de" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇩🇪 Deutsch</button>
                   <button onClick={() => switchLanguage("fr")} className={`px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50 flex items-center gap-2 ${currentLang === "fr" ? "font-bold text-amber-600 bg-amber-50" : ""}`}>🇫🇷 Français</button><button onClick={() => switchLanguage("it")} className="px-2.5 py-1 text-left text-xs rounded-lg hover:bg-stone-50">🇮🇹 Italiano</button>
-                </div>
+                </div>}
               </div>
 
               <button
