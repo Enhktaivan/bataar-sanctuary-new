@@ -731,62 +731,6 @@ Features: 100% solar energy, Starlink Wi-Fi, deep well water, organic pasture di
     }
   };
 
-  const handleBookingSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!bookingForm.name || !bookingForm.email) return;
-
-    setIsSubmittingBooking(true);
-
-    const newInquiry: TouristInquiry = {
-      id: `inq-${Date.now().toString().slice(-4)}`,
-      name: bookingForm.name,
-      email: bookingForm.email,
-      phone: bookingForm.phone,
-      arrivalDate: bookingForm.arrivalDate,
-      departureDate: bookingForm.departureDate,
-      roomType: bookingForm.roomType,
-      guests: Number(bookingForm.guests),
-      notes: bookingForm.notes,
-      createdAt: new Date().toISOString().replace("T", " ").slice(0, 16),
-      status: "New",
-      language: currentLang.toUpperCase()
-    };
-
-    setInquiries((prev) => [newInquiry, ...prev]);
-
-    // Send real email notification to btvmentogoo@gmail.com
-    try {
-      await fetch("https://formsubmit.co/ajax/btvmentogoo@gmail.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
-        },
-        body: JSON.stringify({
-          _subject: `🏨 Шинэ захиалга: ${newInquiry.name} (${newInquiry.roomType}) - [${currentLang.toUpperCase()}]`,
-          Зочны_нэр: newInquiry.name,
-          Имэйл: newInquiry.email,
-          Утас: newInquiry.phone,
-          Ирэх_өдөр: newInquiry.arrivalDate,
-          Буцах_өдөр: newInquiry.departureDate,
-          Өрөөний_төрөл: newInquiry.roomType,
-          Зочдын_тоо: newInquiry.guests,
-          Тэмдэглэл_хүсэлт: newInquiry.notes || "Байхгүй",
-          Илгээсэн_хэл: currentLang,
-          Илгээсэн_огноо: newInquiry.createdAt
-        })
-      });
-    } catch {}
-
-    setIsSubmittingBooking(false);
-    setBookingSuccessMsg(t.bookingSent);
-
-    setTimeout(() => {
-      setBookingSuccessMsg(null);
-      setActiveTab("notion");
-    }, 2500);
-  };
-
   const handleGenerateEmail = () => {
     const inq = inquiries.find((i) => i.id === selectedInquiryId) || inquiries[0];
     if (!inq) return;
@@ -1498,7 +1442,7 @@ Phone: +976 7201 0099`;
                   <span className="font-['Cormorant_Garamond',serif] text-base">{t.bookingTitle}</span>
                 </div>
                 <p className="text-stone-600 text-[11px] leading-relaxed">
-                  {t.bookingDesc}
+                  Захиалгын хүсэлтээ маягтаар илгээнэ үү. Бааз сул байр, эцсийн үнийг баталсны дараа QPay төлбөрийн холбоос өгнө.
                 </p>
               </div>
 
@@ -1509,114 +1453,12 @@ Phone: +976 7201 0099`;
                 </div>
               )}
 
-              <form onSubmit={handleBookingSubmit} className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-white border border-stone-200 rounded-xl p-2.5 focus-within:border-amber-500 shadow-2xs">
-                    <label className="block text-[10px] text-stone-500 uppercase tracking-wider font-semibold">{t.checkIn}</label>
-                    <input
-                      type="date"
-                      required
-                      value={bookingForm.arrivalDate}
-                      onChange={(e) => setBookingForm({ ...bookingForm, arrivalDate: e.target.value })}
-                      className="w-full bg-transparent text-stone-900 text-xs font-semibold focus:outline-none mt-1"
-                    />
-                  </div>
-
-                  <div className="bg-white border border-stone-200 rounded-xl p-2.5 focus-within:border-amber-500 shadow-2xs">
-                    <label className="block text-[10px] text-stone-500 uppercase tracking-wider font-semibold">{t.checkOut}</label>
-                    <input
-                      type="date"
-                      required
-                      value={bookingForm.departureDate}
-                      onChange={(e) => setBookingForm({ ...bookingForm, departureDate: e.target.value })}
-                      className="w-full bg-transparent text-stone-900 text-xs font-semibold focus:outline-none mt-1"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] text-stone-500 uppercase tracking-wider font-semibold">{t.roomType}</label>
-                  <select
-                    value={bookingForm.roomType}
-                    onChange={(e) => setBookingForm({ ...bookingForm, roomType: e.target.value })}
-                    className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 text-xs focus:outline-none focus:border-amber-500 shadow-2xs"
-                  >
-                    <option value="Deluxe Wooden Lodge ($110/night)">Deluxe Wooden Lodge — $110/night (Queen bed, AC, Starlink, Private Bath)</option>
-                    <option value="Standard Twin Room ($65/night)">Standard Twin Room — $65/night (2 Single beds, Private Bath)</option>
-                    <option value="Family 2-Bedroom Suite ($160/night)">Family 2-Bedroom Suite — $160/night (4-6 Guests, Private Bath)</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] text-stone-500 uppercase tracking-wider font-semibold">{t.guests}</label>
-                  <select
-                    value={bookingForm.guests}
-                    onChange={(e) => setBookingForm({ ...bookingForm, guests: Number(e.target.value) })}
-                    className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 text-xs focus:outline-none focus:border-amber-500 shadow-2xs"
-                  >
-                    <option value={1}>1 Guest</option>
-                    <option value={2}>2 Guests</option>
-                    <option value={3}>3 Guests</option>
-                    <option value={4}>4 Guests</option>
-                    <option value={6}>6+ Guests</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2 pt-1 border-t border-stone-200">
-                  <input
-                    type="text"
-                    required
-                    value={bookingForm.name}
-                    onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
-                    placeholder={t.name}
-                    className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 text-xs focus:outline-none focus:border-amber-500 shadow-2xs"
-                  />
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      type="email"
-                      required
-                      value={bookingForm.email}
-                      onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
-                      placeholder={t.email}
-                      className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 text-xs focus:outline-none focus:border-amber-500 shadow-2xs"
-                    />
-                    <input
-                      type="tel"
-                      value={bookingForm.phone}
-                      onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
-                      placeholder={t.phone}
-                      className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 text-xs focus:outline-none focus:border-amber-500 shadow-2xs"
-                    />
-                  </div>
-
-                  <textarea
-                    rows={2}
-                    value={bookingForm.notes}
-                    onChange={(e) => setBookingForm({ ...bookingForm, notes: e.target.value })}
-                    placeholder={t.notes}
-                    className="w-full bg-white border border-stone-200 rounded-xl p-2.5 text-stone-900 text-xs focus:outline-none focus:border-amber-500 shadow-2xs"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmittingBooking}
-                  className="w-full py-3 bg-stone-900 hover:bg-stone-800 text-white font-bold uppercase tracking-[0.16em] text-[11px] rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  {isSubmittingBooking ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
-                      <span>Илгээж байна...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Check className="w-4 h-4 stroke-[3] text-amber-400" />
-                      <span>{t.submitBooking}</span>
-                    </>
-                  )}
-                </button>
-              </form>
+              <a
+                href="https://bataar-sanctuary-payments.erdii4812.workers.dev/booking"
+                className="block w-full py-3 text-center bg-stone-900 hover:bg-stone-800 text-white font-bold rounded-xl"
+              >
+                {t.bookingTitle} — QPay
+              </a>
             </div>
           )}
 
