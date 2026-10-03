@@ -1,5 +1,9 @@
 # Project decisions
 
+### 2026-10-03 — Home-first entry on every device
+
+Owner requested that opening the website always shows the home hero rather than another section. Root and index entry clear incoming fragments before the bundled app initializes and disable browser scroll restoration. Reloads and restored pages return to Home; in-session section navigation still works. Admin and hosted booking URLs are separate and unaffected. Concierge scrolling is confined to its own chat panel.
+
 Project: `Enhktaivan/bataar-sanctuary-new` (Bataar Sanctuary). This record describes decisions and evidence, not proof of a successful deployment. Do not store credentials, admin passwords, private webhook URLs, guest contact details, or payment tokens here.
 
 ## Append-only decision log

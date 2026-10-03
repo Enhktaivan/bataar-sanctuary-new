@@ -435,10 +435,12 @@ export const AIAssistantWidget: React.FC = () => {
 
 
   useEffect(() => {
-    if (messagesEndRef.current && activeTab === "chat") {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (isOpen && messagesEndRef.current && activeTab === "chat") {
+      // Scroll only the chat panel; never move the surrounding website.
+      const panel = messagesEndRef.current.parentElement;
+      panel?.scrollTo({ top: panel.scrollHeight, behavior: "smooth" });
     }
-  }, [messages, isTyping, activeTab]);
+  }, [messages, isTyping, activeTab, isOpen]);
 
   const switchLanguage = (newLang: SupportedLang) => {
     setLanguageMenuOpen(false);

@@ -2,6 +2,32 @@
 <html lang="mn">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Every new visit starts at Home, including shared section links and reloads.
+      (function () {
+        if (location.pathname !== '/' && location.pathname !== '/index.html') return;
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        var interacted = false;
+        ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (name) {
+          window.addEventListener(name, function () { interacted = true; }, { passive: true });
+        });
+        function startAtHome() {
+          if (location.hash) {
+            history.replaceState(history.state, '', location.pathname + location.search);
+            window.dispatchEvent(new Event('hashchange'));
+          }
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
+        startAtHome();
+        document.addEventListener('DOMContentLoaded', function () {
+          if (!interacted && !location.hash) startAtHome();
+        }, { once: true });
+        window.addEventListener('pageshow', function (event) {
+          if (event.persisted) { interacted = false; startAtHome(); }
+          else if (!interacted && !location.hash) startAtHome();
+        });
+      })();
+    </script>
     <meta id="viewport-meta" name="viewport" content="width=1280, initial-scale=0.3, minimum-scale=0.2, maximum-scale=5.0, user-scalable=yes" />
     <script>
       (function() {
