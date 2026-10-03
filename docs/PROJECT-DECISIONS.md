@@ -48,3 +48,9 @@ The owner requested one camp knowledge base for email drafts and the reference c
 The same 81 localized entries were imported into the private Erdii Notion workspace. A separate booking database was created. Direct edits in Notion do not yet automatically update the website snapshot. Make Gmail is connected and notification drafts are saved; Notion OAuth completion and end-to-end delivery remain unverified. Do not claim automatic emails or Notion sync are active.
 
 The payment Worker has a durable private notification outbox. New bookings and server-verified MNT payments enqueue stable event IDs atomically. Customer receipt addresses come from linked bookings. Optional Make delivery remains disabled until the receiver workflow is verified; a webhook acceptance is not proof of email delivery. No cron, paid upgrade or real test email was added.
+
+### 2026-10-03 — Owner-selected snow leopard videos
+
+The owner identified two recordings using Messenger screenshots: the Thursday 19:49 30-second cliff clip and Friday 17:30 shared National Park Academy Reel (1841067147056065), showing a leopard and camel sharing water. The downloaded camel-herd clip is not one of the selected recordings. The first clip is hosted as an MP4; the second keeps its public Facebook source and attribution and loads the embedded player only on viewer request, with a direct source link. Do not describe the public third-party Reel as footage owned by the camp or expose precise wildlife coordinates.
+
+Browser verification found Facebook refuses embedded playback for the selected Reel because it may contain content owned by someone else. The release therefore uses an attributed direct Facebook viewing card, with an explicit external-playback note, rather than a broken iframe or a copied third-party file. Both selections are listed; only the owner-supplied 30-second clip plays locally.
