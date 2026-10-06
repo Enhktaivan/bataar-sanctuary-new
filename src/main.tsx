@@ -1,3 +1,4 @@
+import { restoreBookingOrigin } from './bookingNavigation';
 import "./bataar-app.js";
 import "./index.css";
 import React from "react";
@@ -32,13 +33,14 @@ const FooterAdminLink = () => {
     return () => { observer.disconnect(); mount?.remove(); };
   }, []);
   return target ? createPortal(
-    <a href="/admin/" className="inline-flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-medium text-stone-700 transition hover:border-amber-500 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600">
+    <div className="space-y-3"><a href="/booking-terms.html" className="block underline text-sm">Захиалгын нөхцөл · Booking terms</a><a href="/admin/" className="inline-flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-medium text-stone-700 transition hover:border-amber-500 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600">
       <span aria-hidden="true">🔒</span> Админ нэвтрэх
-    </a>, target) : null;
+    </a></div>, target) : null;
 };
 
 // Mount AI Concierge and Real-time Live Update Manager
 const mountWidgets = () => {
+  restoreBookingOrigin();
   let conciergeContainer = document.getElementById("bataar-ai-concierge-root");
   if (!conciergeContainer) {
     conciergeContainer = document.createElement("div");
