@@ -28,6 +28,18 @@ import { usePWAInstall } from "../hooks/usePWAInstall";
 
 export type SupportedLang = "mn" | "en" | "ko" | "ja" | "zh" | "ru" | "de" | "fr" | "it";
 
+const CONTACT_COPY: Record<SupportedLang, [string, string, string]> = {
+  mn: ["Утсаар холбогдох", "Имэйл бичих", "Gmail дээр бичих"],
+  en: ["Call the camp", "Write an email", "Compose in Gmail"],
+  ko: ["캠프에 전화", "이메일 작성", "Gmail에서 작성"],
+  zh: ["致电营地", "撰写邮件", "在 Gmail 中撰写"],
+  ja: ["キャンプに電話", "メールを書く", "Gmailで作成"],
+  ru: ["Позвонить на базу", "Написать письмо", "Написать в Gmail"],
+  de: ["Camp anrufen", "E-Mail schreiben", "In Gmail verfassen"],
+  fr: ["Appeler le camp", "Écrire un e-mail", "Rédiger dans Gmail"],
+  it: ["Chiama il campo", "Scrivi un’e-mail", "Scrivi in Gmail"],
+};
+
 interface ChatMessage {
   id: string;
   sender: "user" | "assistant" | "system";
@@ -356,6 +368,8 @@ export const AIAssistantWidget: React.FC = () => {
   },[languageMenuOpen]);
 
   const [isOpen, setIsOpen] = useState(false);
+  const chatInputRef = useRef<HTMLInputElement>(null);
+  const inquiryTriggerRef = useRef<HTMLElement | null>(null);
   const [activeTab, setActiveTab] = useState<"chat" | "booking" | "safety">("chat");
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
@@ -400,6 +414,27 @@ export const AIAssistantWidget: React.FC = () => {
 
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const openInquiry = () => {
+      inquiryTriggerRef.current = document.activeElement as HTMLElement;
+      setShowAppInstall(false);
+      setActiveTab("chat");
+      setIsOpen(true);
+      setMessages(previous => previous.some(message => message.id === "camp-route-reference") ? previous : [...previous, {
+        id: "camp-route-reference", sender: "assistant", query: "route",
+        text: conciergeReply("route", languageRef.current),
+        timestamp: new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}),
+      }]);
+      chatInputRef.current?.focus();
+    };
+    window.addEventListener("bataar-open-inquiry", openInquiry);
+    return () => window.removeEventListener("bataar-open-inquiry", openInquiry);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && activeTab === "chat" && !showAppInstall) chatInputRef.current?.focus();
+  }, [isOpen, activeTab, showAppInstall]);
 
   // Listen to language changes from the website header
   useEffect(() => {
@@ -607,7 +642,7 @@ export const AIAssistantWidget: React.FC = () => {
               </div>
 
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => { setIsOpen(false); inquiryTriggerRef.current?.focus(); }}
                 className="p-1.5 rounded-lg text-stone-500 hover:text-stone-800 hover:bg-white transition-colors"
                 title="Close"
               >
@@ -964,6 +999,12 @@ export const AIAssistantWidget: React.FC = () => {
           {/* TAB 1: AI CHAT */}
           {!showAppInstall && activeTab === "chat" && (
             <div className="flex-1 flex flex-col overflow-hidden bg-[#FAF9F6]">
+              <div className="px-3 py-2 border-b border-stone-200 bg-white flex flex-wrap gap-2 text-[11px]" data-testid="camp-contact-options">
+                <a href="tel:+97672010099" className="underline text-amber-900">{CONTACT_COPY[currentLang][0]} · +976 7201 0099</a>
+                <a href="tel:+97688223584" className="underline text-amber-900">+976 8822 3584</a>
+                <a href="mailto:bataartravel@gmail.com" className="underline text-amber-900">{CONTACT_COPY[currentLang][1]}</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=bataartravel%40gmail.com" target="_blank" rel="noopener noreferrer" className="underline text-amber-900">{CONTACT_COPY[currentLang][2]}</a>
+              </div>
               <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs">
                 {messages.map((m) => (
                   <div key={m.id} className={`flex flex-col ${m.sender === "user" ? "items-end" : "items-start"}`}>
@@ -1031,6 +1072,7 @@ export const AIAssistantWidget: React.FC = () => {
               {/* Input Bar */}
               <div className="p-3 bg-white border-t border-stone-200 flex items-center gap-2">
                 <input
+                  ref={chatInputRef}
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
