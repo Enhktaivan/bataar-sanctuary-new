@@ -88,14 +88,22 @@ function bookingReply(cell,item,pricing) {
   const link=document.createElement('a');link.textContent='Өөрийн имэйл аппад ноорог нээх';link.rel='noopener noreferrer';
   const gmail=document.createElement('a');gmail.textContent='Gmail вэб дээр ноорог нээх';gmail.target='_blank';gmail.rel='noopener noreferrer';
   let subject='';
-  const update=()=>{link.href='mailto:'+encodeURIComponent(item.email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(draft.value);gmail.href='https://mail.google.com/mail/?'+new URLSearchParams({authuser:'erdii4812@gmail.com',view:'cm',fs:'1',to:item.email,su:subject,body:draft.value}).toString();};
-  const regenerate=()=>{const c=draftCopy[language.value];for(const input of factInputs)input.title.textContent=input.fact.locales[language.value].title;const result=campReplyDraft(item,language.value,factInputs.filter(input=>input.check.checked).map(input=>input.fact.id));subject=result.subject;draft.value=result.body;label.firstChild?.nodeType===3&&label.firstChild.remove();label.prepend(document.createTextNode(c[9]));gmail.textContent=c[10];link.textContent=c[11];update();};
+  const subjectLabel=document.createElement('label');subjectLabel.textContent='Имэйлийн гарчиг / Subject';
+  const subjectField=document.createElement('input');subjectField.type='text';subjectField.style.width='100%';subjectField.maxLength=300;subjectLabel.append(subjectField);
+  const copyActions=document.createElement('div');copyActions.style.cssText='display:flex;gap:10px;flex-wrap:wrap;margin:12px 0';
+  const copySubject=document.createElement('button'),copyBody=document.createElement('button');copySubject.type=copyBody.type='button';copySubject.textContent='Гарчиг хуулах';copyBody.textContent='Текст хуулах';copyActions.append(copySubject,copyBody);
+  const copyStatus=document.createElement('p');copyStatus.setAttribute('role','status');copyStatus.setAttribute('aria-live','polite');
+  const copyField=async field=>{if(!token||!details.isConnected)return;const version=sessionVersion;try{if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable');await navigator.clipboard.writeText(field.value);if(version===sessionVersion&&token&&details.isConnected)copyStatus.textContent='Хууллаа. Имэйл аппдаа Paste / Буулгах үйлдлээр оруулна уу.';}catch{if(version!==sessionVersion||!token||!details.isConnected)return;field.focus();field.select();copyStatus.textContent='Автоматаар хуулж чадсангүй. Сонгосон текст дээр удаан дарж Copy / Хуулах үйлдэл хийнэ үү.';}};
+  copySubject.addEventListener('click',()=>copyField(subjectField));copyBody.addEventListener('click',()=>copyField(draft));
+  const update=()=>{link.href='mailto:'+encodeURIComponent(item.email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(draft.value.replace(/\r?\n/g,'\r\n'));gmail.href='https://mail.google.com/mail/?'+new URLSearchParams({authuser:'erdii4812@gmail.com',view:'cm',fs:'1',to:item.email,su:subject,body:draft.value}).toString();};
+  const regenerate=()=>{const c=draftCopy[language.value];for(const input of factInputs)input.title.textContent=input.fact.locales[language.value].title;const result=campReplyDraft(item,language.value,factInputs.filter(input=>input.check.checked).map(input=>input.fact.id));subject=result.subject;subjectField.value=subject;draft.value=result.body;copyStatus.textContent='';label.firstChild?.nodeType===3&&label.firstChild.remove();label.prepend(document.createTextNode(c[9]));gmail.textContent=c[10];link.textContent=c[11];update();};
   // Regeneration replaces edits only after an explicit staff confirmation.
   let dirty=false,lastLanguage=language.value,lastFacts=factInputs.map(input=>input.check.checked);const regenerateIfConfirmed=()=>{if(dirty&&!confirm('Нооргийн засварыг шинэчлэх үү? / Replace draft edits?')){language.value=lastLanguage;factInputs.forEach((input,index)=>{input.check.checked=lastFacts[index];});return;}dirty=false;regenerate();lastLanguage=language.value;lastFacts=factInputs.map(input=>input.check.checked);};
   language.addEventListener('change',regenerateIfConfirmed);for(const input of factInputs)input.check.addEventListener('change',regenerateIfConfirmed);
-  draft.addEventListener('input',()=>{dirty=true;update();});regenerate();
-  const notice=document.createElement('p');notice.textContent='Имэйлийг автоматаар илгээхгүй. Баазын Gmail хаягаар илгээж байгаа эсэхээ имэйл аппдаа шалгана уу.';
-  details.append(summary,recipient,controls,label,gmail,document.createElement('br'),link,notice);cell.append(details);
+  subjectField.addEventListener('input',()=>{dirty=true;subject=subjectField.value;copyStatus.textContent='';update();});
+  draft.addEventListener('input',()=>{dirty=true;copyStatus.textContent='';update();});regenerate();
+  const notice=document.createElement('p');notice.textContent='Имэйлийг автоматаар илгээхгүй. Гар утасны апп гарчиг эсвэл текстийг оруулахгүй нээгдсэн бол дээрх гарчиг, текстийг тус тусад нь хуулж буулгана уу. Баазын Gmail хаягаар илгээж байгаа эсэхээ шалгана уу.';
+  details.append(summary,recipient,controls,subjectLabel,label,copyActions,copyStatus,gmail,document.createElement('br'),link,notice);cell.append(details);
 }
 function paymentLink(cell, url) {
   const parsed = new URL(url, location.origin);
