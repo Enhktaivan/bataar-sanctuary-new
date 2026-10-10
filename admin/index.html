@@ -35,7 +35,7 @@ async function request(path, body) {
   if(!current())throw new Error('Сесс дууссан. Дахин нэвтэрнэ үү.');
   return data;
 }
-function logout() { sessionVersion++; token=''; get('token').value=''; get('quote').reset(); get('reference').value=''; get('amount').value=''; get('availability').checked=false; get('showTests').checked=false; testBookingIds.clear(); get('rows').replaceChildren(); get('bookings').replaceChildren(); get('inboxAccess')?.remove(); get('adminTools')?.remove(); get('workspace').hidden=true; get('login').hidden=false; message('Системээс гарлаа.'); }
+function logout() { clearControl(); sessionVersion++; token=''; get('token').value=''; get('quote').reset(); get('reference').value=''; get('amount').value=''; get('availability').checked=false; get('showTests').checked=false; testBookingIds.clear(); get('rows').replaceChildren(); get('bookings').replaceChildren(); get('inboxAccess')?.remove(); get('adminTools')?.remove(); get('workspace').hidden=true; get('login').hidden=false; message('Системээс гарлаа.'); }
 function showAdminTools() {
   if(!token||get('adminTools'))return;
   const tools=document.createElement('section');tools.id='adminTools';
@@ -176,9 +176,37 @@ async function refreshBookings() {
 }
 async function refresh(){await refreshBookings();await refreshQuotes();}
 get('showTests').onchange=()=>refresh().catch(error=>message(error.message));
-get('login').onsubmit=async event => { event.preventDefault(); if(loginBusy)return;loginBusy=true;const loginButton=get('login').querySelector('button');loginButton.disabled=true;sessionVersion++;token=get('token').value; get('token').value=''; try { await refresh(); get('login').hidden=true; get('workspace').hidden=false; showInboxAccess(); showAdminTools(); message('Нэвтэрлээ.'); } catch(error) { logout(); message(error.message); } finally{loginBusy=false;loginButton.disabled=false;} };
+get('login').onsubmit=async event => { event.preventDefault(); if(loginBusy)return;loginBusy=true;const loginButton=get('login').querySelector('button');loginButton.disabled=true;sessionVersion++;token=get('token').value; get('token').value=''; try { await refresh(); get('login').hidden=true; get('workspace').hidden=false; showInboxAccess(); showAdminTools(); showControlAccess(); message('Нэвтэрлээ.'); } catch(error) { logout(); message(error.message); } finally{loginBusy=false;loginButton.disabled=false;} };
 get('logout').onclick=logout;
 get('refresh').onclick=() => refresh().then(() => message('Төлөв шинэчлэгдлээ.')).catch(error => message(error.message));
 get('providerHealth').onclick=async ()=>{get('providerHealth').disabled=true;try {const result=await request('/admin/provider/health');message(result.authenticated?'QPay холболт баталгаажлаа.':'QPay холболт баталгаажаагүй.');}catch(error){message(error.message);}finally{get('providerHealth').disabled=false;}};
 get('quote').onsubmit=async event => { event.preventDefault(); get('create').disabled=true; try { const result=await request('/admin/quotes', {reference:get('reference').value.trim(),amount:Number(get('amount').value),availabilityConfirmed:get('availability').checked}); await refresh(); get('quote').reset(); message('Үнийн санал үүслээ. Дараагийн алхам: QPay нэхэмжлэх үүсгэх.'); } catch(error) { message(error.message); } finally { get('create').disabled=false; } };
+function showControlAccess(){
+ if(!token||get('controlAccess'))return;
+ const button=document.createElement('button');button.id='controlAccess';button.type='button';button.textContent='Оюун · Байгууллагууд';button.style.margin='12px 8px 12px 0';
+ button.onclick=()=>openControl().catch(error=>message(error.message));get('workspace').prepend(button);
+}
+function clearControl(){get('controlPanel')?.remove();get('controlAccess')?.remove();document.querySelectorAll('.controlEnrollment').forEach(node=>node.remove());}
+async function openControl(){
+ const data=await request('/admin/control/organizations');
+ let panel=get('controlPanel');if(panel)panel.remove();panel=document.createElement('section');panel.id='controlPanel';panel.style.cssText='padding:24px;border:1px solid #ddc9a4;border-radius:12px;margin:20px 0;background:#faf8f3';
+ const title=document.createElement('h2');title.textContent='Оюун · Байгууллагууд';panel.append(title);
+ const note=document.createElement('p');note.textContent='Үйлчилгээний эрх, холбогчийн төлөв. Codex-ийн бүх ажиллагааг шууд хянахгүй.';panel.append(note);
+ const toolbar=document.createElement('div');const add=document.createElement('button');add.textContent='+ Байгууллага';add.onclick=()=>controlForm(panel);const refresh=document.createElement('button');refresh.textContent='Шинэчлэх';refresh.onclick=()=>openControl().catch(e=>message(e.message));const close=document.createElement('button');close.textContent='Хаах';close.onclick=()=>panel.remove();toolbar.append(add,document.createTextNode(' '),refresh,document.createTextNode(' '),close);panel.append(toolbar);
+ if(!data.organizations.length){const empty=document.createElement('p');empty.textContent='Байгууллага бүртгээгүй байна.';panel.append(empty);}
+ else{const table=document.createElement('table');const head=document.createElement('tr');for(const value of ['Байгууллага','Эрх','Холболт / ажил','Хувилбар','Эрх дуусах','']){const th=document.createElement('th');th.textContent=value;head.append(th);}table.append(head);for(const r of data.organizations){const tr=document.createElement('tr');const state={idle:'Хүлээж байна',working:'Ажиллаж байна',completed:'Дууссан',error:'Алдаа'};for(const v of [r.name+' · '+r.customer,({active:'Идэвхтэй',pending:'Эхлээгүй',expired:'Дууссан',suspended:'Түдгэлзсэн'})[r.status]||r.status,r.heartbeat?(r.connected?'Холбогдсон':'Холболт хуучирсан')+' / '+state[r.heartbeat.state]+' · '+new Date(r.heartbeat.at).toLocaleString('mn-MN'):'Холбогдоогүй',r.heartbeat?.version||'—',new Date(r.expiresAt).toLocaleDateString('mn-MN')]){const td=document.createElement('td');td.textContent=v;tr.append(td);}const td=document.createElement('td'),edit=document.createElement('button');edit.textContent='Тохируулах';edit.onclick=()=>controlForm(panel,r);td.append(edit);const rotate=document.createElement('button');rotate.textContent='Холболт шинэчлэх';rotate.onclick=async()=>{if(!confirm('Хуучин үйлчилгээний түлхүүр хүчингүй болно. Шинэ холболтын файл үүсгэх үү?'))return;try{const result=await request('/admin/control/organizations/'+encodeURIComponent(r.customer)+'/rotate',{});showEnrollment(result.configuration);}catch(e){message(e.message);}};td.append(rotate);tr.append(td);table.append(tr);}const shell=document.createElement('div');shell.style.overflowX='auto';shell.append(table);panel.append(shell);}
+ get('controlAccess').after(panel);panel.scrollIntoView({block:'start',behavior:'smooth'});
+}
+function controlForm(panel,r){
+ get('controlForm')?.remove();const form=document.createElement('form');form.id='controlForm';form.style.cssText='padding:20px;border:1px solid #ddc9a4;border-radius:8px;margin-top:20px';
+ const fields={};for(const [key,label,type,value] of [['name','Байгууллагын нэр','text',r?.name||''],['customer','ID','text',r?.customer||''],['startsAt','Эхлэх өдөр (UTC)','date',(r?.startsAt||new Date().toISOString()).slice(0,10)],['expiresAt','Дуусах өдөр, 00:00 UTC','date',r?.expiresAt.slice(0,10)||'']]){const l=document.createElement('label');l.textContent=label;const input=document.createElement('input');input.type=type;input.value=value;input.required=true;if(key==='customer'){input.pattern='[a-zA-Z0-9_-]{1,80}';input.disabled=!!r;}if(key==='name')input.maxLength=120;l.append(input);form.append(l);fields[key]=input;}
+ const l=document.createElement('label'),suspended=document.createElement('input');suspended.type='checkbox';suspended.checked=!!r?.suspended;l.append(suspended,document.createTextNode(' Эрх түдгэлзүүлэх'));form.append(l);
+ const save=document.createElement('button');save.textContent='Хадгалах';const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Болих';cancel.onclick=()=>form.remove();const error=document.createElement('p');error.setAttribute('role','status');form.append(save,document.createTextNode(' '),cancel,error);
+ form.onsubmit=async event=>{event.preventDefault();save.disabled=true;try{const result=await request('/admin/control/organizations',{name:fields.name.value,customer:fields.customer.value,startsAt:fields.startsAt.value+'T00:00:00Z',expiresAt:fields.expiresAt.value+'T00:00:00Z',suspended:suspended.checked});if(result.configuration)showEnrollment(result.configuration);message('Байгууллагын эрх хадгалагдлаа.');await openControl();}catch(e){error.textContent=e.message;}finally{save.disabled=false;}};
+ panel.append(form);
+}
+
+
+function showEnrollment(configuration){const section=document.createElement('section');section.className='controlEnrollment';const warning=document.createElement('p');warning.textContent='Холболтын файл нэг удаа олгогдоно. Түлхүүр агуулна. Git, имэйлд бүү оруул; байгууллагын runtime/control.json болгон аюулгүй байрлуул.';const download=document.createElement('button');download.textContent='control.json татах';download.onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(configuration,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='control.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};section.append(warning,download);get('workspace').prepend(section);}
+
 </script></html>
