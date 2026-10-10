@@ -87,3 +87,8 @@ Published organization control addon in main/public/admin/index.html and gh-page
 Validation: 39 control/payment/booking/outbox tests passed; inline script and bundled Worker syntax passed. Live browser verified login, organization list, unsaved add form, cancel, and logout removing controls. Live anonymous admin API returned 401; authenticated list returned empty organizations. No real organization or payment was created during verification.
 
 Scope: interface licensing and connector heartbeat only. Notion, Make, and Codex remain independent; client pairing and workflow-level checks are not yet configured. Prechange Worker/admin backups retained locally. Frontend publication commits: main 66ea58270ee188f4989aa21fe771c6b68ac24cad; gh-pages d63e56195ed0b793c0555db226fe7873323ecfb5.
+
+
+## 2026-10-10 — Integrated service permissions
+
+Added separate Make/Notion/ChatGPT permission switches in organization admin. Separate control_services table defaults to denial; missing policy also denies. Per-org authenticated GET /access?customer=...&service=make|notion|chatgpt returns allowed only for active licenses with explicit service grants. Existing admin auth/origin protections apply to policy mutations. This does not revoke third-party accounts, block manual access or cancel running work. Existing scenarios must integrate the check; none were modified in this release. Local service-gate.cjs and SERVICE-CONNECTION.txt provide fail-closed integration instructions. Review findings on default permissions and overlapping rotation requests fixed. 39 scoped tests passed before default fix; updated control test passed afterward; all3 live pending-license requests denied403. No real service permissions granted yet.
