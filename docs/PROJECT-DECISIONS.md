@@ -78,3 +78,12 @@ Owner asked to follow other camps' average practice after discussing deposit/can
 ### 2026-10-06 — Owner authorizes publication and navigation improvements
 Owner explicitly asked to publish the 30% accommodation/meal deposit, balance on arrival, full refund for cancellation 14 or more days before arrival, and retention of 30% for later cancellation/no-show. Staff arrange partial payments; existing QPay billing is not represented as automated deposit/balance accounting. No existing booking agreement changed. Policy uses a version date and applies to newly confirmed terms; future revisions must preserve confirmed agreements. Arrival/departure times remain to be arranged, not approved 14:00/11:00.
 Owner additionally asked booking return to preserve section/scroll and market links to open the advertised language. URL lang takes precedence over saved language; first visits use supported browser language, otherwise English. Italian main content retains documented English fallback. Booking origin saved only in session storage for 30 minutes; explicit new campaign destinations take priority. Independent review found campaign precedence and terms-page language defaults; both corrected. Lint/build, knowledge tests and navigation VM checks passed. Publication and live verification recorded separately.
+
+
+## 2026-10-10 — Organization control in admin
+
+Published organization control addon in main/public/admin/index.html and gh-pages/admin/index.html. Existing payment Worker now routes control APIs after existing admin authentication, using a separate CONTROL_DB D1 database and Ed25519 signing secret. Client credentials are hashed in storage; enrollment config is displayed once and cleared on logout. Rotation invalidates prior client token.
+
+Validation: 39 control/payment/booking/outbox tests passed; inline script and bundled Worker syntax passed. Live browser verified login, organization list, unsaved add form, cancel, and logout removing controls. Live anonymous admin API returned 401; authenticated list returned empty organizations. No real organization or payment was created during verification.
+
+Scope: interface licensing and connector heartbeat only. Notion, Make, and Codex remain independent; client pairing and workflow-level checks are not yet configured. Prechange Worker/admin backups retained locally. Frontend publication commits: main 66ea58270ee188f4989aa21fe771c6b68ac24cad; gh-pages d63e56195ed0b793c0555db226fe7873323ecfb5.
