@@ -2,6 +2,7 @@ import React from 'react';
 import {roomStayPrice, type Room} from '../roomStayPrice';
 import {roomBookingCopy, type RoomBookingLanguage} from '../roomBookingCopy';
 import bookingPolicy from '../bookingPolicy.json';
+import {RoomTariff} from '../RoomTariff';
 const USD_RATE = 3595.63; // Display estimate only; unchanged dated rate.
 const usd = (mnt: number) => new Intl.NumberFormat('en-US', {style:'currency', currency:'USD'}).format(mnt / USD_RATE);
 const rooms = {standard:'Энгийн өрөө', deluxe:'Люкс өрөө', family:'Гэр бүлийн өрөө'};
@@ -25,6 +26,7 @@ export function RoomBooking({initialRoom, currentLang = 'mn', onClose, reactRunt
       <button onClick={onClose} className="float-right border px-3 py-1">{t[1]}</button>
       <h2 className="text-2xl font-semibold">{t[0]}</h2>
       <p className="text-sm">{t[2]}</p>
+      <RoomTariff room={room} lang={lang}/>
       <label className="block">{t[3]}<select className="block border p-2 w-full" value={room} onChange={e=>setRoom(e.target.value as Room)}>{Object.entries(labels).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label>
       <label className="block">{t[4]}<input className="block border p-2 w-full" type="number" min="1" max="50" value={guests} onChange={e=>setGuests(Number(e.target.value))}/></label>
       <label className="block">{t[5]}<input className="block border p-2 w-full" type="date" value={arrival} onChange={e=>setArrival(e.target.value)}/></label>

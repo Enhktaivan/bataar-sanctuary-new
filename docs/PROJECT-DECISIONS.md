@@ -96,3 +96,6 @@ Added separate Make/Notion/ChatGPT permission switches in organization admin. Se
 ### 2026-10-21 — Camp coordinate correction
 Owner requested finding the actual camp and correcting conflicting map/GPS points. Named Motherland Of Bataar Google Maps listing matches phone 9953 0099 and camp photos credited Erdii Erdii. Adopted place coordinates 43.4642132, 100.4523248 via shared src/campLocation.ts for camp marker, directions, GPS display and weather coordinate label. See docs/CAMP-LOCATION.md for evidence and verification limits. Sightseeing destinations, prices and payment records unchanged.
 
+
+### 2026-10-21 — Deluxe accommodation and meal tariff
+Owner confirmed standard prices unchanged. Deluxe accommodation is 320,000 MNT per person sharing, charged as a whole two-person room at640,000 MNT/night even for single occupancy. Meals separate at standard rates: breakfast40,000, lunch45,000,dinner45,000 per actual guest. Full board totals per night: one guest770,000; two900,000; three guests/two rooms1,670,000. Added localized View prices on Deluxe card and booking form. Updated authoritative booking calculation and client estimate; existing stored quotes remain unchanged. Lint/build and40 synthetic tests pass. Rollback source9a739cd30ab2203d1ecac34f71a76723abfeff9e; Pages51a133a8643ac7e83e0e134a922351854cfe8421.

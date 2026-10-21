@@ -1,8 +1,9 @@
-// Camp-approved total per room per night, including three meals for each guest.
+// Owner-approved 2026-10-21: two-person room charge applies to single use too.
 export const luxRoomPricing = {
-  singleTotal: 450000,
-  coupleTotal: 650000,
-  mealsIncluded: ['breakfast', 'lunch', 'dinner'],
+  accommodationPerPersonShared: 320000,
+  accommodationPerRoom: 640000,
+  capacity: 2,
+  mealsIncluded: false,
 } as const;
 
 // Camp-approved family room total per night, including three meals.
