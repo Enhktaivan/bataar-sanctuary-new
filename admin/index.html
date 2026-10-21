@@ -113,6 +113,7 @@ function paymentLink(cell, url) {
 let testBookingIds=new Set();
 const stateLabel=value=>({pending:'Батлах хүлээж байна',approved:'Баталсан',awaiting_payment:'Төлбөр хүлээж байна',paid:'Төлбөр баталгаажсан',needs_review:'Шалгах шаардлагатай',creating:'Нэхэмжлэх бэлдэж байна'}[value]||value);
 function pricingSummary(pricing) {
+  if(pricing.service==='tour')return 'Аяллын багц · '+pricing.persons+' хүн × '+Number(pricing.unitPrice).toLocaleString()+' ₮ · '+pricing.days+' өдөр / '+pricing.nights+' шөнө · Нийт '+Number(pricing.amount).toLocaleString()+' ₮ (байр, хоол, хөтөч, жолооч багтсан)';
   const meals=pricing.mealPlan==='room_only'?'зөвхөн өрөө, хоолгүй':'байр + 3 хоол';
   return pricing.roomName+' · '+pricing.rooms+' өрөө · '+pricing.nights+' хоног · '+Number(pricing.daily).toLocaleString()+' ₮ / хоног · Нийт '+Number(pricing.amount).toLocaleString()+' ₮ ('+meals+')';
 }
