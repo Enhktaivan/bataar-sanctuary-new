@@ -108,3 +108,6 @@ Owner requests pickup in Gurvantes on day1, camp check-in and sunset; five touri
 ### 2026-10-21 — Owner photographed room tariff
 New owner-provided tariff supersedes standard130000/260000 lodging: shared140000 perguest, single280000 perroom; meals40000/45000/45000 unchanged. Fullboard270000 shared/person,410000 solo. Deluxe770000single and450000shared/person match existing640000room plus130000meals/person. Guide/driver standard190000 andDeluxe250000 displayed as reference only pending explicit separate booking count behavior. Family unchanged. No contract/deposit/refund terms changed from photographed document. Existing approved quotes unchanged.
 Owner follow-up: guide/driver costs belong in tour package pricing; do not add separate staff charges to room reservations. Staff rates remain reference display only.
+
+### 2026-10-21 — Five-day tour tariff confirmed
+Owner explicitly confirmed6300000MNT is perperson for five-day/five-night Gurvantes package, return morning6. Show fixedperperson MNT tariff and calculate guests*6300000 independently from room booking. Package includes lodging/meals/guide/driver; no room/staff surcharge. Server recognizes stablepackageid exp-roy-andrews, requires5nights, saves estimateonlypendingapproval. Customtours remainquoteonly. Knownpackage normalizesmealplanfullboard. No invoice/payment/email autoapproval.
