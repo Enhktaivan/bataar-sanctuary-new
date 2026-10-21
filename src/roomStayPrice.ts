@@ -11,7 +11,7 @@ export function deluxeBreakdown(guests: number, nights = 1, meals = true) {
 }
 export function roomStayPrice(room: Room, guests: number, nights: number) {
   if (!Number.isInteger(guests) || guests < 1 || guests > 50 || !Number.isInteger(nights) || nights < 1) return null;
-  const day = room === 'standard' ? guests * 260000 + (guests % 2 ? 130000 : 0)
+  const day = room === 'standard' ? guests * standard.sharedTotal + (guests % 2 ? standard.accommodationShared : 0)
     : room === 'deluxe' ? deluxeBreakdown(guests).total
     : Math.ceil(guests / 6) * 650000;
   return day * nights;

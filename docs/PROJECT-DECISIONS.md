@@ -104,3 +104,7 @@ Owner confirmed standard prices unchanged. Deluxe accommodation is 320,000 MNT p
 
 ### 2026-10-21 — Gurvantes five-day itinerary
 Owner requests pickup in Gurvantes on day1, camp check-in and sunset; five touring days with morning return to Gurvantes on day6. Revised existing wildlife package: day2Tost–Toson Bumba, day3wildlife/nomadic family, day4Khermen Tsav, day5Narandaats camel trip. Five nights, sixth-day morning transfer. Updated existing six itinerary language variants and duration labels; retained old stored tariff6300000MNT/1850USD without deciding per-person vs group basis. No payment calculation changes.
+
+### 2026-10-21 — Owner photographed room tariff
+New owner-provided tariff supersedes standard130000/260000 lodging: shared140000 perguest, single280000 perroom; meals40000/45000/45000 unchanged. Fullboard270000 shared/person,410000 solo. Deluxe770000single and450000shared/person match existing640000room plus130000meals/person. Guide/driver standard190000 andDeluxe250000 displayed as reference only pending explicit separate booking count behavior. Family unchanged. No contract/deposit/refund terms changed from photographed document. Existing approved quotes unchanged.
+Owner follow-up: guide/driver costs belong in tour package pricing; do not add separate staff charges to room reservations. Staff rates remain reference display only.

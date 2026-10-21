@@ -1,3 +1,4 @@
+import roomTariffLabels from './roomTariffLabels.json';
 import {deluxeBreakdown} from './roomStayPrice';
 import {standardRoomPricing as standard} from './standardRoomPricing';
 export const tariffCopy = {
@@ -12,12 +13,13 @@ export const tariffCopy = {
   it:['Vedi prezzi','Alloggio / notte','Colazione / ospite','Pranzo / ospite','Cena / ospite','Deluxe: 320.000 MNT a persona in due. Per uso singolo si paga l’intera camera: 640.000 MNT. Pasti separati alle stesse tariffe della camera standard, per il numero effettivo di ospiti.','Un ospite con tre pasti / notte','Due ospiti con tre pasti / notte'],
 } as const;
 export function RoomTariff({room,lang='mn'}:{room:string;lang?:string}) {
-  if(room!=='deluxe') return null;
+  if(room!=='deluxe' && room!=='standard') return null;
   const t=tariffCopy[lang as keyof typeof tariffCopy]||tariffCopy.en;
-  const rows=[[t[1],640000],[t[2],standard.breakfast],[t[3],standard.lunch],[t[4],standard.dinner],[t[6],deluxeBreakdown(1).total],[t[7],deluxeBreakdown(2).total]] as const;
-  return <details className="border border-stone-300 bg-white p-4 text-stone-900" data-testid="deluxe-tariff">
+  const labels=roomTariffLabels[lang as keyof typeof roomTariffLabels]||roomTariffLabels.en;
+  const rows=[[labels[0],room==='deluxe'?320000:standard.accommodationShared],[labels[1],room==='deluxe'?640000:standard.accommodationSingle],[t[2],standard.breakfast],[t[3],standard.lunch],[t[4],standard.dinner],[labels[4],room==='deluxe'?deluxeBreakdown(1).total:standard.singleTotal],[labels[5],room==='deluxe'?deluxeBreakdown(2).total:standard.sharedTotal*2],[labels[2],room==='deluxe'?250000:standard.staffTotal]] as const;
+  return <details className="border border-stone-300 bg-white p-4 text-stone-900" data-testid={room+"-tariff"}>
     <summary className="cursor-pointer font-semibold">{t[0]}</summary>
-    <p className="my-3 text-sm">{t[5]}</p>
+    {room==='deluxe' && <p className="my-3 text-sm">{t[5]}</p>}
     <dl className="space-y-2 text-sm">{rows.map(([label,value])=><div key={label} className="flex justify-between gap-4"><dt>{label}</dt><dd className="font-semibold whitespace-nowrap">{value.toLocaleString('en-US')} ₮</dd></div>)}</dl>
   </details>;
 }
