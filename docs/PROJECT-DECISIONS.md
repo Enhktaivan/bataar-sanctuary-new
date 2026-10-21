@@ -99,3 +99,8 @@ Owner requested finding the actual camp and correcting conflicting map/GPS point
 
 ### 2026-10-21 — Deluxe accommodation and meal tariff
 Owner confirmed standard prices unchanged. Deluxe accommodation is 320,000 MNT per person sharing, charged as a whole two-person room at640,000 MNT/night even for single occupancy. Meals separate at standard rates: breakfast40,000, lunch45,000,dinner45,000 per actual guest. Full board totals per night: one guest770,000; two900,000; three guests/two rooms1,670,000. Added localized View prices on Deluxe card and booking form. Updated authoritative booking calculation and client estimate; existing stored quotes remain unchanged. Lint/build and40 synthetic tests pass. Rollback source9a739cd30ab2203d1ecac34f71a76723abfeff9e; Pages51a133a8643ac7e83e0e134a922351854cfe8421.
+
+2026-10-21 follow-up: Owner supplied standard tariff screenshot and requested same five-row layout for Deluxe using its own prices. Hosted Deluxe details now list shared320000/person, single640000/room, breakfast40000, lunch45000,dinner45000; title Люкс өрөөний тариф. Calculation unchanged.18 scoped tests pass.
+
+### 2026-10-21 — Gurvantes five-day itinerary
+Owner requests pickup in Gurvantes on day1, camp check-in and sunset; five touring days with morning return to Gurvantes on day6. Revised existing wildlife package: day2Tost–Toson Bumba, day3wildlife/nomadic family, day4Khermen Tsav, day5Narandaats camel trip. Five nights, sixth-day morning transfer. Updated existing six itinerary language variants and duration labels; retained old stored tariff6300000MNT/1850USD without deciding per-person vs group basis. No payment calculation changes.
