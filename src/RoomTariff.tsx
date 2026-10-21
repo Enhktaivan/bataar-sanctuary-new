@@ -21,7 +21,7 @@ export function RoomTariff({room,lang='mn',reactRuntime}:{room:string;lang?:stri
   const rows=[[labels[0],room==='deluxe'?320000:standard.accommodationShared],[labels[1],room==='deluxe'?640000:standard.accommodationSingle],[t[2],standard.breakfast],[t[3],standard.lunch],[t[4],standard.dinner],[labels[4],room==='deluxe'?deluxeBreakdown(1).total:standard.singleTotal],[labels[5],room==='deluxe'?deluxeBreakdown(2).total:standard.sharedTotal*2],[labels[2],room==='deluxe'?250000:standard.staffTotal]] as const;
   return <details className="border border-stone-300 bg-white p-4 text-stone-900" data-testid={room+"-tariff"}>
     <summary className="cursor-pointer font-semibold">{t[0]}</summary>
-    {room==='deluxe' && <p className="my-3 text-sm">{t[5]}</p>}
+    {room==='deluxe' && <p className="my-3 text-sm">{t[5].split(/((?:320|640)[,. ]000\s*(?:MNT|₮)?)/g).map((part,index)=>/^(?:320|640)[,. ]000/.test(part)?<CurrencyPrice key={index} amount={part.startsWith('320')?320000:640000} lang={lang} reactRuntime={reactRuntime}/>:part)}</p>}
     <CurrencyControl lang={lang} reactRuntime={reactRuntime}/><dl className="space-y-2 text-sm">{rows.map(([label,value])=><div key={label} className="flex justify-between gap-4"><dt>{label}</dt><dd className="font-semibold whitespace-nowrap"><CurrencyPrice amount={value} lang={lang} reactRuntime={reactRuntime}/></dd></div>)}</dl>
   </details>;
 }
