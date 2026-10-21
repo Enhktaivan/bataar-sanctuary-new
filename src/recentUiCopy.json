@@ -1,0 +1,65 @@
+{
+  "mn": [
+    "Говийн байгалийн хадны нуман тогтоц",
+    "Google Maps чиглэл",
+    "Өдөр",
+    "Хөтөлбөр харах",
+    "Хөтөлбөр хумих"
+  ],
+  "en": [
+    "Natural rock arch in the Gobi",
+    "Google Maps directions",
+    "Day",
+    "View schedule",
+    "Hide schedule"
+  ],
+  "ja": [
+    "ゴビの自然の岩のアーチ",
+    "Google Mapsで道順",
+    "日目",
+    "日程を見る",
+    "日程を閉じる"
+  ],
+  "zh": [
+    "戈壁天然岩石拱门",
+    "Google Maps路线",
+    "天",
+    "查看行程",
+    "收起行程"
+  ],
+  "ko": [
+    "고비의 자연 바위 아치",
+    "Google Maps 길찾기",
+    "일차",
+    "일정 보기",
+    "일정 접기"
+  ],
+  "ru": [
+    "Природная каменная арка в Гоби",
+    "Маршрут в Google Maps",
+    "День",
+    "Показать программу",
+    "Скрыть программу"
+  ],
+  "de": [
+    "Natürlicher Felsbogen in der Gobi",
+    "Google Maps Route",
+    "Tag",
+    "Programm ansehen",
+    "Programm ausblenden"
+  ],
+  "fr": [
+    "Arche rocheuse naturelle du Gobi",
+    "Itinéraire Google Maps",
+    "Jour",
+    "Voir le programme",
+    "Masquer le programme"
+  ],
+  "it": [
+    "Arco naturale di roccia nel Gobi",
+    "Indicazioni Google Maps",
+    "Giorno",
+    "Mostra programma",
+    "Nascondi programma"
+  ]
+}

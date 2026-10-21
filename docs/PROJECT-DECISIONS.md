@@ -120,3 +120,9 @@ Owner removesJeep/Camelcard fromcampfeatures, replacesRestaurant/LoungewithGobiN
 
 ### 2026-10-21 — GPS display matches map decimals
 Owner requested reusingpreviouslycorrectedcampcoordinates. ArrivalGPStextnowrenders43.4642132°N,100.4523248°EdirectlyfromsharedCAMP_LOCATIONnumbers instead ofDMSnotation. Map/directionsalreadyusesamepoint. No newlocationinferred.
+
+### 2026-10-21 — Remove two lower portal cards
+Owner screenshotsidentifyGuidedExpeditionsandAcademicPartnerships cards inbottomSanctuarySectionsportalgrid. Removedthosetwoobjectsfromv2portalarray acrosslanguages. Mainfive-daytoursectionandbookingremain; otherportalroutefunctionsunchanged.
+
+### 2026-10-21 — Nine-language audit of recent changes
+Owner requestscheckingall9languagesafterchanges. FoundmissingFR/KO/RUtourmetadataand6daytranslations; filledthem. Added9localeimagealt,GPSdirectionsandDay/show/hideschedulelabels. Existingroom/scenery/tourtarifflocalecopiesalreadycomplete9. Auditmustnotclaimentirelegacywebsitefullytranslated: olderItalianmaincopyandotherunchangedcontentstilluseEnglishfallback.
