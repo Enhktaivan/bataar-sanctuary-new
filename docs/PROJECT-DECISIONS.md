@@ -117,3 +117,6 @@ Owner supplied rock arch photograph to replace camp introduction panorama. Conve
 
 ### 2026-10-21 — Simpler camp feature cards
 Owner removesJeep/Camelcard fromcampfeatures, replacesRestaurant/LoungewithGobiNature andPaleontologyBasewithBeautyofKhermenTsav. Updatedsimpledescriptions via9localescampSceneryCopy; fivecardsremain. Stargazing,solar,WiFiunchanged. Touritineraryandpricingunchanged.
+
+### 2026-10-21 — GPS display matches map decimals
+Owner requested reusingpreviouslycorrectedcampcoordinates. ArrivalGPStextnowrenders43.4642132°N,100.4523248°EdirectlyfromsharedCAMP_LOCATIONnumbers instead ofDMSnotation. Map/directionsalreadyusesamepoint. No newlocationinferred.
