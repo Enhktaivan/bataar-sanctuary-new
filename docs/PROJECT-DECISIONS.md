@@ -114,3 +114,6 @@ Owner explicitly confirmed6300000MNT is perperson for five-day/five-night Gurvan
 
 ### 2026-10-21 — Camp introduction photo
 Owner supplied rock arch photograph to replace camp introduction panorama. Converted suppliedPNG toWebP atsame1448x1086dimensions fordelivery; noAIgeneratedimage. Onlyintroimage default changed. Container4:3andobject-contain showswholeframewithoutcrop. Owner clarifiedfullphoto mustshowdirectlyinline, nofullscreenbuttonoroverlayviewer. Captionoverlayretained.
+
+### 2026-10-21 — Simpler camp feature cards
+Owner removesJeep/Camelcard fromcampfeatures, replacesRestaurant/LoungewithGobiNature andPaleontologyBasewithBeautyofKhermenTsav. Updatedsimpledescriptions via9localescampSceneryCopy; fivecardsremain. Stargazing,solar,WiFiunchanged. Touritineraryandpricingunchanged.
