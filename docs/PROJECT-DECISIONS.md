@@ -111,3 +111,6 @@ Owner follow-up: guide/driver costs belong in tour package pricing; do not add s
 
 ### 2026-10-21 — Five-day tour tariff confirmed
 Owner explicitly confirmed6300000MNT is perperson for five-day/five-night Gurvantes package, return morning6. Show fixedperperson MNT tariff and calculate guests*6300000 independently from room booking. Package includes lodging/meals/guide/driver; no room/staff surcharge. Server recognizes stablepackageid exp-roy-andrews, requires5nights, saves estimateonlypendingapproval. Customtours remainquoteonly. Knownpackage normalizesmealplanfullboard. No invoice/payment/email autoapproval.
+
+### 2026-10-21 — Camp introduction photo
+Owner supplied rock arch photograph to replace camp introduction panorama. Converted suppliedPNG toWebP atsame1448x1086dimensions fordelivery; noAIgeneratedimage. Onlyintroimage default changed. Container4:3andobject-contain showswholeframewithoutcrop. Owner clarifiedfullphoto mustshowdirectlyinline, nofullscreenbuttonoroverlayviewer. Captionoverlayretained.
