@@ -92,3 +92,7 @@ Scope: interface licensing and connector heartbeat only. Notion, Make, and Codex
 ## 2026-10-10 — Integrated service permissions
 
 Added separate Make/Notion/ChatGPT permission switches in organization admin. Separate control_services table defaults to denial; missing policy also denies. Per-org authenticated GET /access?customer=...&service=make|notion|chatgpt returns allowed only for active licenses with explicit service grants. Existing admin auth/origin protections apply to policy mutations. This does not revoke third-party accounts, block manual access or cancel running work. Existing scenarios must integrate the check; none were modified in this release. Local service-gate.cjs and SERVICE-CONNECTION.txt provide fail-closed integration instructions. Review findings on default permissions and overlapping rotation requests fixed. 39 scoped tests passed before default fix; updated control test passed afterward; all3 live pending-license requests denied403. No real service permissions granted yet.
+
+### 2026-10-21 — Camp coordinate correction
+Owner requested finding the actual camp and correcting conflicting map/GPS points. Named Motherland Of Bataar Google Maps listing matches phone 9953 0099 and camp photos credited Erdii Erdii. Adopted place coordinates 43.4642132, 100.4523248 via shared src/campLocation.ts for camp marker, directions, GPS display and weather coordinate label. See docs/CAMP-LOCATION.md for evidence and verification limits. Sightseeing destinations, prices and payment records unchanged.
+
