@@ -1,0 +1,47 @@
+{
+  "mn": [
+    "Дүн харах валют",
+    "Хаан банк · Бэлэн бус зарах ханш",
+    "Баримжаа үнэ. Үндсэн үнэ, QPay төлбөр MNT (₮)-өөр."
+  ],
+  "en": [
+    "Display currency",
+    "Khan Bank · Non-cash selling rate",
+    "Estimated conversion. Base prices and QPay payments are in MNT."
+  ],
+  "ja": [
+    "表示通貨",
+    "ハーン銀行・非現金売却レート",
+    "換算額は目安です。基本料金とQPay決済はMNTです。"
+  ],
+  "zh": [
+    "显示货币",
+    "汗银行 · 非现金卖出汇率",
+    "换算金额仅供参考。基础价格及QPay付款均以MNT结算。"
+  ],
+  "ko": [
+    "표시 통화",
+    "칸 은행 · 비현금 매도 환율",
+    "환산 금액은 참고용입니다. 기본 요금과 QPay 결제는 MNT입니다."
+  ],
+  "ru": [
+    "Валюта отображения",
+    "Хаан Банк · Безналичный курс продажи",
+    "Пересчёт ориентировочный. Цены и оплата QPay — в MNT. Курс RUB не опубликован банком."
+  ],
+  "de": [
+    "Anzeigewährung",
+    "Khan Bank · Unbarer Verkaufskurs",
+    "Unverbindliche Umrechnung. Grundpreise und QPay-Zahlungen erfolgen in MNT."
+  ],
+  "fr": [
+    "Devise affichée",
+    "Khan Bank · Cours de vente sans espèces",
+    "Conversion indicative. Tarifs de base et paiements QPay en MNT."
+  ],
+  "it": [
+    "Valuta visualizzata",
+    "Khan Bank · Tasso di vendita non contante",
+    "Conversione indicativa. Prezzi di base e pagamenti QPay in MNT."
+  ]
+}

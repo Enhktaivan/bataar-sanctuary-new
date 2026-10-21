@@ -1,0 +1,26 @@
+{
+  "bank": "Khan Bank",
+  "type": "non-cash sell",
+  "date": "2026-10-21",
+  "source": "https://www.khanbank.com/widget/exchange/index.html?lang=mn",
+  "rates": {
+    "MNT": 1,
+    "USD": 3598,
+    "GBP": 4909,
+    "EUR": 4129,
+    "JPY": 23.35,
+    "CNY": 543.1,
+    "KRW": 2.8
+  },
+  "defaults": {
+    "mn": "MNT",
+    "en": "GBP",
+    "ja": "JPY",
+    "zh": "CNY",
+    "ko": "KRW",
+    "ru": "MNT",
+    "de": "EUR",
+    "fr": "EUR",
+    "it": "EUR"
+  }
+}

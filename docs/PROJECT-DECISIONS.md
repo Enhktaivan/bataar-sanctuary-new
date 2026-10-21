@@ -126,3 +126,6 @@ Owner screenshotsidentifyGuidedExpeditionsandAcademicPartnerships cards inbottom
 
 ### 2026-10-21 — Nine-language audit of recent changes
 Owner requestscheckingall9languagesafterchanges. FoundmissingFR/KO/RUtourmetadataand6daytranslations; filledthem. Added9localeimagealt,GPSdirectionsandDay/show/hideschedulelabels. Existingroom/scenery/tourtarifflocalecopiesalreadycomplete9. Auditmustnotclaimentirelegacywebsitefullytranslated: olderItalianmaincopyandotherunchangedcontentstilluseEnglishfallback.
+
+### 2026-10-21 — Language-based display currency
+Owner selected Khan Bank non-cash SELL rates and approved language defaults: MN MNT, EN GBP, JA JPY, ZH CNY, KO KRW, DE/FR/IT EUR. RU stays MNT because official bank table has no RUB. Manual currency switch supports MNT/USD/GBP/EUR/JPY/CNY/KRW and carries choice into hosted booking. Verified official Khan widget dated2026-10-21: USD3598,GBP4909,EUR4129,JPY23.35,CNY543.10,KRW2.80 MNT per unit. Rates are a dated snapshot, not automatic live refresh. Underlying MNT tariffs, approved quotes and QPay MNT unchanged. Independent review findings on navigation currency, family disclosure and language package retention corrected.43 synthetic tests, lint/build passed. Legacy main Italian still English fallback; hosted Italian currency EUR works.

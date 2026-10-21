@@ -1,3 +1,5 @@
+import type React from 'react';
+import {CurrencyPrice,CurrencyControl} from './CurrencyPrice';
 import roomTariffLabels from './roomTariffLabels.json';
 import {deluxeBreakdown} from './roomStayPrice';
 import {standardRoomPricing as standard} from './standardRoomPricing';
@@ -12,7 +14,7 @@ export const tariffCopy = {
   fr:['Voir les tarifs','Hébergement / nuit','Petit-déjeuner / personne','Déjeuner / personne','Dîner / personne','Deluxe : 320 000 MNT par personne à deux. En occupation individuelle, le prix complet de la chambre de 640 000 MNT reste dû. Repas en supplément au même tarif que la chambre standard, selon le nombre réel de voyageurs.','Une personne avec trois repas / nuit','Deux personnes avec trois repas / nuit'],
   it:['Vedi prezzi','Alloggio / notte','Colazione / ospite','Pranzo / ospite','Cena / ospite','Deluxe: 320.000 MNT a persona in due. Per uso singolo si paga l’intera camera: 640.000 MNT. Pasti separati alle stesse tariffe della camera standard, per il numero effettivo di ospiti.','Un ospite con tre pasti / notte','Due ospiti con tre pasti / notte'],
 } as const;
-export function RoomTariff({room,lang='mn'}:{room:string;lang?:string}) {
+export function RoomTariff({room,lang='mn',reactRuntime}:{room:string;lang?:string;reactRuntime:typeof React}) {
   if(room!=='deluxe' && room!=='standard') return null;
   const t=tariffCopy[lang as keyof typeof tariffCopy]||tariffCopy.en;
   const labels=roomTariffLabels[lang as keyof typeof roomTariffLabels]||roomTariffLabels.en;
@@ -20,6 +22,6 @@ export function RoomTariff({room,lang='mn'}:{room:string;lang?:string}) {
   return <details className="border border-stone-300 bg-white p-4 text-stone-900" data-testid={room+"-tariff"}>
     <summary className="cursor-pointer font-semibold">{t[0]}</summary>
     {room==='deluxe' && <p className="my-3 text-sm">{t[5]}</p>}
-    <dl className="space-y-2 text-sm">{rows.map(([label,value])=><div key={label} className="flex justify-between gap-4"><dt>{label}</dt><dd className="font-semibold whitespace-nowrap">{value.toLocaleString('en-US')} ₮</dd></div>)}</dl>
+    <CurrencyControl lang={lang} reactRuntime={reactRuntime}/><dl className="space-y-2 text-sm">{rows.map(([label,value])=><div key={label} className="flex justify-between gap-4"><dt>{label}</dt><dd className="font-semibold whitespace-nowrap"><CurrencyPrice amount={value} lang={lang} reactRuntime={reactRuntime}/></dd></div>)}</dl>
   </details>;
 }
